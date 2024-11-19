@@ -1,15 +1,26 @@
-import "./assets/css/common.css";
+import Article from "./components/Article.js";
+import Contents from "./components/Contents.js";
+import Sidebar from "./components/Sidebar.js";
+import Story from "./components/Story.js";
 
 function App() {
   return (
-    <div class="body">
-      <div class="sidebar">sidebar</div>
-      <div class="contents-area">
-        <div class="main mgt16">
-          <div class="story">story</div>
-          <div>contents</div>
+    <div className="body">
+      <div className="sidebar">
+        <Sidebar />
+      </div>
+      <div className="main">
+        <div className="contents-area mgt16">
+          <div className="story">
+            <Story />
+          </div>
+          <div className="contents">
+            <Contents />
+          </div>
         </div>
-        <div class="article">contentSide</div>
+        <div className="article">
+          <Article />
+        </div>
       </div>
     </div>
   );
