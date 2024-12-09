@@ -1,3 +1,4 @@
+import "../assets/css/calendar.css";
 function Calendar() {
   return (
     <section>

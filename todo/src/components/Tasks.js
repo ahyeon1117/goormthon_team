@@ -1,3 +1,4 @@
+import "../assets/css/tasks.css";
 function Tasks() {
   return (
     <section>
