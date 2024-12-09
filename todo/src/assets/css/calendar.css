@@ -3,6 +3,10 @@
   text-align: center;
   height: 100%;
 }
+.calendar h1{
+  font-size: 2rem;
+  color: #49D7B1;
+}
 button { 
   background-color: none !important;
 }
