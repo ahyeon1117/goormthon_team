@@ -1,9 +1,21 @@
 import "../assets/css/tasks.css";
-function Tasks() {
+function Tasks({ selectedDate }) {
+  const formatDate = (date) => {
+    if (Array.isArray(date)) {
+      const [startDate] = date;
+      return `${startDate.getFullYear()}.${String(
+        startDate.getMonth() + 1
+      ).padStart(2, "0")}.${startDate.getDate()}`;
+    }
+    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}.${date.getDate()}`;
+  };
   return (
     <section>
       <section class="tasks">
-        <h2>12.05</h2>
+        <h2>{formatDate(selectedDate)}</h2>
         <ul>
           <li>밥 먹기</li>
           <li>밥 먹기</li>
