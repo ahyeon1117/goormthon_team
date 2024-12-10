@@ -5,10 +5,12 @@
 }
 .calendar h1{
   font-size: 2rem;
+  margin: 40px 0 40px 0;
   color: #49D7B1;
 }
 .todo-check-value{
-  text-align: start ;
+  text-align: center;
+  width: 108px;
 }
 button { 
   background-color: none !important;

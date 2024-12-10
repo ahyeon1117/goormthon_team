@@ -1,19 +1,9 @@
 import "../assets/css/calendar.css";
 import ReactCalendar from "react-calendar";
+import DateUtils from "../utils/DateUtils";
 
 function Calendar({ selectedDate, setSelectedDate }) {
-  const formatDate = (date) => {
-    if (Array.isArray(date)) {
-      const [startDate] = date;
-      return `${startDate.getFullYear()}.${String(
-        startDate.getMonth() + 1
-      ).padStart(2, "0")}`;
-    }
-    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}`;
-  };
+  const dateUtils = new DateUtils();
   const tileClassName = ({ date, view }) => {
     if (selectedDate && view === "month") {
       const parsedSelectedDate =
@@ -30,8 +20,10 @@ function Calendar({ selectedDate, setSelectedDate }) {
   };
   return (
     <section className="calendar">
-      <h1>{formatDate(selectedDate) || ""}</h1>
-      <div className="todo-check-value">12/2</div>
+      <header>
+        <h1>{dateUtils.formatDate(selectedDate) || ""}</h1>
+        <div className="todo-check-value">12/2</div>
+      </header>
       <ReactCalendar
         locale="en-US"
         formatShortWeekday={(locale, date) =>
