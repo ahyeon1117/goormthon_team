@@ -1,5 +1,6 @@
 import Calendar from "../components/Calendar";
 import Tasks from "../components/Tasks";
+import CategoryModals from "../components/modals/CategoryModals";
 import { useState } from "react";
 import { CategoryContext } from "../context/CategoryContext";
 
@@ -62,6 +63,7 @@ function DashboardPage() {
         <div>
           <button onClick={() => changeCategoryModal({ isViewOpen: true })}>카테고리 편집</button>
         </div>
+        <CategoryModals />
       </div>
     </CategoryContext.Provider>
   );
