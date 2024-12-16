@@ -1,0 +1,142 @@
+/* [ z-index 설정 ]
+- .category-view-modal : 1000
+*/
+
+/* 1. 카테고리 조회 모달 CSS (CategoryViewModal.js) */
+.category-view-modal { /* 모달 크기와 위치 설정 */
+    position: fixed;
+    z-index: 1000;
+    top: 5%;
+    left: 75%;
+    width: 40vw;
+    min-width: 300px;
+    height: 85vh;
+    transform: translateX(-50%);/* 화면 오른쪽 섹션에서 중앙 정렬 */
+}
+
+.modal-content { /* 모달 내부 콘텐츠 레이아웃 */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+}
+
+/* <모달 헤더> */
+.modal-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 40px;
+    background-color: #49D7B1;
+    border-radius: 8px 8px 0 0;
+}
+
+.btn-close-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    background: none;
+    border: none;
+    border-radius: 5px; /* 버튼 호버 시 배경 */
+    cursor: pointer;
+}
+
+.btn-close-modal:hover {
+    background-color: rgba(211, 211, 211, 0.5);
+}
+
+/* <모달 바디> */
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 0 35px 30px 35px;
+    overflow: hidden;
+    background-color: white;
+    border-radius: 0 0 10px  10px;
+}
+
+.modal-body__header {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    margin: 15px 0 10px 0;
+}
+
+.modal-title {
+    flex-grow: 1;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.btn-add-category {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    border-radius: 5px; /* 버튼 호버 시 배경 */
+    cursor: pointer;
+}
+
+.btn-add-category:hover {
+    background-color: rgba(211, 211, 211, 0.3);
+}
+
+.modal-body__category-list {
+    flex-grow: 1;
+    padding: 23px;
+    border: 2px solid #F3F3F3;
+    border-radius: 15px;
+    overflow-y: auto;
+
+    /* 스크롤바 스타일 (FireFox) */
+    scrollbar-color: lightgray white;
+}
+
+/* 스크롤바 스타일 (Webkit) */
+.modal-body__category-list::-webkit-scrollbar { /* 트랙 배경색 */
+    background-color: white;
+}
+.modal-body__category-list::-webkit-scrollbar-thumb { /* 핸들 색상 */
+    background-color: lightgray;
+}
+
+.category-item {
+    display: flex;
+    align-items: center;
+    padding: 14px;
+    border-radius: 10px;
+}
+
+.category-item:hover {
+    background-color: #F3F3F3;
+    cursor: pointer;
+}
+
+.category-color {
+    margin-right: 10px;
+}
+
+.category-color svg {
+    width: 15px;
+    height: 15px;
+}
+
+.category-name {
+    font-size: 1.1rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* 2. 카테고리 추가 모달 CSS () */
+
+/* 3. 카테고리 수정 모달 CSS () */
