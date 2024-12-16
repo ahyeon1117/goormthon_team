@@ -1,8 +1,10 @@
 import React, { useContext } from 'react'
-import { CategoryContext } from '../../context/CategoryContext';
+import { CategoryContext } from '../../../context/CategoryContext';
 import CategoryViewModal from './CategoryViewModal';
+import CategoryAddModal from './CategoryAddModal';
 
-export default function CategoryModals() {
+
+function CategoryModals() {
   const {categoryModals} = useContext(CategoryContext);
 
   return (
@@ -11,6 +13,13 @@ export default function CategoryModals() {
       {categoryModals.isViewOpen && (
         <CategoryViewModal />
       )}
+
+      {/* 카테고리 추가 모달 */}
+      {categoryModals.isAddOpen && (
+        <CategoryAddModal />
+      )}
     </>
   )
 }
+
+export default CategoryModals;

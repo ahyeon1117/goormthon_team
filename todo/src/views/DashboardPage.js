@@ -1,6 +1,6 @@
 import Calendar from "../components/Calendar";
 import Tasks from "../components/Tasks";
-import CategoryModals from "../components/modals/CategoryModals";
+import CategoryModals from "../components/modals/category/CategoryModals";
 import { useState } from "react";
 import { CategoryContext } from "../context/CategoryContext";
 
@@ -25,8 +25,8 @@ function DashboardPage() {
 
   // 카테고리 모달 state
   const [categoryModals, setCategoryModals] = useState({
-    isViewOpen: false, // 카테고리 조회 모달
-    isAddOpen: false, // 카테고리 추가 모달
+    isViewOpen: true, // 카테고리 조회 모달
+    isAddOpen: true, // 카테고리 추가 모달
     isEditOpen: false, // 카테고리 편집 모달
   });
 
