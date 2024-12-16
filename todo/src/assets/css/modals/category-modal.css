@@ -2,35 +2,57 @@
 - .category-view-modal : 1000
 */
 
-/* 1. 카테고리 조회 모달 CSS (CategoryViewModal.js) */
-.category-view-modal { /* 모달 크기와 위치 설정 */
+.category-view-modal {
+    left: 3%
+}
+
+.category-add-modal {
+    right: 7%;
+}
+
+/* 1. 모달 컨테이너 */
+.category-modal {  /* 모달 크기와 위치 설정 */
     position: fixed;
     z-index: 1000;
     top: 5%;
-    left: 75%;
+    /* left: 75%; */
     width: 40vw;
     min-width: 300px;
     height: 85vh;
-    transform: translateX(-50%);/* 화면 오른쪽 섹션에서 중앙 정렬 */
+    /* transform: translateX(-50%); */
+    /* 화면 오른쪽 섹션에서 중앙 정렬 */
 }
 
-.modal-content { /* 모달 내부 콘텐츠 레이아웃 */
+/* 2. 모달 콘텐츠 영역 */
+.modal-content {
     display: flex;
     flex-direction: column;
     height: 100%;
     max-height: 100%;
 }
 
-/* <모달 헤더> */
+/* 3. 모달 헤더 */
+/* 3-1. 모달 헤더 - 공통 스타일 */
 .modal-header {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
     height: 40px;
     background-color: #49D7B1;
     border-radius: 8px 8px 0 0;
 }
 
+/* 3-2. 모달 헤더 - 카테고리 조회 모달 */
+.view-modal-header {
+    justify-content: flex-end;
+}
+
+/* 3-3. 모달 헤더 - 카테고리 추가 모달 */
+.add-modal-header {
+    justify-content: space-between;
+}
+
+/* 4. 헤더 버튼 */
+/* 4-1. 헤더 버튼 - 공통 스타일 */
 .btn-close-modal {
     display: flex;
     justify-content: center;
@@ -48,7 +70,40 @@
     background-color: rgba(211, 211, 211, 0.5);
 }
 
-/* <모달 바디> */
+/* 4-2. 헤더 버튼 - 카테고리 조회 모달 (추가 버튼) */
+.btn-add-category {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    border-radius: 5px; /* 버튼 호버 시 배경 */
+    cursor: pointer;
+}
+
+.btn-add-category:hover {
+    background-color: rgba(211, 211, 211, 0.3);
+}
+
+/* 4-3. 헤더 버튼 - 카테고리 추가 모달 (돌아가기 버튼) */
+.btn-back-modal {
+    width: 28px;
+    height: 28px;
+    margin-left: 8px;
+    background: none;
+    border: none;
+    border-radius: 5px; /* 버튼 호버 시 배경 */
+    cursor: pointer;
+}
+
+.btn-back-modal:hover {
+    background-color: rgba(211, 211, 211, 0.3);
+}
+
+/* 5. 모달 바디 */
+/* 5-1. 모달 바디 공통 스타일 */
 .modal-body {
     display: flex;
     flex-direction: column;
@@ -72,24 +127,9 @@
     font-weight: 600;
 }
 
-.btn-add-category {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    background: none;
-    border: none;
-    border-radius: 5px; /* 버튼 호버 시 배경 */
-    cursor: pointer;
-}
-
-.btn-add-category:hover {
-    background-color: rgba(211, 211, 211, 0.3);
-}
-
+/* 6. 모달 내용 */
+/* 6-1. 카테고리 조회 모달 */
 .modal-body__category-list {
-    flex-grow: 1;
     padding: 23px;
     border: 2px solid #F3F3F3;
     border-radius: 15px;
@@ -120,12 +160,10 @@
 }
 
 .category-color {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
     margin-right: 10px;
-}
-
-.category-color svg {
-    width: 15px;
-    height: 15px;
 }
 
 .category-name {
@@ -136,7 +174,66 @@
     text-overflow: ellipsis;
 }
 
+/* 6-2. 카테고리 추가 모달 */
+/* 6-3. 카테고리 편집 모달 */
 
-/* 2. 카테고리 추가 모달 CSS () */
+/* 6-4. 카테고리 폼 */
+.form-add-category-container {
+    position: relative;
+    height: 100%;
+}
 
-/* 3. 카테고리 수정 모달 CSS () */
+.input-category-name {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #F3F3F3;
+    border-radius: 8px;
+    outline: none;
+    font-size: 1.2rem;
+    box-sizing: border-box;
+}
+
+.input-category-name::placeholder {
+    color: lightgray;
+}
+
+.color-palette {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 20px;
+    border: 2px solid #F3F3F3; 
+    border-radius: 8px;
+}
+
+.color-palette-item {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.color-palette-item:hover {
+    transform: scale(1.1);
+}
+
+.btn-save-category {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 30%;
+    padding: 10px;
+    background-color: #49D7B1;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-save-category:hover {
+    background-color: #3bc19d;
+}
