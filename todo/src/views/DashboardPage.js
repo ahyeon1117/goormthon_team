@@ -1,6 +1,7 @@
 import Calendar from "../components/Calendar";
 import Tasks from "../components/Tasks";
 import { useState } from "react";
+import { CategoryContext } from "../context/CategoryContext";
 
 function DashboardPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -37,22 +38,32 @@ function DashboardPage() {
   };
 
   return (
-    <div className="dashboard">
-      <aside>
-        <Calendar
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-        />
-      </aside>
-      <main>
-        <Tasks selectedDate={selectedDate} />
-      </main>
+    <CategoryContext.Provider
+      value={{
+        categories,
+        setCategories,
+        categoryModals,
+        setCategoryModals,
+        changeCategoryModal,
+      }}
+    >
+      <div className="dashboard">
+        <aside>
+          <Calendar
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          />
+        </aside>
+        <main>
+          <Tasks selectedDate={selectedDate} />
+        </main>
 
-      {/* [변경 필요] - 할 일 모달에서 카테고리 모달로 이어지도록 */}
-      <div>
-        <button onClick={() => changeCategoryModal({ isViewOpen: true })}>카테고리 편집</button>
+        {/* [변경 필요] - 할 일 모달에서 카테고리 모달로 이어지도록 */}
+        <div>
+          <button onClick={() => changeCategoryModal({ isViewOpen: true })}>카테고리 편집</button>
+        </div>
       </div>
-    </div>
+    </CategoryContext.Provider>
   );
 }
 
