@@ -37,8 +37,8 @@
     justify-content: flex-end;
 }
 
-/* 3-3. 모달 헤더 - 카테고리 추가 모달 */
-.add-modal-header {
+/* 3-3. 모달 헤더 - 카테고리 추가 모달, 카테고리 수정 모달 */
+.add-modal-header, .edit-modal-header {
     justify-content: space-between;
 }
 
@@ -193,10 +193,11 @@
 
 .color-palette {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 15px;
     margin-top: 20px;
-    padding: 20px;
+    padding: 30px;
     border: 2px solid #F3F3F3; 
     border-radius: 8px;
 }
