@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+import AddTaskModal from "./AddTaskModal";
 import "../assets/css/tasks.css";
 import DateUtils from "../utils/DateUtils";
 
@@ -11,6 +13,8 @@ function Tasks({ selectedDate }) {
     { id: 5, text: "밥 먹기", completed: true },
     { id: 6, text: "밥 먹기", completed: true },
   ];
+  const [isModalVisible, setModalVisible] = useState(false);
+  const handleCloseModal = () => {setModalVisible(false);};
 
   return (
     <section className="tasks">
@@ -34,7 +38,10 @@ function Tasks({ selectedDate }) {
           </div>
         ))}
         <section className="add-task-section">
-          <button className="add-task-btn">추가</button>
+          <button className="add-task-btn" onClick={() => setModalVisible(true)}>
+            추가
+          </button>
+          <AddTaskModal isVisible={isModalVisible} onClose={handleCloseModal} />
         </section>
       </section>
     </section>
