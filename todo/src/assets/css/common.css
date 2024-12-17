@@ -11,6 +11,8 @@ h1,h2,h3{
   width: 100%;
   height: 100%;
   display: flex;
+  background-color: #f3f3f3;
+  align-items: center;
 }
 
 .dashboard > aside, main{

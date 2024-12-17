@@ -5,11 +5,13 @@
   display: flex;
   flex-direction: column;
   text-align: center;
+  justify-content: center;
   box-sizing: border-box;
+  background-color: white;
 }
 .calendar h1{
   font-size: 2rem;
-  margin: 40px 0 40px 0;
+  margin: 0 0 40px 0;
   color: #49D7B1;
 }
 .todo-check-value{
