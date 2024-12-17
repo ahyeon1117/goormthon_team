@@ -29,6 +29,13 @@ function Tasks({ selectedDate }) {
 
   const completedTasksCount = tasks.filter(task => task.checked).length;
 
+  const sortedTasks = [...tasks].sort((a, b) => {
+    if (a.checked !== b.checked) {
+      return a.checked ? 1 : -1;
+    }
+    return a.categoryId - b.categoryId;
+  });
+
   return (
     <section className="tasks">
       <header>
@@ -37,7 +44,7 @@ function Tasks({ selectedDate }) {
       </header>
       <section className="task-list">
         <section className="task-items">
-          {tasks.map((task) => (
+          {sortedTasks.map((task) => (
             <div key={task.id} className="task-item">
               <div className="task-status-bar"></div>
               <div className="task-content">
