@@ -6,7 +6,7 @@
   flex-direction: column;
   box-sizing: border-box;
   background-color: white;
-  padding: 0 50px;
+  padding: 0 10%;
 }
 
 .calendar h1 {
