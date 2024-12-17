@@ -5,22 +5,35 @@ import DateUtils from "../utils/DateUtils";
 
 function Tasks({ selectedDate }) {
   const dateUtils = new DateUtils();
-  const tasks = [
-    { id: 1, text: "밥 먹기", completed: true },
-    { id: 2, text: "밥 먹기", completed: true },
-    { id: 3, text: "밥 먹기", completed: true },
-    { id: 4, text: "밥 먹기", completed: true },
-    { id: 5, text: "밥 먹기", completed: true },
-    { id: 6, text: "밥 먹기", completed: true },
-  ];
+  const [tasks, setTasks] = useState([
+    { id: 1, title: "밥 먹기", date: "2024-12-17", contents: "aaa", categoryId: 1, checked: true },
+    { id: 2, title: "잠 자기", date: "2024-12-17", contents: "bbb", categoryId: 1, checked: true },
+    { id: 3, title: "축구하기", date: "2024-12-17", contents: "ccc", categoryId: 2, checked: true },
+    { id: 4, title: "야구하기", date: "2024-12-17", contents: "ddd", categoryId: 2, checked: false },
+    { id: 5, title: "코딩하기", date: "2024-12-17", contents: "eee", categoryId: 3, checked: false },
+    { id: 6, title: "독서하기", date: "2024-12-17", contents: "fff", categoryId: 3, checked: false },
+  ]);
   const [isModalVisible, setModalVisible] = useState(false);
-  const handleCloseModal = () => {setModalVisible(false);};
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
+  const handleTaskCheck = (taskId) => {
+    setTasks(prevTasks =>
+      prevTasks.map(task =>
+        task.id === taskId ? { ...task, checked: !task.checked } : task
+      )
+    );
+  };
+
+  const completedTasksCount = tasks.filter(task => task.checked).length;
 
   return (
     <section className="tasks">
       <header>
-      <h1>{dateUtils.formatDate(selectedDate, "day")}</h1>
-        <div className="task-check-value">2/8</div>
+        <h1>{dateUtils.formatDate(selectedDate, "day")}</h1>
+        <div className="task-check-value">{completedTasksCount}/{tasks.length}</div>
       </header>
       <section className="task-list">
         <section className="task-items">
@@ -30,11 +43,11 @@ function Tasks({ selectedDate }) {
               <div className="task-content">
                 <input
                   type="checkbox"
-                  checked={task.completed}
-                  onChange={() => {}}
+                  checked={task.checked}
+                  onChange={() => handleTaskCheck(task.id)}
                   className="task-checkbox"
                 />
-                <span className="task-text">{task.text}</span>
+                <span className="task-title">{task.title}</span>
               </div>
             </div>
           ))}
