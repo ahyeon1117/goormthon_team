@@ -1,6 +1,7 @@
 import Calendar from "../components/Calendar";
 import Tasks from "../components/Tasks";
 import CategoryViewModal from "../components/CategoryViewModal";
+import CategoryAddModal from "../components/CategoryAddModal";
 import { useState } from "react";
 
 // 카테고리 초기 데이터 설정
@@ -48,6 +49,15 @@ function DashboardPage() {
       {categoryModals.isViewOpen && (
         <CategoryViewModal
           categories={categories}
+          changeCategoryModal={changeCategoryModal}
+        />
+      )}
+
+      {/* 카테고리 추가 모달 */}
+      {categoryModals.isAddOpen && (
+        <CategoryAddModal
+          categories={categories}
+          setCategories={setCategories}
           changeCategoryModal={changeCategoryModal}
         />
       )}
