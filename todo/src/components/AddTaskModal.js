@@ -5,10 +5,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
 
 const AddTaskModal = ({ isVisible, onClose }) => {
-  // 상태 관리
-  const [title, setTitle] = useState(""); // 할 일 제목
-  const [content, setContent] = useState(""); // 할 일 내용
-  const [selectedDate, setSelectedDate] = useState(new Date()); // 선택된 날짜
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
   const categories = [
     { id: 1, name: "None", color: "#d1d5db" },
     { id: 2, name: "Temp#1", color: "#f87171" },
@@ -17,20 +17,17 @@ const AddTaskModal = ({ isVisible, onClose }) => {
     { id: 5, name: "Temp#4", color: "#34d399" },
     { id: 6, name: "Temp#6", color: "#DCB4FF" },
   ];
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]); // 선택된 카테고리
+  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
 
-  // 날짜 변경 핸들러
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
-  // 모달 제출 시 실행되는 함수
   const handleSubmit = () => {
     console.log({ title, content, selectedDate });
     onClose();
   };
 
-  // 모달이 비활성화 상태면 렌더링하지 않음
   if (!isVisible) return null;
 
   return (
@@ -40,17 +37,17 @@ const AddTaskModal = ({ isVisible, onClose }) => {
     >
       {/* Header */}
       <header className="header">
-        <button onClick={onClose} className="close-button">
+        <button onClick={onClose} className="close-button" aria-label="Close">
           X
         </button>
       </header>
 
-      {/* Body */}
-      <div className="body">
+      {/* Main Content */}
+      <main className="body">
         {/* 제목 섹션 */}
-        <div className="title-section">
+        <section className="title-section" aria-label="Task Title Section">
           <div className="icon-container">
-            <span className="icon"></span>
+            <span className="icon" aria-hidden="true"></span>
           </div>
           <div className="task-title-wrapper">
             <input
@@ -61,45 +58,48 @@ const AddTaskModal = ({ isVisible, onClose }) => {
               className="task-title-input"
             />
           </div>
-          <div className="underline"></div>
-        </div>
+          <div className="underline" aria-hidden="true"></div>
+        </section>
 
         {/* 날짜 선택 섹션 */}
-        <div className="date-section">
+        <section className="date-section" aria-label="Date Picker Section">
           <button
             className="date-button"
             onClick={(e) => {
               const input = e.currentTarget.parentNode.querySelector(
                 ".react-datepicker__input-container input"
               );
-              if (input) input.focus(); // DatePicker 입력 필드에 포커스
+              if (input) input.focus();
             }}
+            aria-label="Open Date Picker"
           >
             <span className="date-icon-text">📅</span>
           </button>
           <DatePicker
             selected={selectedDate}
             onChange={handleDateChange}
-            dateFormat="MM.dd (eee)" // 월.일 (요일) 표시
-            locale={ko} // 한글 요일 적용
+            dateFormat="MM.dd (eee)"
+            locale={ko}
           />
-        </div>
+        </section>
 
         {/* 할 일 내용 섹션 */}
-        <div className="content-section">
+        <section className="content-section" aria-label="Task Content Section">
           <textarea
             className="content-input"
             placeholder="Task Content"
             value={content}
             onChange={(e) => setContent(e.target.value)}
           ></textarea>
-        </div>
+        </section>
 
         {/* 카테고리 선택 섹션 */}
-        <div className="category-section">
+        <nav className="category-section" aria-label="Category Selection">
           <div className="category-header">
             <span className="category-title">Select Category</span>
-            <button className="category-edit-button">Edit</button>
+            <button className="category-edit-button" aria-label="Edit Categories">
+              Edit
+            </button>
           </div>
           <div className="category-list">
             {categories.map((category) => (
@@ -112,6 +112,7 @@ const AddTaskModal = ({ isVisible, onClose }) => {
                   setSelectedCategory({ id: category.id, color: category.color })
                 }
                 style={{ color: category.color }}
+                aria-label={`Select ${category.name}`}
               >
                 <span
                   className="category-circle"
@@ -121,15 +122,15 @@ const AddTaskModal = ({ isVisible, onClose }) => {
               </button>
             ))}
           </div>
-        </div>
-      </div>
+        </nav>
+      </main>
 
       {/* Footer */}
       <footer className="footer">
-        <button className="cancel" onClick={onClose}>
+        <button className="cancel" onClick={onClose} aria-label="Cancel">
           Cancel
         </button>
-        <button className="add" onClick={handleSubmit}>
+        <button className="add" onClick={handleSubmit} aria-label="Add Task">
           Add
         </button>
       </footer>
