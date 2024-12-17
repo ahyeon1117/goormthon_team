@@ -2,25 +2,16 @@
 - .category-view-modal : 1000
 */
 
-.category-view-modal {
-    left: 3%
-}
-
-.category-add-modal {
-    right: 7%;
-}
-
 /* 1. 모달 컨테이너 */
 .category-modal {  /* 모달 크기와 위치 설정 */
     position: fixed;
     z-index: 1000;
     top: 5%;
-    /* left: 75%; */
+    left: 75%;
     width: 40vw;
     min-width: 300px;
     height: 85vh;
-    /* transform: translateX(-50%); */
-    /* 화면 오른쪽 섹션에서 중앙 정렬 */
+    transform: translateX(-50%); /* 화면 오른쪽 섹션에서 중앙 정렬 */
 }
 
 /* 2. 모달 콘텐츠 영역 */
@@ -75,8 +66,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 40px;
-    height: 40px;
+    width: 43px;
+    height: 43px;
     background: none;
     border: none;
     border-radius: 5px; /* 버튼 호버 시 배경 */
@@ -91,7 +82,7 @@
 .btn-back-modal {
     width: 28px;
     height: 28px;
-    margin-left: 8px;
+    margin-left: 10px;
     background: none;
     border: none;
     border-radius: 5px; /* 버튼 호버 시 배경 */
@@ -108,7 +99,7 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    padding: 0 35px 30px 35px;
+    padding: 0 35px 35px 35px;
     overflow: hidden;
     background-color: white;
     border-radius: 0 0 10px  10px;
@@ -130,6 +121,7 @@
 /* 6. 모달 내용 */
 /* 6-1. 카테고리 조회 모달 */
 .modal-body__category-list {
+    height: 100%;
     padding: 23px;
     border: 2px solid #F3F3F3;
     border-radius: 15px;
@@ -161,6 +153,7 @@
 
 .category-color {
     width: 18px;
+    min-width: 18px; /* 카테고리명이 길 때 원이 찌그러지지 않도록 */
     height: 18px;
     border-radius: 50%;
     margin-right: 10px;
@@ -186,6 +179,7 @@
 .input-category-name {
     width: 100%;
     padding: 10px;
+    margin-top: 5px;
     border: 2px solid #F3F3F3;
     border-radius: 8px;
     outline: none;
@@ -199,7 +193,7 @@
 
 .color-palette {
     display: flex;
-    justify-content: center;
+    flex-wrap: wrap;
     gap: 15px;
     margin-top: 20px;
     padding: 20px;
@@ -209,14 +203,15 @@
 
 .color-palette-item {
     width: 35px;
+    min-width: 35px;
     height: 35px;
     border-radius: 50%;
     cursor: pointer;
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.1s ease-in-out;
 }
 
 .color-palette-item:hover {
-    transform: scale(1.1);
+    transform: scale(1.08);
 }
 
 .btn-save-category {
