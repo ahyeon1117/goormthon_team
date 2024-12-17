@@ -1,8 +1,6 @@
-import React, { useState, useContext } from 'react'
-import { CategoryContext } from '../../../context/CategoryContext';
+import React, { useState } from 'react'
 
-function CategoryForm() {
-  const { categories, setCategories, changeCategoryModal } = useContext(CategoryContext);
+function CategoryForm({ categories, setCategories, changeCategoryModal }) {
 
   // 새로 추가할 카테고리의 state
   const [categoryName, setCategoryName] = useState(""); // 카테고리 이름
@@ -11,10 +9,10 @@ function CategoryForm() {
   // 카테고리 색상 팔레트
   const colorPalette = [
     "#FFD1FF", "#FFBFCF", "#FEADCE", "#F092A5", "#EA5E76",
-    "#FFCC99", "#F9CBA7", "#F8B195", "#FFB89F", "#F6A88D",
+    "#FFCC99", "#F8B195", "#FFB89F",
     "#FFECB3", "#FBE7A1",  "#FDFD96", "#FDE293", "#FFEEAD",
     "#A8E6CF", "#B2F2BB", "#CDEACE", "#C5E1A5", "#49D7B1",
-    "#C5EAF7", "#B3D8F2", "#A2DFF2", "#BFD7ED", "#D0F0FF",
+    "#C5EAF7", "#B3D8F2", "#A2DFF2", "#BFD7ED",
     "#E6E6FA", "#D8BFD8", "#C8A2C8", "#D1CFE2", "#E0B0FF",
   ];
 

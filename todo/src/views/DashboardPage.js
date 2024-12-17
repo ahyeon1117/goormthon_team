@@ -1,8 +1,8 @@
 import Calendar from "../components/Calendar";
 import Tasks from "../components/Tasks";
-import CategoryModals from "../components/modals/category/CategoryModals";
+import CategoryViewModal from "../components/modals/category/CategoryViewModal";
+import CategoryAddModal from "../components/modals/category/CategoryAddModal";
 import { useState } from "react";
-import { CategoryContext } from "../context/CategoryContext";
 
 // 카테고리 초기 데이터 설정
 const initialCategories = localStorage.getItem("categories")
@@ -22,7 +22,7 @@ function DashboardPage() {
     isEditOpen: false, // 카테고리 편집 모달
   });
 
-  // 카테고리 모달 상태 변경
+  // 카테고리 모달 상태 변경 (버튼 클릭 시 열고 닫힘)
   const changeCategoryModal = (categoryModalState) => {
     setCategoryModals((prev) => ({
       ...prev,
@@ -31,33 +31,38 @@ function DashboardPage() {
   };
 
   return (
-    <CategoryContext.Provider
-      value={{
-        categories,
-        setCategories,
-        categoryModals,
-        setCategoryModals,
-        changeCategoryModal,
-      }}
-    >
-      <div className="dashboard">
-        <aside>
-          <Calendar
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-          />
-        </aside>
-        <main>
-          <Tasks selectedDate={selectedDate} />
-        </main>
+    <div className="dashboard">
+      <aside>
+        <Calendar
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
+      </aside>
+      <main>
+        <Tasks selectedDate={selectedDate} />
+      </main>
 
-        {/* [변경 필요] - 할 일 모달에서 카테고리 모달로 이어지도록 */}
-        <div>
-          <button onClick={() => changeCategoryModal({ isViewOpen: true })}>카테고리 편집</button>
-        </div>
-        <CategoryModals />
+      {/* [변경 필요] - 할 일 모달에서 카테고리 모달로 이어지도록 */}
+      <div>
+        <button onClick={() => changeCategoryModal({ isViewOpen: true })}>카테고리 편집</button>
       </div>
-    </CategoryContext.Provider>
+      {/* 카테고리 조회 모달 */}
+      {categoryModals.isViewOpen && (
+        <CategoryViewModal
+          categories={categories}
+          changeCategoryModal={changeCategoryModal}
+        />
+      )}
+
+      {/* 카테고리 추가 모달 */}
+      {categoryModals.isAddOpen && (
+        <CategoryAddModal
+          categories={categories}
+          setCategories={setCategories}
+          changeCategoryModal={changeCategoryModal}
+        />
+      )}
+    </div>
   );
 }
 

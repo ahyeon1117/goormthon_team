@@ -1,10 +1,7 @@
-import { useContext } from 'react';
-import { CategoryContext } from '../../../context/CategoryContext';
 import CategoryForm from "./CategoryForm";
 import "../../../assets/css/modals/category-modal.css";
 
-function CategoryAddModal() {
-    const { changeCategoryModal } = useContext(CategoryContext);
+function CategoryAddModal({ categories, setCategories, changeCategoryModal }) {
 
     return (
         // 모달 최상위 컨테이너
@@ -29,7 +26,11 @@ function CategoryAddModal() {
                     <div className="modal-body__header">
                         <div className="modal-title">카테고리 추가</div>
                     </div>
-                    <CategoryForm />
+                    <CategoryForm
+                        categories={categories}
+                        setCategories={setCategories}
+                        changeCategoryModal={changeCategoryModal}
+                    />
                 </div> {/* .modal-body */}
             </div> {/* .modal-content */}
         </div> // .category-view-modal
