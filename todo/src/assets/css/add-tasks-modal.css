@@ -290,7 +290,10 @@ textarea:focus {
   margin-top: 0;
 }
 
-button {
+.add,
+.cancel {
+  background-color:var(--highlight-color, #d1d5db);
+  color: white;
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
@@ -298,12 +301,8 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #e0e0e0;
-}
 
-button.add,
-button.cancel {
-  background-color:var(--highlight-color, #d1d5db);
-  color: white;
+.add:hover,
+.cancel:hover {
+  background-color: #e0e0e0;
 }

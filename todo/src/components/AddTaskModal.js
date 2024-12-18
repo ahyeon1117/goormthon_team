@@ -94,7 +94,7 @@ const AddTaskModal = ({ isVisible, onClose }) => {
         </section>
 
         {/* 카테고리 선택 섹션 */}
-        <nav className="category-section" aria-label="Category Selection">
+        <section className="category-section" aria-label="Category Selection">
           <div className="category-header">
             <span className="category-title">Select Category</span>
             <button className="category-edit-button" aria-label="Edit Categories">
@@ -122,7 +122,7 @@ const AddTaskModal = ({ isVisible, onClose }) => {
               </button>
             ))}
           </div>
-        </nav>
+        </section>
       </main>
 
       {/* Footer */}
