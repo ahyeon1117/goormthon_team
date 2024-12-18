@@ -125,3 +125,19 @@ button {
   font-size: 1.5rem;
   text-align: center;
 }
+
+.hasTasks > abbr {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #e6f4ff;  /* 연한 파란색 배경 */
+  color: #1890ff;            /* 파란색 텍스트 */
+  padding: 4px;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

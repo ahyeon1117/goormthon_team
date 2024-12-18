@@ -11,19 +11,32 @@ function Calendar({ selectedDate, setSelectedDate }) {
   const tasks = taskData.calendar;
 
   const tileClassName = ({ date, view }) => {
-    if (selectedDate && view === "month") {
-      const parsedSelectedDate =
-        typeof selectedDate === "string"
-          ? new Date(selectedDate)
-          : selectedDate;
-      const isSameDay =
-        date.getFullYear() === parsedSelectedDate.getFullYear() &&
-        date.getMonth() === parsedSelectedDate.getMonth() &&
-        date.getDate() === parsedSelectedDate.getDate();
-      return isSameDay ? "tileHighlight" : null;
+    if (view === "month") {
+      if (selectedDate) {
+        const parsedSelectedDate =
+          typeof selectedDate === "string"
+            ? new Date(selectedDate)
+            : selectedDate;
+        const isSameDay =
+          date.getFullYear() === parsedSelectedDate.getFullYear() &&
+          date.getMonth() === parsedSelectedDate.getMonth() &&
+          date.getDate() === parsedSelectedDate.getDate();
+        if (isSameDay) return "tileHighlight";
+      }
+
+      const hasTask = tasks.some(task => {
+        const taskDate = new Date(task.date);
+        return (
+          date.getFullYear() === taskDate.getFullYear() &&
+          date.getMonth() === taskDate.getMonth() &&
+          date.getDate() === taskDate.getDate()
+        );
+      });
+
+      if (hasTask) return "hasTasks";
     }
     return null;
-  };
+  }
 
   const handleActiveStartDateChange = ({ action, activeStartDate }) => {
     if (action === 'prev' || action === 'next') {
