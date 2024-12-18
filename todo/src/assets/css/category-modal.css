@@ -2,24 +2,20 @@
 - .category-view-modal : 1000
 */
 
-/* 1. 모달 컨테이너 */
-.category-modal {  /* 모달 크기와 위치 설정 */
-    position: fixed;
-    z-index: 1000;
-    top: 5%;
-    left: 75%;
-    width: 40vw;
-    min-width: 300px;
-    height: 85vh;
-    transform: translateX(-50%); /* 화면 오른쪽 섹션에서 중앙 정렬 */
-}
-
-/* 2. 모달 콘텐츠 영역 */
-.modal-content {
+/* 1. 모달 */
+.category-modal {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    max-height: 100%;
+    position: fixed;
+    z-index: 1000;
+    top: 50%;
+    right: 25%;
+    transform: translate(50%, -50%);
+    width: 500px;
+    max-width: 90%;
+    height: 600px;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* 3. 모달 헤더 */
@@ -42,8 +38,8 @@
     justify-content: space-between;
 }
 
-/* 4. 헤더 버튼 */
-/* 4-1. 헤더 버튼 - 공통 스타일 */
+/* 4. 헤더 내 버튼 */
+/* 4-1. 헤더 내 버튼 - 공통 스타일 */
 .btn-close-modal {
     display: flex;
     justify-content: center;
@@ -61,24 +57,7 @@
     background-color: rgba(211, 211, 211, 0.5);
 }
 
-/* 4-2. 헤더 버튼 - 카테고리 조회 모달 (추가 버튼) */
-.btn-add-category {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 43px;
-    height: 43px;
-    background: none;
-    border: none;
-    border-radius: 5px; /* 버튼 호버 시 배경 */
-    cursor: pointer;
-}
-
-.btn-add-category:hover {
-    background-color: rgba(211, 211, 211, 0.3);
-}
-
-/* 4-3. 헤더 버튼 - 카테고리 추가 모달 (돌아가기 버튼) */
+/* 4-3. 헤더 내 버튼 - 카테고리 추가 모달 (돌아가기 버튼) */
 .btn-back-modal {
     width: 28px;
     height: 28px;
@@ -102,10 +81,10 @@
     padding: 0 35px 35px 35px;
     overflow: hidden;
     background-color: white;
-    border-radius: 0 0 10px  10px;
+    border-radius: 0 0 10px 10px;
 }
 
-.modal-body__header {
+.modal-body__title-section {
     display: flex;
     align-items: center;
     height: 50px;
@@ -120,7 +99,23 @@
 
 /* 6. 모달 내용 */
 /* 6-1. 카테고리 조회 모달 */
-.modal-body__category-list {
+.btn-add-category { /* 카테고리 추가 버튼 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 43px;
+    height: 43px;
+    background: none;
+    border: none;
+    border-radius: 5px; /* 버튼 호버 시 배경 */
+    cursor: pointer;
+}
+
+.btn-add-category:hover {
+    background-color: rgba(211, 211, 211, 0.3);
+}
+
+.modal-body__category-section {
     height: 100%;
     padding: 23px;
     border: 2px solid #F3F3F3;
@@ -132,10 +127,10 @@
 }
 
 /* 스크롤바 스타일 (Webkit) */
-.modal-body__category-list::-webkit-scrollbar { /* 트랙 배경색 */
+.modal-body__category-section::-webkit-scrollbar { /* 트랙 배경색 */
     background-color: white;
 }
-.modal-body__category-list::-webkit-scrollbar-thumb { /* 핸들 색상 */
+.modal-body__category-section::-webkit-scrollbar-thumb { /* 핸들 색상 */
     background-color: lightgray;
 }
 
