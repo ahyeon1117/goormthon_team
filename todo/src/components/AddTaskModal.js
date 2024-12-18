@@ -5,9 +5,14 @@ import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
 import { format } from 'date-fns';
 
-//import taskData from "../json/tasks/tasks.json";
-
-
+const VALIDATION_MESSAGE = "할 일을 입력해주세요.";
+const DATE_FORMAT = "MM.dd (eee)";
+const BTN_ADD_LABEL = "추가";
+const BTN_CANCEL_LABEL = "취소";
+const TEXT_CATEGORY_SELECT = "카테고리 선택";
+const BTN_CATEGORY_EDIT_LABEL = "편집";
+const TEXT_TODO_TITLE = "할 일";
+const TEXT_TODO_CONTENT = "할 일 세부 사항";
 
 const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,changeCategoryModal,tasks,setTasks}) => {
   const [title, setTitle] = useState("");
@@ -15,22 +20,24 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,changeC
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
 
+  // DatePicker 초기화 (캘린더에서 선택한 날짜 / 팝업 열 때마다)
   useEffect(() => {
     if (isVisible && prevSelectedDate) {
       setSelectedDate(prevSelectedDate);
     }
   }, [isVisible, prevSelectedDate]);
 
+  // 날짜 변경 핸들러
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
+  // 할 일 추가 핸들러
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // 유효성 검사
     if (!title.trim()) {
-      alert("할 일을 입력해주세요.");
+      alert(VALIDATION_MESSAGE);
       return;
     }
 
@@ -45,14 +52,19 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,changeC
       categoryId: selectedCategory.id,
     };
 
-    setTasks((prev) => [...prev,newTask]);
+    const updatedTasks = [...tasks, newTask];
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
 
-    localStorage.setItem("tasks", JSON.stringify([...tasks,newTask]));
+    resetForm();
+    onClose();
+  };
+
+  // 폼 초기화 
+  const resetForm = () => {
     setTitle("");
     setContent("");
     setSelectedCategory(categories[0]);
-
-    onClose();
   };
 
   if (!isVisible) return null;
@@ -79,7 +91,7 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,changeC
           <div className="task-title-wrapper">
             <input
               type="text"
-              placeholder="Task Title"
+              placeholder={TEXT_TODO_TITLE}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="task-title-input"
@@ -105,7 +117,7 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,changeC
           <DatePicker
             selected={selectedDate}
             onChange={handleDateChange}
-            dateFormat="MM.dd (eee)"
+            dateFormat={DATE_FORMAT}
             locale={ko}
           />
         </section>
@@ -114,7 +126,7 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,changeC
         <section className="content-section" aria-label="Task Content Section">
           <textarea
             className="content-input"
-            placeholder="Task Content"
+            placeholder={TEXT_TODO_CONTENT}
             value={content}
             onChange={(e) => setContent(e.target.value)}
           ></textarea>
@@ -123,10 +135,10 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,changeC
         {/* 카테고리 선택 섹션 */}
         <section className="category-section" aria-label="Category Selection">
           <div className="category-header">
-            <span className="category-title">Select Category</span>
+            <span className="category-title">{TEXT_CATEGORY_SELECT}</span>
             <button className="category-edit-button" aria-label="Edit Categories"
               onClick={() => changeCategoryModal({ isViewOpen: true })}>
-              Edit
+              {BTN_CATEGORY_EDIT_LABEL}
             </button>
           </div>
           <div className="category-list">
@@ -156,10 +168,10 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,changeC
       {/* Footer */}
       <footer className="footer">
         <button className="cancel" onClick={onClose} aria-label="Cancel">
-          Cancel
+          {BTN_CANCEL_LABEL}
         </button>
         <button className="add" onClick={handleSubmit} aria-label="Add Task">
-          Add
+          {BTN_ADD_LABEL}
         </button>
       </footer>
       
