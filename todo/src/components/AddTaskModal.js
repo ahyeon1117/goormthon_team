@@ -1,30 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../assets/css/add-tasks-modal.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
+import { format } from 'date-fns';
 
-const AddTaskModal = ({ isVisible, onClose }) => {
+//import taskData from "../json/tasks/tasks.json";
+
+
+
+const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,changeCategoryModal,tasks,setTasks}) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
-
-  const categories = [
-    { id: 1, name: "None", color: "#d1d5db" },
-    { id: 2, name: "Temp#1", color: "#f87171" },
-    { id: 3, name: "Temp#2", color: "#93c5fd" },
-    { id: 4, name: "Temp#3", color: "#fde047" },
-    { id: 5, name: "Temp#4", color: "#34d399" },
-    { id: 6, name: "Temp#6", color: "#DCB4FF" },
-  ];
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+
+  useEffect(() => {
+    if (isVisible && prevSelectedDate) {
+      setSelectedDate(prevSelectedDate);
+    }
+  }, [isVisible, prevSelectedDate]);
+
+    // 카테고리 모달 상태
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
-  const handleSubmit = () => {
-    console.log({ title, content, selectedDate });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // 유효성 검사
+    if (!title.trim()) {
+      alert("할 일을 입력해주세요.");
+      return;
+    }
+
+    // 새로운 할 일 데이터
+    let newTask = {
+      id: Array.isArray(tasks) && tasks.length > 0
+      ? tasks[tasks.length - 1].id + 1
+      : 0 ,
+      title: title,
+      date : format(selectedDate, 'yyyy-MM-dd'),
+      contents : content,
+      categoryId: selectedCategory.id,
+    };
+
+    setTasks((prev) => [...prev,newTask]);
+
+    localStorage.setItem("tasks", JSON.stringify([...tasks,newTask]));
+    setTitle("");
+    setContent("");
+    setSelectedCategory(categories[0]);
+
     onClose();
   };
 
@@ -97,7 +126,8 @@ const AddTaskModal = ({ isVisible, onClose }) => {
         <section className="category-section" aria-label="Category Selection">
           <div className="category-header">
             <span className="category-title">Select Category</span>
-            <button className="category-edit-button" aria-label="Edit Categories">
+            <button className="category-edit-button" aria-label="Edit Categories"
+              onClick={() => changeCategoryModal({ isViewOpen: true })}>
               Edit
             </button>
           </div>
@@ -134,7 +164,11 @@ const AddTaskModal = ({ isVisible, onClose }) => {
           Add
         </button>
       </footer>
+      
     </div>
+
+
+
   );
 };
 
