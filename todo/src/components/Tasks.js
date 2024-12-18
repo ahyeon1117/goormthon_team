@@ -9,6 +9,21 @@ function Tasks({ selectedDate }) {
   const [tasks, setTasks] = useState(taskData.tasks);
   const [isModalVisible, setModalVisible] = useState(false);
 
+  const filteredTasks = tasks.filter(task => {
+    const taskDate = new Date(task.date);
+    return (
+      taskDate.getFullYear() === selectedDate.getFullYear() &&
+      taskDate.getMonth() === selectedDate.getMonth() &&
+      taskDate.getDate() === selectedDate.getDate()
+    );
+  });
+
+  const getDailyTaskStats = () => {
+    const completedTasks = filteredTasks.filter(task => task.checked).length;
+    const totalTasks = filteredTasks.length;
+    return `${completedTasks}/${totalTasks}`;
+  };
+
   const handleCloseModal = () => {
     setModalVisible(false);
   };
@@ -21,9 +36,7 @@ function Tasks({ selectedDate }) {
     );
   };
 
-  const completedTasksCount = tasks.filter(task => task.checked).length;
-
-  const sortedTasks = [...tasks].sort((a, b) => {
+  const sortedTasks = [...filteredTasks].sort((a, b) => {
     if (a.checked !== b.checked) {
       return a.checked ? 1 : -1;
     }
@@ -34,7 +47,7 @@ function Tasks({ selectedDate }) {
     <section className="tasks">
       <header>
         <h1>{dateUtils.formatDate(selectedDate, "day")}</h1>
-        <div className="task-check-value">{completedTasksCount}/{tasks.length}</div>
+        <div className="task-check-value">{getDailyTaskStats()}</div>
       </header>
       <section className="task-list">
         <section className="task-items">
