@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
 
-const AddTaskModal = ({ isVisible, onClose }) => {
+const AddTaskModal = ({ isVisible, onClose, changeCategoryModal }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -97,7 +97,11 @@ const AddTaskModal = ({ isVisible, onClose }) => {
         <section className="category-section" aria-label="Category Selection">
           <div className="category-header">
             <span className="category-title">Select Category</span>
-            <button className="category-edit-button" aria-label="Edit Categories">
+            <button
+              className="category-edit-button"
+              aria-label="Edit Categories"
+              onClick={() => changeCategoryModal({ isViewOpen: true })}
+            >
               Edit
             </button>
           </div>

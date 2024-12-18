@@ -37,13 +37,11 @@ function DashboardPage() {
         />
       </aside>
       <main>
-        <Tasks selectedDate={selectedDate} />
+        <Tasks
+          selectedDate={selectedDate}
+          changeCategoryModal={changeCategoryModal}
+        />
       </main>
-
-      {/* [임시 버튼] - 태스크 모달에서 카테고리 모달로 이어지도록 */}
-      <div>
-        <button onClick={() => changeCategoryModal({ isViewOpen: true })}>카테고리 편집</button>
-      </div>
 
       {/* 카테고리 조회 모달 */}
       {categoryModals.isViewOpen && (

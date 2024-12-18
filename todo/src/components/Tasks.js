@@ -3,7 +3,7 @@ import AddTaskModal from "./AddTaskModal";
 import "../assets/css/tasks.css";
 import DateUtils from "../utils/DateUtils";
 
-function Tasks({ selectedDate }) {
+function Tasks({ selectedDate, changeCategoryModal }) {
   const dateUtils = new DateUtils();
   const tasks = [
     { id: 1, text: "밥 먹기", completed: true },
@@ -41,7 +41,11 @@ function Tasks({ selectedDate }) {
           <button className="add-task-btn" onClick={() => setModalVisible(true)}>
             추가
           </button>
-          <AddTaskModal isVisible={isModalVisible} onClose={handleCloseModal} />
+          <AddTaskModal
+            isVisible={isModalVisible}
+            onClose={handleCloseModal}
+            changeCategoryModal={changeCategoryModal}
+          />
         </section>
       </section>
     </section>
