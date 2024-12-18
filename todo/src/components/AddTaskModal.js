@@ -21,8 +21,6 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,changeC
     }
   }, [isVisible, prevSelectedDate]);
 
-    // 카테고리 모달 상태
-
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
