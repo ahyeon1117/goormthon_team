@@ -23,20 +23,22 @@ function Tasks({ selectedDate }) {
         <div className="task-check-value">2/8</div>
       </header>
       <section className="task-list">
-        {tasks.map((task) => (
-          <div key={task.id} className="task-item">
-            <div className="task-status-bar"></div>
-            <div className="task-content">
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => {}}
-                className="task-checkbox"
-              />
-              <span className="task-text">{task.text}</span>
+        <section className="task-items">
+          {tasks.map((task) => (
+            <div key={task.id} className="task-item">
+              <div className="task-status-bar"></div>
+              <div className="task-content">
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() => {}}
+                  className="task-checkbox"
+                />
+                <span className="task-text">{task.text}</span>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </section>
         <section className="add-task-section">
           <button className="add-task-btn" onClick={() => setModalVisible(true)}>
             추가

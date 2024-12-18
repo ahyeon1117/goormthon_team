@@ -22,7 +22,9 @@ function Calendar({ selectedDate, setSelectedDate }) {
     <section className="calendar">
       <header>
         <h1>{dateUtils.formatDate(selectedDate, "month") || ""}</h1>
-        <div className="todo-check-value">12/2</div>
+        <div className="todo-check-value-box">
+          <div className="todo-check-value">12/2</div>
+        </div>
       </header>
       <ReactCalendar
         locale="en-US"
