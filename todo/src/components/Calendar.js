@@ -38,6 +38,21 @@ function Calendar({ selectedDate, setSelectedDate }) {
     return null;
   }
 
+  const getMonthlyTaskStats = () => {
+    const currentMonth = activeStartDate.getMonth();
+    const currentYear = activeStartDate.getFullYear();
+
+    const monthTasks = tasks.filter(task => {
+      const taskDate = new Date(task.date);
+      return taskDate.getMonth() === currentMonth && taskDate.getFullYear() === currentYear;
+    });
+
+    const completedTasks = monthTasks.filter(task => task.checked).length;
+    const totalTasks = monthTasks.length;
+
+    return `${completedTasks}/${totalTasks}`;
+  };
+
   const handleActiveStartDateChange = ({ action, activeStartDate }) => {
     if (action === 'prev' || action === 'next') {
       setActiveStartDate(activeStartDate);
@@ -75,7 +90,7 @@ function Calendar({ selectedDate, setSelectedDate }) {
           </button>
         </div>
         <div className="todo-check-value-box">
-          <div className="todo-check-value">12/2</div>
+          <div className="todo-check-value">{getMonthlyTaskStats()}</div>
         </div>
       </header>
       <ReactCalendar
