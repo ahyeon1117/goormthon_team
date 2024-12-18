@@ -1,18 +1,12 @@
 import React, { useState } from "react";
 import AddTaskModal from "./AddTaskModal";
 import "../assets/css/tasks.css";
+import taskData from "../json/tasks/tasks.json";
 import DateUtils from "../utils/DateUtils";
 
 function Tasks({ selectedDate }) {
   const dateUtils = new DateUtils();
-  const [tasks, setTasks] = useState([
-    { id: 1, title: "밥 먹기", date: "2024-12-17", contents: "aaa", categoryId: 1, checked: true },
-    { id: 2, title: "잠 자기", date: "2024-12-17", contents: "bbb", categoryId: 1, checked: true },
-    { id: 3, title: "축구하기", date: "2024-12-17", contents: "ccc", categoryId: 2, checked: true },
-    { id: 4, title: "야구하기", date: "2024-12-17", contents: "ddd", categoryId: 2, checked: false },
-    { id: 5, title: "코딩하기", date: "2024-12-17", contents: "eee", categoryId: 3, checked: false },
-    { id: 6, title: "독서하기", date: "2024-12-17", contents: "fff", categoryId: 3, checked: false },
-  ]);
+  const [tasks, setTasks] = useState(taskData.tasks);
   const [isModalVisible, setModalVisible] = useState(false);
 
   const handleCloseModal = () => {
