@@ -1,4 +1,5 @@
 import "../assets/css/calendar.css";
+import taskData from "../json/calendar/calendar.json";
 import ReactCalendar from "react-calendar";
 import DateUtils from "../utils/DateUtils";
 import { useState } from "react";
@@ -7,6 +8,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 function Calendar({ selectedDate, setSelectedDate }) {
   const dateUtils = new DateUtils();
   const [activeStartDate, setActiveStartDate] = useState(new Date());
+  const tasks = taskData.calendar;
 
   const tileClassName = ({ date, view }) => {
     if (selectedDate && view === "month") {
