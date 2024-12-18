@@ -9,10 +9,37 @@
   padding: 0 10%;
 }
 
-.calendar h1 {
-  font-size: 2rem;
+.calendar-header-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin: 27px 0 40px 0;
+}
+
+.calendar-header-box h1 {
+  font-size: 2rem;
   color: #49D7B1;
+  flex-grow: 1;
+  text-align: center;
+  margin: 0;
+}
+
+.nav-button {
+  width: calc(100% / 7);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.3rem;
+  color: #49D7B1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.nav-button:hover {
+  background: none;
+  color: #59E7C1;
 }
 
 .todo-check-value-box {
