@@ -3,32 +3,23 @@
 */
 
 /* 1. 모달 컨테이너 */
-/* .category-modal {
-    z-index: 1000;
+.category-modal {  /* 모달 크기와 위치 설정 */
     position: fixed;
-    top: 50%;
-    right: 25%;
-    transform: translate(50%, -50%);
-    width: 500px;
-    max-width: 90%;
-    height: 600px;
-} */
+    z-index: 1000;
+    top: 5%;
+    left: 75%;
+    width: 40vw;
+    min-width: 300px;
+    height: 85vh;
+    transform: translateX(-50%); /* 화면 오른쪽 섹션에서 중앙 정렬 */
+}
 
 /* 2. 모달 콘텐츠 영역 */
-.category-modal {
+.modal-content {
     display: flex;
     flex-direction: column;
     height: 100%;
     max-height: 100%;
-
-    z-index: 1000;
-    position: fixed;
-    top: 50%;
-    right: 25%;
-    transform: translate(50%, -50%);
-    width: 500px;
-    max-width: 90%;
-    height: 600px;
 }
 
 /* 3. 모달 헤더 */
@@ -111,7 +102,7 @@
     padding: 0 35px 35px 35px;
     overflow: hidden;
     background-color: white;
-    border-radius: 0 0 12px 12px;
+    border-radius: 0 0 10px  10px;
 }
 
 .modal-body__header {
