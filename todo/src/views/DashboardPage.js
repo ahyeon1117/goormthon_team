@@ -5,8 +5,11 @@ import CategoryViewModal from "../components/CategoryViewModal";
 import CategoryAddModal from "../components/CategoryAddModal";
 import AddTaskModal from "../components/AddTaskModal";
 
+
+const TEXT_CATEGORY_UNSPECIFIED = "미지정";
+const COLOR_CATEGORY_UNSPECIFIED = "59E7C1"
 // 카테고리 초기 데이터 설정
-let defaultCategory = { id: 0, name: "미지정", color: "#59E7C1",};
+let defaultCategory = { id: 0, name: TEXT_CATEGORY_UNSPECIFIED, color: COLOR_CATEGORY_UNSPECIFIED,};
 if(!localStorage.getItem("categories")){
   localStorage.setItem("categories", JSON.stringify([defaultCategory]));
 }
@@ -21,12 +24,7 @@ function DashboardPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [categories, setCategories] = useState(initialCategories); // 카테고리 상태
   const [tasks, setTasks] = useState(initialTasks); // 할 일 상태
-  const [isAddTaskModalOpen, setAddTaskModal] = useState(false);
-
-  const handleAddTaskModal = () => {
-    setAddTaskModal(false);
-  };
-
+  const [isAddTaskModalOpen, setAddTaskModal] = useState(false); // 할 일 추가 모달 
   const [categoryModals, setCategoryModals] = useState({
     isViewOpen: false, // 카테고리 조회 모달
     isAddOpen: false, // 카테고리 추가 모달
@@ -40,6 +38,12 @@ function DashboardPage() {
       ...categoryModalState, // 전달된 변경 사항 덮어쓰기
     }));
   };
+
+  //할 일 추가 모달 상태 변경
+  const handleAddTaskModal = () => {
+    setAddTaskModal(false);
+  };
+
 
   return (
     <div className="dashboard">
@@ -59,6 +63,7 @@ function DashboardPage() {
           setAddTaskModal={setAddTaskModal}
           />
       </main>
+      {/* 할 일 추가 모달 */}
       {isAddTaskModalOpen && (
         <AddTaskModal 
           isVisible={AddTaskModal} 
