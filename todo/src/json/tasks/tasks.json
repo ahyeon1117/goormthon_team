@@ -1,0 +1,212 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "아침 운동",
+      "date": "2024-12-01",
+      "contents": "헬스장에서 운동하기",
+      "categoryId": 1,
+      "checked": false
+    },
+    {
+      "id": 2,
+      "title": "팀 미팅",
+      "date": "2024-12-02",
+      "contents": "프로젝트 진행 상황 공유",
+      "categoryId": 2,
+      "checked": true
+    },
+    {
+      "id": 3,
+      "title": "독서 시간",
+      "date": "2024-12-03",
+      "contents": "새로운 기술 서적 읽기",
+      "categoryId": 3,
+      "checked": false
+    },
+    {
+      "id": 4,
+      "title": "친구와 점심",
+      "date": "2024-12-05",
+      "contents": "카페에서 만나기",
+      "categoryId": 4,
+      "checked": true
+    },
+    {
+      "id": 5,
+      "title": "코딩 연습",
+      "date": "2024-12-07",
+      "contents": "알고리즘 문제 풀기",
+      "categoryId": 3,
+      "checked": false
+    },
+    {
+      "id": 6,
+      "title": "크리스마스 쇼핑",
+      "date": "2024-12-10",
+      "contents": "선물 구매하기",
+      "categoryId": 4,
+      "checked": false
+    },
+    {
+      "id": 7,
+      "title": "영화 감상",
+      "date": "2024-12-12",
+      "contents": "신작 영화 보기",
+      "categoryId": 5,
+      "checked": true
+    },
+    {
+      "id": 8,
+      "title": "요가 클래스",
+      "date": "2024-12-15",
+      "contents": "주말 요가 수업",
+      "categoryId": 1,
+      "checked": false
+    },
+    {
+      "id": 9,
+      "title": "프로젝트 마감",
+      "date": "2024-12-18",
+      "contents": "연말 프로젝트 최종 제출",
+      "categoryId": 2,
+      "checked": false
+    },
+    {
+      "id": 10,
+      "title": "가족 모임",
+      "date": "2024-12-24",
+      "contents": "크리스마스 이브 저녁 식사",
+      "categoryId": 4,
+      "checked": true
+    },
+    {
+      "id": 11,
+      "title": "연말 파티",
+      "date": "2024-12-31",
+      "contents": "새해 맞이 파티",
+      "categoryId": 5,
+      "checked": false
+    },
+    {
+      "id": 12,
+      "title": "아침 조깅",
+      "date": "2024-12-06",
+      "contents": "공원에서 30분 조깅",
+      "categoryId": 1,
+      "checked": true
+    },
+    {
+      "id": 13,
+      "title": "온라인 세미나",
+      "date": "2024-12-09",
+      "contents": "AI 기술 트렌드 세미나",
+      "categoryId": 3,
+      "checked": true
+    },
+    {
+      "id": 14,
+      "title": "치과 예약",
+      "date": "2024-12-14",
+      "contents": "정기 검진",
+      "categoryId": 4,
+      "checked": false
+    },
+    {
+      "id": 15,
+      "title": "팀 워크샵",
+      "date": "2024-12-16",
+      "contents": "연말 결산 및 내년 계획",
+      "categoryId": 2,
+      "checked": true
+    },
+    {
+      "id": 16,
+      "title": "크리스마스 파티",
+      "date": "2024-12-25",
+      "contents": "회사 크리스마스 파티",
+      "categoryId": 5,
+      "checked": false
+    },
+    {
+      "id": 17,
+      "title": "골프 연습",
+      "date": "2024-12-20",
+      "contents": "골프 연습장에서 스윙 연습",
+      "categoryId": 1,
+      "checked": false
+    },
+    {
+      "id": 18,
+      "title": "프로그래밍 강의",
+      "date": "2024-12-22",
+      "contents": "온라인 리액트 강의",
+      "categoryId": 3,
+      "checked": true
+    },
+    {
+      "id": 19,
+      "title": "연말 정산 준비",
+      "date": "2024-12-27",
+      "contents": "올해 지출 정리",
+      "categoryId": 4,
+      "checked": false
+    },
+    {
+      "id": 20,
+      "title": "송년회",
+      "date": "2024-12-28",
+      "contents": "팀 송년회",
+      "categoryId": 5,
+      "checked": true
+    },
+    {
+      "id": 21,
+      "title": "밥 먹기",
+      "date": "2024-12-17",
+      "contents": "aaa",
+      "categoryId": 1,
+      "checked": true
+    },
+    {
+      "id": 22,
+      "title": "잠 자기",
+      "date": "2024-12-17",
+      "contents": "bbb",
+      "categoryId": 1,
+      "checked": true
+    },
+    {
+      "id": 23,
+      "title": "축구하기",
+      "date": "2024-12-17",
+      "contents": "ccc",
+      "categoryId": 2,
+      "checked": true
+    },
+    {
+      "id": 24,
+      "title": "야구하기",
+      "date": "2024-12-17",
+      "contents": "ddd",
+      "categoryId": 2,
+      "checked": false
+    },
+    {
+      "id": 25,
+      "title": "코딩하기",
+      "date": "2024-12-17",
+      "contents": "eee",
+      "categoryId": 3,
+      "checked": false
+    },
+    {
+      "id": 26,
+      "title": "독서하기",
+      "date": "2024-12-17",
+      "contents": "fff",
+      "categoryId": 3,
+      "checked": false
+    }
+  ]
+}
