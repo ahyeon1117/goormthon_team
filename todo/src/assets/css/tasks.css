@@ -26,36 +26,80 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  gap: 8px; /* 아이템 간 간격 추가 */
 }
 
 .task-items {
+  display: flex;
+  flex-direction: column; /* 가로 정렬 대신 세로 정렬 */
   flex: 1;
-  overflow-y: auto;
+  width: 95%; /* 부모 요소에 맞게 너비 설정 */
 }
 
 .task-item {
   display: flex;
+  align-items: center;
   margin-bottom: 10px;
-  background-color: white;
-  border-radius: 4px;
+  border-radius: 8px;
   overflow: hidden;
+  width: 100%; /* 가로폭을 부모 요소에 맞게 설정 */
+  max-width: 800px; /* 최대 폭 제한 */
+  /* box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); */
+  padding: 0;
+}
+
+.task-item:hover {
+  background-color: #f1f1f1; /* 호버 시 배경 변화 */
+}
+.status-bar-container {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 10px;
+  min-width: 10px;
+  height: 100%;
+  border: none;
+  background-color: white;
 }
 
 .task-status-bar {
-  width: 8px;
+  width: 10px;
+  height: 100%;
+  background-color: currentColor;
 }
 
 .task-content {
+  display: flex;
   flex: 1;
   padding: 15px;
-  display: flex;
   align-items: center;
   gap: 10px;
+  border: none;
+  background-color: white;
+}
+
+.blank-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 10px;
+  height: 100%;
+  background-color: white;
+}
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  background-color: white;
+  padding: 15px 0;
 }
 
 .task-checkbox {
   width: 20px;
   height: 20px;
+  min-width: 20px;
+  min-height: 20px;
   border-width: 2px;
   border-style: solid;
   border-radius: 50%;
@@ -65,6 +109,9 @@
   -moz-appearance: none;
   position: relative;
   border-color: #333;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 .task-checkbox::before {
@@ -75,7 +122,7 @@
   transform: translate(-50%, -50%);
   color: #333;
   font-size: 12px;
-  opacity: 1;
+  opacity: 0;
 }
 
 .task-checkbox:checked {
@@ -84,17 +131,18 @@
 }
 
 .task-checkbox:checked::before {
+  opacity: 1;
   color: white;
 }
 
 .task-title {
   font-size: 1.1rem;
-  color: #333;
+  color: #222;
 }
 
 .task-title.completed {
   text-decoration: line-through;
-  color: #888;
+  color: #999;
 }
 
 .add-task-section {
@@ -116,4 +164,10 @@
 
 .add-task-btn:hover {
   background-color: #3bc19d;
+}
+
+.task-item:hover .blank-bar-container,
+.task-item:hover .checkbox-container,
+.task-item:hover .task-content {
+  background-color: #fbfbfb;
 }

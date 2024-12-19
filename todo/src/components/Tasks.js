@@ -55,12 +55,23 @@ function Tasks({ selectedDate, categories, tasks, setTasks,setAddTaskModal,setMo
       <section className="task-list">
         <section className="task-items">
           {sortedTasks.map((task) => (
-            <div key={task.id} className="task-item">
-              <div
-                className="task-status-bar"
+            <div className="task-item" key={task.id}>
+
+              {/* Status Bar Container */}
+              <div className="status-bar-container">
+                <div className="task-status-bar"
                 style={{ backgroundColor: getCategoryColor(task.categoryId) }}
-              ></div>
-              <div className="task-content">
+                ></div>
+              </div>
+
+              {/* Blank Bar Container */}
+              <div className="blank-bar-container">
+                <div className="blank-bar"
+                ></div>
+              </div>
+
+              {/* Checkbox Container */}
+              <div className="checkbox-container">
                 <input
                   type="checkbox"
                   checked={task.checked || false}
@@ -68,25 +79,29 @@ function Tasks({ selectedDate, categories, tasks, setTasks,setAddTaskModal,setMo
                   className="task-checkbox"
                   style={task.checked ? { borderColor: getCategoryColor(task.categoryId), color: getCategoryColor(task.categoryId) } : {}}
                 />
-                <span className={`task-title ${task.checked ? 'completed' : ''}`}>
+              </div>
+
+              {/* Task Content as Button */}
+              <button
+                className="task-content"
+                onClick={() => handleModify(task)}
+              >
+                <span className={`task-title ${task.checked ? "completed" : ""}`}>
                   {task.title}
                 </span>
-                <button onClick ={()=>handleModify(task)}>
-                  수정(임시)
-                  </button>
-              </div>
+              </button>
             </div>
           ))}
         </section>
-        <section className="add-task-section">
-          <button 
-            className="add-task-btn" 
-            onClick={() => setAddTaskModal(true)}
-            style={{ backgroundColor: "#49D7B1" }}
-          >
-            추가
-          </button>
-        </section>
+      </section>
+      <section className="add-task-section">
+        <button
+          className="add-task-btn"
+          onClick={() => setAddTaskModal(true)}
+          style={{ backgroundColor: "#49D7B1" }}
+        >
+          추가
+        </button>
       </section>
     </section>
   );
