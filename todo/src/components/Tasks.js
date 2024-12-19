@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import "../assets/css/tasks.css";
-//import taskData from "../json/tasks/tasks.json";
 import DateUtils from "../utils/DateUtils";
 
 
-function Tasks({ selectedDate, categories, tasks, setTasks,setAddTaskModal}) {
+function Tasks({ selectedDate, categories, tasks, setTasks,setAddTaskModal,setModifyTaskModal,setSelectedTask}) {
   const dateUtils = new DateUtils();
   
   const filteredTasks = tasks.filter(task => {
@@ -37,6 +36,11 @@ function Tasks({ selectedDate, categories, tasks, setTasks,setAddTaskModal}) {
     return a.categoryId - b.categoryId;
   });
 
+  const handleModify = (task) => {
+    setSelectedTask(task);
+    setModifyTaskModal(true);
+  };
+
   return (
     <section className="tasks">
       <header>
@@ -56,6 +60,9 @@ function Tasks({ selectedDate, categories, tasks, setTasks,setAddTaskModal}) {
                   className="task-checkbox"
                 />
                 <span className="task-title">{task.title}</span>
+                <button onClick ={()=>handleModify(task)}>
+                  수정(임시)
+                  </button>
               </div>
             </div>
           ))}

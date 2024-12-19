@@ -289,6 +289,7 @@ textarea:focus {
   margin-top: 0;
 }
 
+.modify,
 .add,
 .cancel {
   background-color:var(--highlight-color, #d1d5db);
@@ -300,7 +301,7 @@ textarea:focus {
   cursor: pointer;
 }
 
-
+.modyfy:hover,
 .add:hover,
 .cancel:hover {
   background-color: #e0e0e0;
