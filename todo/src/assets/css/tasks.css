@@ -9,17 +9,45 @@
 }
 
 .tasks h1 {
-  font-size: 2rem;
-  margin: 27px 0 40px 0;
+  font-family: sans-serif;
+  font-weight: 500;
+  font-size: 1.8rem;
+  margin: 27px 0 50px 0;
   color: #49D7B1;
 }
 
 .task-check-value {
   color: #49D7B1;
-  font-size: 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 900;
   text-align: left;
   width: 108px;
   margin-bottom: 10px;
+  position: relative;
+  padding-left: 25px;
+}
+
+.task-check-value::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  border: 2px solid #49D7B1;
+  border-radius: 50%;
+  background-color: #49D7B1;
+}
+
+.task-check-value::after {
+  content: "✓";
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 12px;
 }
 
 .task-list {
@@ -43,6 +71,7 @@
   border-radius: 8px;
   overflow: hidden;
   width: 100%; /* 가로폭을 부모 요소에 맞게 설정 */
+  height: 46px;
   max-width: 800px; /* 최대 폭 제한 */
   /* box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); */
   padding: 0;
@@ -137,7 +166,7 @@
 
 .task-title {
   font-size: 1.1rem;
-  color: #222;
+  color: #333;
 }
 
 .task-title.completed {
@@ -146,9 +175,10 @@
 }
 
 .add-task-section {
+  width: 95%;
   display: flex;
   justify-content: flex-end;
-  padding: 20px 0 2px 0;
+  padding: 15px 0 14px 0;
 }
 
 .add-task-btn {
