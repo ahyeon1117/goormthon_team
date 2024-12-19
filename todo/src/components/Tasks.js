@@ -33,7 +33,10 @@ function Tasks({ selectedDate, categories, tasks, setTasks,setAddTaskModal,setMo
     if (a.checked !== b.checked) {
       return a.checked ? 1 : -1;
     }
-    return a.categoryId - b.categoryId;
+    if (a.categoryId !== b.categoryId) {
+      return a.categoryId - b.categoryId;
+    }
+    return a.title.localeCompare(b.title);
   });
 
   const handleModify = (task) => {
