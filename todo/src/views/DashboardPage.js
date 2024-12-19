@@ -7,7 +7,7 @@ import AddTaskModal from "../components/AddTaskModal";
 
 
 const TEXT_CATEGORY_UNSPECIFIED = "미지정";
-const COLOR_CATEGORY_UNSPECIFIED = "59E7C1"
+const COLOR_CATEGORY_UNSPECIFIED = "#59E7C1"
 // 카테고리 초기 데이터 설정
 let defaultCategory = { id: 0, name: TEXT_CATEGORY_UNSPECIFIED, color: COLOR_CATEGORY_UNSPECIFIED,};
 if(!localStorage.getItem("categories")){
@@ -75,7 +75,7 @@ function DashboardPage() {
       </main>
       {/* 할 일 추가 모달 */}
       <AddTaskModal 
-        isVisible={AddTaskModal} 
+        isVisible={isAddTaskModalOpen} 
         onClose={handleAddTaskModal} 
         categories = {categories}
         setCategories={setCategories}
