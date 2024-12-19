@@ -141,8 +141,8 @@ button {
   color: #49D7B1;
   padding: 4px;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 27px;
+  height: 27px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -170,8 +170,8 @@ button {
   color: #1890ff;            /* 파란색 텍스트 */
   padding: 4px;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 27px;
+  height: 27px;
   display: flex;
   align-items: center;
   justify-content: center;

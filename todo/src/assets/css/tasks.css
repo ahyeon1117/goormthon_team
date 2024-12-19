@@ -98,6 +98,7 @@
 }
 
 .task-content {
+  padding: 15px 20px;
   display: flex;
   flex: 1;
   padding: 15px;
@@ -183,13 +184,15 @@
 
 .add-task-btn {
   width: 25%;
-  padding: 12px;
+  padding: 12px 8px;
   background-color: #49D7B1;
   color: white;
   border: none;
   border-radius: 8px;
   font-size: 1.1rem;
+  text-align: center;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .add-task-btn:hover {
