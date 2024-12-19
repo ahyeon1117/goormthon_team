@@ -14,7 +14,8 @@ const BTN_CATEGORY_EDIT_LABEL = "편집";
 const TEXT_TODO_TITLE = "할 일";
 const TEXT_TODO_CONTENT = "할 일 세부 사항";
 
-const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,changeCategoryModal,tasks,setTasks}) => {
+
+const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,openCategoryModal,tasks,setTasks}) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -137,7 +138,7 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,changeC
           <div className="category-header">
             <span className="category-title">{TEXT_CATEGORY_SELECT}</span>
             <button className="category-edit-button" aria-label="Edit Categories"
-              onClick={() => changeCategoryModal({ isViewOpen: true })}>
+              onClick={() => openCategoryModal('isViewOpen')}>
               {BTN_CATEGORY_EDIT_LABEL}
             </button>
           </div>

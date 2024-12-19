@@ -2,7 +2,7 @@ import Calendar from "../components/Calendar";
 import Tasks from "../components/Tasks";
 import { useState } from "react";
 import CategoryViewModal from "../components/CategoryViewModal";
-import CategoryAddModal from "../components/CategoryAddModal";
+import CategoryEditModal from "../components/CategoryEditModal";
 import AddTaskModal from "../components/AddTaskModal";
 
 
@@ -28,22 +28,32 @@ function DashboardPage() {
   const [categoryModals, setCategoryModals] = useState({
     isViewOpen: false, // 카테고리 조회 모달
     isAddOpen: false, // 카테고리 추가 모달
-    isEditOpen: false, // 카테고리 편집 모달
+    isEditOpen: false,
   });
-  
-  // 카테고리 모달 상태 변경 (버튼 클릭 시 열고 닫힘)
-  const changeCategoryModal = (categoryModalState) => {
-    setCategoryModals((prev) => ({
-      ...prev,
-      ...categoryModalState, // 전달된 변경 사항 덮어쓰기
-    }));
-  };
 
   //할 일 추가 모달 상태 변경
   const handleAddTaskModal = () => {
     setAddTaskModal(false);
   };
 
+  // 특정 카테고리 모달 열기
+  const openCategoryModal = (modalType) => {
+    setCategoryModals(prev => ({
+      isViewOpen: false,
+      isAddOpen: false,
+      isEditOpen: false,
+      [modalType]: true
+    }))
+  }
+
+  // 모든 카테고리 모달 닫기
+  const closeCategoryModals = () => {
+    setCategoryModals({
+      isViewOpen: false,
+      isAddOpen: false,
+      isEditOpen: false
+    })
+  }
 
   return (
     <div className="dashboard">
@@ -64,34 +74,37 @@ function DashboardPage() {
           />
       </main>
       {/* 할 일 추가 모달 */}
-      {isAddTaskModalOpen && (
-        <AddTaskModal 
-          isVisible={AddTaskModal} 
-          onClose={handleAddTaskModal} 
-          categories = {categories}
-          setCategories={setCategories}
-          prevSelectedDate = {selectedDate}
-          changeCategoryModal={changeCategoryModal} 
-          tasks={tasks}
-          setTasks={setTasks}
-          />
-        )}
+      <AddTaskModal 
+        isVisible={AddTaskModal} 
+        onClose={handleAddTaskModal} 
+        categories = {categories}
+        setCategories={setCategories}
+        prevSelectedDate = {selectedDate}
+        openCategoryModal={openCategoryModal}
+        tasks={tasks}
+        setTasks={setTasks}
+        />
+      
       {/* 카테고리 조회 모달 */}
       {categoryModals.isViewOpen && (
         <CategoryViewModal
           categories={categories}
-          changeCategoryModal={changeCategoryModal}
-          />
-        )}
+          openCategoryModal={openCategoryModal}
+          closeCategoryModals={closeCategoryModals}
+        />
+      )}
 
-      {/* 카테고리 추가 모달 */}
-      {categoryModals.isAddOpen && (
-        <CategoryAddModal
+      {/* 카테고리 편집 모달 (추가, 수정 기능) */}
+      {(categoryModals.isAddOpen || categoryModals.isEditOpen) && (
+        <CategoryEditModal
+          isAddOpen={categoryModals.isAddOpen}
+          isEditOpen={categoryModals.isEditOpen}
           categories={categories}
           setCategories={setCategories}
-          changeCategoryModal={changeCategoryModal}
-          />
-        )}      
+          openCategoryModal={openCategoryModal}
+          closeCategoryModals={closeCategoryModals}
+        />
+      )}
     </div>
   );
 }
