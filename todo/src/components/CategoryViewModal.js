@@ -44,7 +44,7 @@ function CategoryViewModal({ categories, setEditingCategory, openCategoryModal, 
               key={category.id}
               className="view-modal-category-item"
               style={{ color: category.color }}
-              onClick={() => category.id !== 0 && handleCategoryClick(category)}
+              onClick={() => category.id !== 0 && handleCategoryClick(category)} /* 미지정 카테고리 클릭 불가 */
             >
               <div
                 className="category-color"

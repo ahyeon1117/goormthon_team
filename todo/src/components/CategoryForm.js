@@ -15,11 +15,11 @@ const categoryColors = colors.colors; // 카테고리 색상 코드
 
 function CategoryForm({ isAddOpen, isEditOpen, editingCategory, categories, setCategories, openCategoryModal }) {
 
-  // 추가 및 변경 시 카테고리 정보
+  // 추가 및 수정할 카테고리 정보
   const [categoryName, setCategoryName] = useState(""); // 카테고리 이름
   const [selectedColor, setSelectedColor] = useState(""); // 선택한 색상
 
-  // 추가 및 변경 시 카테고리 정보 업데이트
+  // 추가 및 수정 시 카테고리 정보 업데이트
   useEffect(() => {
     if (isAddOpen) { // 추가 모달인 경우
       setCategoryName("");
@@ -30,12 +30,12 @@ function CategoryForm({ isAddOpen, isEditOpen, editingCategory, categories, setC
     }
   }, [isEditOpen, isAddOpen, editingCategory]);
 
-  // 카테고리명 상태 변경 핸들러
+  // input 입력 시 카테고리명 상태 변경 핸들러
   const handleCategoryName = (e) => {
     setCategoryName(e.target.value);
   }
 
-  // 폼 제출 핸들러
+  // 폼 제출 핸들러 (추가 및 수정)
   const handleCategorySubmit = (e) => {
     e.preventDefault();
 
@@ -61,14 +61,14 @@ function CategoryForm({ isAddOpen, isEditOpen, editingCategory, categories, setC
       setCategories(prev => [...prev, newCategoryData]); // 상태 업데이트
       localStorage.setItem("categories", JSON.stringify([...categories, newCategoryData])); // 로컬 스토리지 업데이트
 
-    } else if (isEditOpen) { // 카테고리 변경
+    } else if (isEditOpen) { // 카테고리 수정
       newCategoryData = {
         id: editingCategory.id,
         name: categoryName,
         color: selectedColor,
       }
-      
-      // 해당 카테고리를 업데이트
+
+      // 해당 카테고리만 업데이트
       const updatedCategories = categories.map(category =>
         category.id === editingCategory.id ? newCategoryData : category
       );
@@ -78,7 +78,22 @@ function CategoryForm({ isAddOpen, isEditOpen, editingCategory, categories, setC
     }
 
     setCategoryName(""); // 카테고리 input 초기화
-    openCategoryModal('isViewOpen'); // 카테고리 편집 모달로 돌아가기
+    openCategoryModal('isViewOpen'); // 카테고리 조회 모달로 돌아가기
+  }
+
+  // 카테고리 삭제 핸들러
+  const handleCategoryDelete = (e) => {
+    e.preventDefault();
+
+    if (window.confirm("정말로 삭제하시겠습니까?")) {
+      // 해당 카테고리 삭제
+      const updatedCategories = categories.filter(category => category.id !== editingCategory.id);
+
+      setCategories(updatedCategories); // 상태 업데이트
+      localStorage.setItem("categories", JSON.stringify(updatedCategories)); // 로컬 스토리지 업데이트
+
+      openCategoryModal('isViewOpen'); // 카테고리 조회 모달로 돌아가기
+    }
   }
 
   return (
@@ -94,6 +109,7 @@ function CategoryForm({ isAddOpen, isEditOpen, editingCategory, categories, setC
             placeholder="카테고리 이름을 입력하세요"
             value={categoryName}
             onChange={handleCategoryName}
+            autoFocus={isEditOpen}
           />
         </section>
         <section className="category-color-section">
@@ -127,6 +143,14 @@ function CategoryForm({ isAddOpen, isEditOpen, editingCategory, categories, setC
           >
             {isAddOpen ? "추가" : "수정"}
           </button>
+          {isEditOpen && (
+            <button
+              className="btn-delete-category"
+              onClick={handleCategoryDelete}
+            >
+              삭제
+            </button>
+          )}
         </footer>
       </form>
     </section>
