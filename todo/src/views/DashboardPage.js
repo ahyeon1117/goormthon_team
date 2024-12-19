@@ -21,12 +21,16 @@ const initialTasks = localStorage.getItem("tasks")
 : [];
 
 function DashboardPage() {
+  // Task 관련 상태
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [categories, setCategories] = useState(initialCategories); // 카테고리 상태
   const [tasks, setTasks] = useState(initialTasks); // Task 상태
   const [isAddTaskModalOpen, setAddTaskModal] = useState(false); // Task 추가 모달
   const [isModifyTaskModalOpen, setModifyTaskModal] = useState(false); // Task 추정 모달
   const [selectedTask, setSelectedTask] = useState(null);
+  
+  // category 관련 상태
+  const [categories, setCategories] = useState(initialCategories); // 카테고리 상태
+  const [editingCategory, setEditingCategory] = useState(null); // 편집할 카테고리
   const [categoryModals, setCategoryModals] = useState({
     isViewOpen: false, // 카테고리 조회 모달
     isAddOpen: false, // 카테고리 추가 모달
@@ -108,6 +112,7 @@ function DashboardPage() {
       {categoryModals.isViewOpen && (
         <CategoryViewModal
           categories={categories}
+          setEditingCategory={setEditingCategory}
           openCategoryModal={openCategoryModal}
           closeCategoryModals={closeCategoryModals}
         />
@@ -118,6 +123,7 @@ function DashboardPage() {
         <CategoryEditModal
           isAddOpen={categoryModals.isAddOpen}
           isEditOpen={categoryModals.isEditOpen}
+          editingCategory={editingCategory}
           categories={categories}
           setCategories={setCategories}
           openCategoryModal={openCategoryModal}
