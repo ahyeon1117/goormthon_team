@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import colors from '../json/category/colors.json';
 
 const CHECK_SVG_PATH = "M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z";
 const checkSVGStyle = {
@@ -18,14 +19,7 @@ function CategoryForm({ isAddOpen, isEditOpen, categories, setCategories, openCa
   const [selectedColor, setSelectedColor] = useState(""); // 선택한 색상
 
   // 카테고리 색상 팔레트
-  const colorPalette = [
-    "#FEADCE", "#EA5A4F",
-    "#FFCC99", "#F8B195",
-    "#FFCA00", "#FEE193",
-    "#B2F2BB", "#49D7B1",
-    "#A2DFF2", "#B3D8F2",
-    "#E6E6FA", "#E0B0FF",
-  ];
+  const categoryColors = colors.colors;
 
   // 카테고리 이름 상태 변경
   const handleCategoryName = (e) => {
@@ -79,7 +73,7 @@ function CategoryForm({ isAddOpen, isEditOpen, categories, setCategories, openCa
           />
         </section>
         <section className="category-color-section">
-          {colorPalette.map((color) => (
+          {categoryColors.map((color) => (
             <div
               key={color}
               className="category-color-item"
