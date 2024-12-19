@@ -55,6 +55,7 @@ const ModifyTaskModal = ({
       date: format(taskData.date, "yyyy-MM-dd"),
       contents: taskData.content,
       categoryId: taskData.categoryId,
+      checked:taskData.checked, 
     };
 
     const updatedTasks = tasks.map((task) =>
