@@ -138,7 +138,7 @@
     border-radius: 10px;
 }
 
-.view-modal-category-item:hover {
+.view-modal-category-item:not(:first-child):hover {
     background-color: #F3F3F3;
     cursor: pointer;
 }

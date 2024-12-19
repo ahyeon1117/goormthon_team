@@ -44,7 +44,7 @@ function CategoryViewModal({ categories, setEditingCategory, openCategoryModal, 
               key={category.id}
               className="view-modal-category-item"
               style={{ color: category.color }}
-              onClick={() => handleCategoryClick(category)}
+              onClick={() => category.id !== 0 && handleCategoryClick(category)}
             >
               <div
                 className="category-color"
