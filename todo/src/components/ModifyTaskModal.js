@@ -3,75 +3,85 @@ import "../assets/css/add-tasks-modal.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 
-const VALIDATION_MESSAGE = "할 일을 입력해주세요.";
-const DATE_FORMAT = "MM.dd (eee)";
-const BTN_MODIFY_LABEL = "수정";
-const BTN_CANCEL_LABEL = "취소";
-const TEXT_CATEGORY_SELECT = "카테고리 선택";
-const BTN_CATEGORY_EDIT_LABEL = "편집";
-const TEXT_TODO_TITLE = "할 일";
-const TEXT_TODO_CONTENT = "할 일 세부 사항";
-
-const ModifyTaskModal = ({ isVisible, onClose, categories, openCategoryModal,tasks,setTasks,selectedTask}) => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+const ModifyTaskModal = ({
+  isVisible,
+  onClose,
+  categories,
+  openCategoryModal,
+  tasks,
+  setTasks,
+  selectedTask,
+}) => {
+  const [taskData, setTaskData] = useState({
+    title: "",
+    content: "",
+    date: new Date(),
+    categoryId: categories[0]?.id || 0,
+    checked:false,
+  });
 
   useEffect(() => {
     if (selectedTask) {
-      setTitle(selectedTask.title || "");
-      setContent(selectedTask.contents || "");
-      setSelectedDate(new Date(selectedTask.date || new Date()));
-      setSelectedCategory(categories.find(category => category.id === selectedTask.categoryId) || categories[0]);
+      setTaskData({
+        title: selectedTask.title || "",
+        content: selectedTask.contents || "",
+        date: new Date(selectedTask.date || new Date()),
+        categoryId: selectedTask.categoryId || categories[0]?.id,
+        checked:selectedTask.checked || false,
+      });
     }
   }, [selectedTask, categories]);
 
-  // 날짜 변경 핸들러
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  const handleInputChange = (field, value) => {
+    setTaskData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
-  // 할 일 추가 핸들러
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!title.trim()) {
-      alert(VALIDATION_MESSAGE);
+    if (!taskData.title.trim()) {
+      alert("할 일을 입력해주세요.");
       return;
     }
 
-    // 수정된 할 일 데이터
-    let modifiedTask = {
-      id: selectedTask.id,
-      title: title,
-      date : format(selectedDate, 'yyyy-MM-dd'),
-      contents : content,
-      categoryId: selectedCategory.id,
+    const modifiedTask = {
+      ...selectedTask,
+      title: taskData.title,
+      date: format(taskData.date, "yyyy-MM-dd"),
+      contents: taskData.content,
+      categoryId: taskData.categoryId,
     };
 
-   // tasks 배열에서 해당 task를 업데이트
-   const updatedTasks = tasks.map(task =>
-    task.id === selectedTask.id ? modifiedTask : task
-  );
+    const updatedTasks = tasks.map((task) =>
+      task.id === selectedTask.id ? modifiedTask : task
+    );
 
-  // 상태 업데이트
-  setTasks(updatedTasks);
-
-  // 로컬 스토리지 업데이트
-  localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     resetForm();
     onClose();
   };
 
-  // 폼 초기화 
+  const handleDelete = () => {
+    const updatedTasks = tasks.filter((task) => task.id !== selectedTask.id);
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    resetForm();
+    onClose();
+  };
+
   const resetForm = () => {
-    setTitle("");
-    setContent("");
-    setSelectedCategory(categories[0]);
+    setTaskData({
+      title: "",
+      content: "",
+      date: new Date(),
+      categoryId: categories[0]?.id || 0,
+    });
   };
 
   if (!isVisible) return null;
@@ -79,7 +89,11 @@ const ModifyTaskModal = ({ isVisible, onClose, categories, openCategoryModal,tas
   return (
     <div
       className="add-task-modal"
-      style={{ "--highlight-color": selectedCategory.color }}
+      style={{
+        "--highlight-color":
+          categories.find((cat) => cat.id === taskData.categoryId)?.color ||
+          "#d1d5db",
+      }}
     >
       {/* Header */}
       <header className="header">
@@ -98,9 +112,11 @@ const ModifyTaskModal = ({ isVisible, onClose, categories, openCategoryModal,tas
           <div className="task-title-wrapper">
             <input
               type="text"
-              placeholder={TEXT_TODO_TITLE}
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              placeholder="할 일"
+              value={taskData.title}
+              onChange={(e) =>
+                handleInputChange("title", e.target.value)
+              }
               className="task-title-input"
             />
           </div>
@@ -122,9 +138,9 @@ const ModifyTaskModal = ({ isVisible, onClose, categories, openCategoryModal,tas
             <span className="date-icon-text">📅</span>
           </button>
           <DatePicker
-            selected={selectedDate}
-            onChange={handleDateChange}
-            dateFormat={DATE_FORMAT}
+            selected={taskData.date}
+            onChange={(date) => handleInputChange("date", date)}
+            dateFormat="MM.dd (eee)"
             locale={ko}
           />
         </section>
@@ -133,19 +149,24 @@ const ModifyTaskModal = ({ isVisible, onClose, categories, openCategoryModal,tas
         <section className="content-section" aria-label="Task Content Section">
           <textarea
             className="content-input"
-            placeholder={TEXT_TODO_CONTENT}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            placeholder="할 일 세부 사항"
+            value={taskData.content}
+            onChange={(e) =>
+              handleInputChange("content", e.target.value)
+            }
           ></textarea>
         </section>
 
         {/* 카테고리 선택 섹션 */}
         <section className="category-section" aria-label="Category Selection">
           <div className="category-header">
-            <span className="category-title">{TEXT_CATEGORY_SELECT}</span>
-            <button className="category-edit-button" aria-label="Edit Categories"
-              onClick={() => openCategoryModal('isViewOpen')}>
-              {BTN_CATEGORY_EDIT_LABEL}
+            <span className="category-title">카테고리 선택</span>
+            <button
+              className="category-edit-button"
+              aria-label="Edit Categories"
+              onClick={() => openCategoryModal("isViewOpen")}
+            >
+              편집
             </button>
           </div>
           <div className="category-list">
@@ -153,10 +174,10 @@ const ModifyTaskModal = ({ isVisible, onClose, categories, openCategoryModal,tas
               <button
                 key={category.id}
                 className={`category-item ${
-                  selectedCategory?.id === category.id ? "selected" : ""
+                  taskData.categoryId === category.id ? "selected" : ""
                 }`}
                 onClick={() =>
-                  setSelectedCategory({ id: category.id, color: category.color })
+                  handleInputChange("categoryId", category.id)
                 }
                 style={{ color: category.color }}
                 aria-label={`Select ${category.name}`}
@@ -174,14 +195,17 @@ const ModifyTaskModal = ({ isVisible, onClose, categories, openCategoryModal,tas
 
       {/* Footer */}
       <footer className="footer">
-        <button className="cancel" onClick={onClose} aria-label="Cancel">
-          {BTN_CANCEL_LABEL}
+        <button className="cancel" onClick={handleDelete} aria-label="Delete Task">
+          삭제
         </button>
-        <button className="modify" onClick={handleSubmit} aria-label="Modify Task">
-          {BTN_MODIFY_LABEL}
+        <button
+          className="modify"
+          onClick={handleSubmit}
+          aria-label="Modify Task"
+        >
+          수정
         </button>
       </footer>
-      
     </div>
   );
 };
