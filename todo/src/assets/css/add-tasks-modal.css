@@ -301,7 +301,7 @@ textarea:focus {
   cursor: pointer;
 }
 
-.modyfy:hover,
+.modify:hover,
 .add:hover,
 .cancel:hover {
   background-color: #e0e0e0;
