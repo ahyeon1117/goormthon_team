@@ -41,6 +41,11 @@ function Tasks({ selectedDate, categories, tasks, setTasks,setAddTaskModal,setMo
     setModifyTaskModal(true);
   };
 
+  const getCategoryColor = (categoryId) => {
+    const category = categories.find(c => c.id === categoryId);
+    return category ? category.color : "#49D7B1";
+  };
+
   return (
     <section className="tasks">
       <header>
@@ -51,15 +56,21 @@ function Tasks({ selectedDate, categories, tasks, setTasks,setAddTaskModal,setMo
         <section className="task-items">
           {sortedTasks.map((task) => (
             <div key={task.id} className="task-item">
-              <div className="task-status-bar"></div>
+              <div
+                className="task-status-bar"
+                style={{ backgroundColor: getCategoryColor(task.categoryId) }}
+              ></div>
               <div className="task-content">
                 <input
                   type="checkbox"
                   checked={task.checked || false}
                   onChange={() => handleTaskCheck(task.id)}
                   className="task-checkbox"
+                  style={task.checked ? { borderColor: getCategoryColor(task.categoryId), color: getCategoryColor(task.categoryId) } : {}}
                 />
-                <span className="task-title">{task.title}</span>
+                <span className={`task-title ${task.checked ? 'completed' : ''}`}>
+                  {task.title}
+                </span>
                 <button onClick ={()=>handleModify(task)}>
                   수정(임시)
                   </button>
@@ -68,7 +79,11 @@ function Tasks({ selectedDate, categories, tasks, setTasks,setAddTaskModal,setMo
           ))}
         </section>
         <section className="add-task-section">
-          <button className="add-task-btn" onClick={() => setAddTaskModal(true)}>
+          <button 
+            className="add-task-btn" 
+            onClick={() => setAddTaskModal(true)}
+            style={{ backgroundColor: "#49D7B1" }}
+          >
             추가
           </button>
         </section>

@@ -43,7 +43,6 @@
 
 .task-status-bar {
   width: 8px;
-  background-color: #49D7B1;
 }
 
 .task-content {
@@ -57,14 +56,45 @@
 .task-checkbox {
   width: 20px;
   height: 20px;
-  border: 2px solid #49D7B1;
+  border-width: 2px;
+  border-style: solid;
   border-radius: 50%;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  border-color: #333;
+}
+
+.task-checkbox::before {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #333;
+  font-size: 12px;
+  opacity: 1;
+}
+
+.task-checkbox:checked {
+  background-color: currentColor;
+  border-color: currentColor;
+}
+
+.task-checkbox:checked::before {
+  color: white;
 }
 
 .task-title {
   font-size: 1.1rem;
   color: #333;
+}
+
+.task-title.completed {
+  text-decoration: line-through;
+  color: #888;
 }
 
 .add-task-section {
