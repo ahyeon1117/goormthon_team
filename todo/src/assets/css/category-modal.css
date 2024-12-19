@@ -1,0 +1,245 @@
+/* 1. 모달 */
+.category-modal {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    z-index: 1000;
+    top: 50%;
+    right: 25%;
+    transform: translate(50%, -50%);
+    width: 35vw;
+    min-width: 300px;
+    height: 80vh;
+    min-height: 520px;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 2. 모달 헤더 */
+/* 2-1. 모달 헤더 - 공통 스타일 */
+.modal-header {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    background-color: #49D7B1;
+    border-radius: 8px 8px 0 0;
+}
+
+/* 2-2. 모달 헤더 - 카테고리 조회 모달 */
+.view-modal-header {
+    justify-content: flex-end;
+}
+
+/* 2-3. 모달 헤더 - 카테고리 편집 모달 */
+.edit-modal-header {
+    justify-content: space-between;
+}
+
+/* 3. 헤더 내 버튼 */
+/* 3-1. 헤더 내 버튼 - 공통 스타일 */
+.btn-close-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    background: none;
+    border: none;
+    border-radius: 5px; /* 버튼 호버 시 배경 */
+    cursor: pointer;
+}
+
+.btn-close-modal:hover {
+    background-color: rgba(211, 211, 211, 0.5);
+}
+
+/* 3-2. 헤더 내 버튼 - 카테고리 추가 모달 (돌아가기 버튼) */
+.btn-back-modal {
+    width: 28px;
+    height: 28px;
+    margin-left: 10px;
+    background: none;
+    border: none;
+    border-radius: 5px; /* 버튼 호버 시 배경 */
+    cursor: pointer;
+}
+
+.btn-back-modal:hover {
+    background-color: rgba(211, 211, 211, 0.3);
+}
+
+/* 4. 모달 바디 */
+/* 4-1. 모달 바디 공통 스타일 */
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 90%;
+    padding: 0 35px 35px 35px;
+    overflow: hidden;
+    background-color: white;
+    border-radius: 0 0 10px 10px;
+}
+
+.modal-body__title-section {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    margin: 15px 0 10px 0;
+}
+
+.modal-title {
+    flex-grow: 1;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+/* 4-2. 카테고리 조회 모달 */
+.btn-add-category { /* 카테고리 추가 버튼 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 43px;
+    height: 43px;
+    background: none;
+    border: none;
+    border-radius: 5px; /* 버튼 호버 시 배경 */
+    cursor: pointer;
+}
+
+.btn-add-category:hover {
+    background-color: rgba(211, 211, 211, 0.3);
+}
+
+.modal-body__category-section {
+    height: 100%;
+    padding: 23px;
+    border: 2px solid #F3F3F3;
+    border-radius: 15px;
+    overflow-y: auto;
+
+    /* 스크롤바 스타일 (FireFox) */
+    scrollbar-color: lightgray white;
+}
+
+/* 스크롤바 스타일 (Webkit) */
+.modal-body__category-section::-webkit-scrollbar { /* 트랙 배경색 */
+    background-color: white;
+}
+.modal-body__category-section::-webkit-scrollbar-thumb { /* 핸들 색상 */
+    background-color: lightgray;
+}
+
+.view-modal-category-item {
+    display: flex;
+    align-items: center;
+    padding: 14px;
+    border-radius: 10px;
+}
+
+.view-modal-category-item:hover {
+    background-color: #F3F3F3;
+    cursor: pointer;
+}
+
+.category-color {
+    width: 18px;
+    min-width: 18px; /* 카테고리명이 길 때 원이 찌그러지지 않도록 */
+    height: 18px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.category-name {
+    font-size: 1.1rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 4-3. 카테고리 폼 */
+.category-form-section {
+    /* position: relative; */
+    height: 100%;
+}
+
+.category-form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.category-input-section {
+    margin-top: 60px;
+    margin-bottom: 30px;
+}
+
+.input-category-name {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #F3F3F3;
+    border-radius: 8px;
+    outline: none;
+    font-size: 1.2rem;
+    box-sizing: border-box;
+}
+
+.input-category-name::placeholder {
+    color: lightgray;
+}
+
+.category-color-section {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    justify-items: center;
+    gap: 20px 10px;
+    padding: 30px;
+    border: 2px solid #F3F3F3; 
+    border-radius: 10px;
+}
+
+@media (max-width: 1100px) {
+    .category-color-section {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.category-color-item {
+    width: 35px;
+    min-width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.1s ease-in-out;
+}
+
+.color-palette-item:hover {
+    transform: scale(1.08);
+}
+
+.category-form-footer {
+    flex-grow: 1;
+    position: relative;
+}
+
+.btn-save-category {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 8vw;
+    min-width: 80px;
+    padding: 10px;
+    background-color: #49D7B1;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-save-category:hover {
+    background-color: #3bc19d;
+}
