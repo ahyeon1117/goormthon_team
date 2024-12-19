@@ -55,7 +55,7 @@ function Tasks({ selectedDate, categories, tasks, setTasks,setAddTaskModal,setMo
               <div className="task-content">
                 <input
                   type="checkbox"
-                  checked={task.checked}
+                  checked={task.checked || false}
                   onChange={() => handleTaskCheck(task.id)}
                   className="task-checkbox"
                 />
