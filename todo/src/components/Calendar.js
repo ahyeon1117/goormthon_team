@@ -5,10 +5,10 @@ import DateUtils from "../utils/DateUtils";
 import { useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-function Calendar({ selectedDate, setSelectedDate }) {
+function Calendar({ selectedDate, setSelectedDate,tasks }) {
   const dateUtils = new DateUtils();
   const [activeStartDate, setActiveStartDate] = useState(new Date());
-  const tasks = taskData.tasks;
+  //const tasks = taskData.tasks;
 
   const tileClassName = ({ date, view }) => {
     if (view === "month") {

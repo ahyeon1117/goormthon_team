@@ -7,26 +7,27 @@ import { format } from 'date-fns';
 
 const VALIDATION_MESSAGE = "할 일을 입력해주세요.";
 const DATE_FORMAT = "MM.dd (eee)";
-const BTN_ADD_LABEL = "추가";
+const BTN_MODIFY_LABEL = "수정";
 const BTN_CANCEL_LABEL = "취소";
 const TEXT_CATEGORY_SELECT = "카테고리 선택";
 const BTN_CATEGORY_EDIT_LABEL = "편집";
 const TEXT_TODO_TITLE = "할 일";
 const TEXT_TODO_CONTENT = "할 일 세부 사항";
 
-
-const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,openCategoryModal,tasks,setTasks}) => {
+const ModifyTaskModal = ({ isVisible, onClose, categories, openCategoryModal,tasks,setTasks,selectedTask}) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
 
-  // DatePicker 초기화 (캘린더에서 선택한 날짜 / 팝업 열 때마다)
   useEffect(() => {
-    if (isVisible && prevSelectedDate) {
-      setSelectedDate(prevSelectedDate);
+    if (selectedTask) {
+      setTitle(selectedTask.title || "");
+      setContent(selectedTask.contents || "");
+      setSelectedDate(new Date(selectedTask.date || new Date()));
+      setSelectedCategory(categories.find(category => category.id === selectedTask.categoryId) || categories[0]);
     }
-  }, [isVisible, prevSelectedDate]);
+  }, [selectedTask, categories]);
 
   // 날짜 변경 핸들러
   const handleDateChange = (date) => {
@@ -42,20 +43,25 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,openCat
       return;
     }
 
-    // 새로운 할 일 데이터
-    let newTask = {
-      id: Array.isArray(tasks) && tasks.length > 0
-      ? tasks[tasks.length - 1].id + 1
-      : 0 ,
+    // 수정된 할 일 데이터
+    let modifiedTask = {
+      id: selectedTask.id,
       title: title,
       date : format(selectedDate, 'yyyy-MM-dd'),
       contents : content,
       categoryId: selectedCategory.id,
     };
 
-    const updatedTasks = [...tasks, newTask];
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+   // tasks 배열에서 해당 task를 업데이트
+   const updatedTasks = tasks.map(task =>
+    task.id === selectedTask.id ? modifiedTask : task
+  );
+
+  // 상태 업데이트
+  setTasks(updatedTasks);
+
+  // 로컬 스토리지 업데이트
+  localStorage.setItem("tasks", JSON.stringify(updatedTasks));
 
     resetForm();
     onClose();
@@ -171,16 +177,13 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,openCat
         <button className="cancel" onClick={onClose} aria-label="Cancel">
           {BTN_CANCEL_LABEL}
         </button>
-        <button className="add" onClick={handleSubmit} aria-label="Add Task">
-          {BTN_ADD_LABEL}
+        <button className="modify" onClick={handleSubmit} aria-label="Modify Task">
+          {BTN_MODIFY_LABEL}
         </button>
       </footer>
       
     </div>
-
-
-
   );
 };
 
-export default AddTaskModal;
+export default ModifyTaskModal;

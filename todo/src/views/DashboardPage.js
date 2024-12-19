@@ -1,23 +1,47 @@
 import Calendar from "../components/Calendar";
 import Tasks from "../components/Tasks";
+import { useState } from "react";
 import CategoryViewModal from "../components/CategoryViewModal";
 import CategoryEditModal from "../components/CategoryEditModal";
-import { useState } from "react";
+import AddTaskModal from "../components/AddTaskModal";
+import ModifyTaskModal from "../components/ModifyTaskModal";
 
+const TEXT_CATEGORY_UNSPECIFIED = "미지정";
+const COLOR_CATEGORY_UNSPECIFIED = "#59E7C1"
 // 카테고리 초기 데이터 설정
-const initialCategories = localStorage.getItem("categories")
-  ? JSON.parse(localStorage.getItem("categories"))
-  : [];
+let defaultCategory = { id: 0, name: TEXT_CATEGORY_UNSPECIFIED, color: COLOR_CATEGORY_UNSPECIFIED,};
+if(!localStorage.getItem("categories")){
+  localStorage.setItem("categories", JSON.stringify([defaultCategory]));
+}
+const initialCategories = JSON.parse(localStorage.getItem("categories"));
+
+// 할 일 초기 데이터 설정
+const initialTasks = localStorage.getItem("tasks")
+? JSON.parse(localStorage.getItem("tasks"))
+: [];
 
 function DashboardPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
-
   const [categories, setCategories] = useState(initialCategories); // 카테고리 상태
-  const [categoryModals, setCategoryModals] = useState({ // 카테고리 모달 상태
+  const [tasks, setTasks] = useState(initialTasks); // Task 상태
+  const [isAddTaskModalOpen, setAddTaskModal] = useState(false); // Task 추가 모달
+  const [isModifyTaskModalOpen, setModifyTaskModal] = useState(false); // Task 추정 모달
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [categoryModals, setCategoryModals] = useState({
     isViewOpen: false, // 카테고리 조회 모달
     isAddOpen: false, // 카테고리 추가 모달
     isEditOpen: false,
   });
+
+  //할 일 추가 모달 상태 변경
+  const handleAddTaskModal = () => {
+    setAddTaskModal(false);
+  };
+
+  const handleModifyTaskModal = () => {
+    setModifyTaskModal(false);
+    setSelectedTask(null); // 선택된 Task 초기화
+  };
 
   // 특정 카테고리 모달 열기
   const openCategoryModal = (modalType) => {
@@ -44,17 +68,42 @@ function DashboardPage() {
         <Calendar
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
+          tasks={tasks}
         />
       </aside>
       <main>
-        <Tasks selectedDate={selectedDate} />
+        <Tasks 
+          selectedDate={selectedDate} 
+          categories={categories}
+          tasks={tasks}
+          setTasks={setTasks}
+          setAddTaskModal={setAddTaskModal}
+          setModifyTaskModal={setModifyTaskModal}
+          setSelectedTask={setSelectedTask} // 선택된 Task 업데이트
+          />
       </main>
+      {/* 할 일 추가 모달 */}
+      <AddTaskModal 
+        isVisible={isAddTaskModalOpen} 
+        onClose={handleAddTaskModal} 
+        categories = {categories}
+        prevSelectedDate = {selectedDate}
+        openCategoryModal={openCategoryModal}
+        tasks={tasks}
+        setTasks={setTasks}
+        />
 
-      {/* [임시 버튼] - 태스크 모달에서 카테고리 모달로 이어지도록 */}
-      <div>
-        <button onClick={() => openCategoryModal('isViewOpen')}>카테고리 편집</button>
-      </div>
-
+      {/* 할 일 수정 모달 */}
+      <ModifyTaskModal
+        isVisible={isModifyTaskModalOpen}
+        onClose={handleModifyTaskModal}
+        categories={categories}
+        openCategoryModal={openCategoryModal}
+        tasks={tasks}
+        setTasks={setTasks}
+        selectedTask={selectedTask} // 선택된 Task 전달
+      />
+      
       {/* 카테고리 조회 모달 */}
       {categoryModals.isViewOpen && (
         <CategoryViewModal
