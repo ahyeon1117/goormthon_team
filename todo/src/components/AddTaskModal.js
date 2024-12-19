@@ -3,54 +3,56 @@ import "../assets/css/add-tasks-modal.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 
-const VALIDATION_MESSAGE = "할 일을 입력해주세요.";
-const DATE_FORMAT = "MM.dd (eee)";
-const BTN_ADD_LABEL = "추가";
-const BTN_CANCEL_LABEL = "취소";
-const TEXT_CATEGORY_SELECT = "카테고리 선택";
-const BTN_CATEGORY_EDIT_LABEL = "편집";
-const TEXT_TODO_TITLE = "할 일";
-const TEXT_TODO_CONTENT = "할 일 세부 사항";
+const AddTaskModal = ({
+  isVisible,
+  onClose,
+  categories,
+  prevSelectedDate,
+  openCategoryModal,
+  tasks,
+  setTasks,
+}) => {
+  const [taskData, setTaskData] = useState({
+    title: "",
+    content: "",
+    selectedDate: new Date(),
+    selectedCategory: categories[0],
+    checked: false,
+  });
 
+  // Handle any field change
+  const handleTaskDataChange = (key, value) => {
+    setTaskData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
 
-const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,openCategoryModal,tasks,setTasks}) => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
-
-  // DatePicker 초기화 (캘린더에서 선택한 날짜 / 팝업 열 때마다)
+  // Initialize date when modal becomes visible
   useEffect(() => {
     if (isVisible && prevSelectedDate) {
-      setSelectedDate(prevSelectedDate);
+      handleTaskDataChange("selectedDate", prevSelectedDate);
     }
   }, [isVisible, prevSelectedDate]);
 
-  // 날짜 변경 핸들러
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
-  // 할 일 추가 핸들러
+  // Add task
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!title.trim()) {
-      alert(VALIDATION_MESSAGE);
+    if (!taskData.title.trim()) {
+      alert("할 일을 입력해주세요.");
       return;
     }
 
-    // 새로운 할 일 데이터
-    let newTask = {
-      id: Array.isArray(tasks) && tasks.length > 0
-      ? tasks[tasks.length - 1].id + 1
-      : 0 ,
-      title: title,
-      date : format(selectedDate, 'yyyy-MM-dd'),
-      contents : content,
-      categoryId: selectedCategory.id,
+    const newTask = {
+      id: tasks.length > 0 ? tasks[tasks.length - 1].id + 1 : 0,
+      title: taskData.title,
+      date: format(taskData.selectedDate, "yyyy-MM-dd"),
+      contents: taskData.content,
+      categoryId: taskData.selectedCategory.id,
+      checked: false,
     };
 
     const updatedTasks = [...tasks, newTask];
@@ -61,11 +63,14 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,openCat
     onClose();
   };
 
-  // 폼 초기화 
+  // Reset form fields
   const resetForm = () => {
-    setTitle("");
-    setContent("");
-    setSelectedCategory(categories[0]);
+    setTaskData({
+      title: "",
+      content: "",
+      selectedDate: new Date(),
+      selectedCategory: categories[0],
+    });
   };
 
   if (!isVisible) return null;
@@ -73,7 +78,7 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,openCat
   return (
     <div
       className="add-task-modal"
-      style={{ "--highlight-color": selectedCategory.color }}
+      style={{ "--highlight-color": taskData.selectedCategory.color }}
     >
       {/* Header */}
       <header className="header">
@@ -84,7 +89,7 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,openCat
 
       {/* Main Content */}
       <main className="body">
-        {/* 제목 섹션 */}
+        {/* Title Section */}
         <section className="title-section" aria-label="Task Title Section">
           <div className="icon-container">
             <span className="icon" aria-hidden="true"></span>
@@ -92,16 +97,16 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,openCat
           <div className="task-title-wrapper">
             <input
               type="text"
-              placeholder={TEXT_TODO_TITLE}
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              placeholder="할 일"
+              value={taskData.title}
+              onChange={(e) => handleTaskDataChange("title", e.target.value)}
               className="task-title-input"
             />
           </div>
           <div className="underline" aria-hidden="true"></div>
         </section>
 
-        {/* 날짜 선택 섹션 */}
+        {/* Date Section */}
         <section className="date-section" aria-label="Date Picker Section">
           <button
             className="date-button"
@@ -116,30 +121,33 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,openCat
             <span className="date-icon-text">📅</span>
           </button>
           <DatePicker
-            selected={selectedDate}
-            onChange={handleDateChange}
-            dateFormat={DATE_FORMAT}
+            selected={taskData.selectedDate}
+            onChange={(date) => handleTaskDataChange("selectedDate", date)}
+            dateFormat="MM.dd (eee)"
             locale={ko}
           />
         </section>
 
-        {/* 할 일 내용 섹션 */}
+        {/* Content Section */}
         <section className="content-section" aria-label="Task Content Section">
           <textarea
             className="content-input"
-            placeholder={TEXT_TODO_CONTENT}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            placeholder="할 일 세부 사항"
+            value={taskData.content}
+            onChange={(e) => handleTaskDataChange("content", e.target.value)}
           ></textarea>
         </section>
 
-        {/* 카테고리 선택 섹션 */}
+        {/* Category Section */}
         <section className="category-section" aria-label="Category Selection">
           <div className="category-header">
-            <span className="category-title">{TEXT_CATEGORY_SELECT}</span>
-            <button className="category-edit-button" aria-label="Edit Categories"
-              onClick={() => openCategoryModal('isViewOpen')}>
-              {BTN_CATEGORY_EDIT_LABEL}
+            <span className="category-title">카테고리 선택</span>
+            <button
+              className="category-edit-button"
+              aria-label="Edit Categories"
+              onClick={() => openCategoryModal("isViewOpen")}
+            >
+              편집
             </button>
           </div>
           <div className="category-list">
@@ -147,11 +155,9 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,openCat
               <button
                 key={category.id}
                 className={`category-item ${
-                  selectedCategory?.id === category.id ? "selected" : ""
+                  taskData.selectedCategory?.id === category.id ? "selected" : ""
                 }`}
-                onClick={() =>
-                  setSelectedCategory({ id: category.id, color: category.color })
-                }
+                onClick={() => handleTaskDataChange("selectedCategory", category)}
                 style={{ color: category.color }}
                 aria-label={`Select ${category.name}`}
               >
@@ -168,18 +174,11 @@ const AddTaskModal = ({ isVisible, onClose, categories, prevSelectedDate,openCat
 
       {/* Footer */}
       <footer className="footer">
-        <button className="cancel" onClick={onClose} aria-label="Cancel">
-          {BTN_CANCEL_LABEL}
-        </button>
         <button className="add" onClick={handleSubmit} aria-label="Add Task">
-          {BTN_ADD_LABEL}
+          추가
         </button>
       </footer>
-      
     </div>
-
-
-
   );
 };
 
