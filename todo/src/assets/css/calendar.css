@@ -13,11 +13,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 27px 0 40px 0;
+  margin: 27px 0 50px 0;
 }
 
 .calendar-header-box h1 {
-  font-size: 2rem;
+  font-family: sans-serif;
+  font-size: 1.8rem;
+  font-weight: 500;
   color: #49D7B1;
   flex-grow: 1;
   text-align: center;
@@ -42,7 +44,7 @@
   color: #59E7C1;
 }
 
-.todo-check-value-box {
+.todo-check-value-big-box {
   width: 100%;
   display: flex;
   align-items: center;
@@ -50,10 +52,39 @@
   margin-bottom: 10px;
 }
 
-.todo-check-value {
+.todo-check-small-box {
   width: calc(100% / 7);
+}
+
+.todo-check-value {
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 900;
+  position: relative;
+  padding-left: 25px;
+}
+
+.todo-check-value::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  border: 2px solid #49D7B1;
+  border-radius: 50%;
+  background-color: #49D7B1;
+}
+
+.todo-check-value::after {
+  content: "✓";
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 12px;
 }
 
 button {
@@ -80,7 +111,9 @@ button {
 .react-calendar__month-view__weekdays__weekday > abbr {
   text-decoration: none;
   color: #49D7B1;
-  font-size: 24px;
+  font-family: sans-serif;
+  font-size: 1.3rem;
+  font-weight: 500;
 }
 
 .react-calendar__tile {
@@ -108,8 +141,8 @@ button {
   color: #49D7B1;
   padding: 4px;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 27px;
+  height: 27px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -122,8 +155,10 @@ button {
 
 .react-calendar__tile abbr {
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 900;
   text-align: center;
+  font-family: "Nanum Gothic", serif;
 }
 
 .hasTasks > abbr {
@@ -135,9 +170,10 @@ button {
   color: #1890ff;            /* 파란색 텍스트 */
   padding: 4px;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 27px;
+  height: 27px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: "Nanum Gothic", serif;
 }
