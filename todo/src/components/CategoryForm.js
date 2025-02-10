@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import colors from '../json/category/colors.json';
 
 const CHECK_SVG_PATH = "M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z";
@@ -11,22 +11,31 @@ const checkSVGStyle = {
   height: "25px",
   fill: "white",
 }
+const categoryColors = colors.colors; // 카테고리 색상 코드
 
-function CategoryForm({ isAddOpen, isEditOpen, categories, setCategories, openCategoryModal }) {
+function CategoryForm({ isAddOpen, isEditOpen, editingCategory, categories, setCategories, openCategoryModal }) {
 
-  // 새로 추가할 카테고리의 state
+  // 추가 및 수정할 카테고리 정보
   const [categoryName, setCategoryName] = useState(""); // 카테고리 이름
   const [selectedColor, setSelectedColor] = useState(""); // 선택한 색상
 
-  // 카테고리 색상 팔레트
-  const categoryColors = colors.colors;
+  // 추가 및 수정 시 카테고리 정보 업데이트
+  useEffect(() => {
+    if (isAddOpen) { // 추가 모달인 경우
+      setCategoryName("");
+      setSelectedColor("");
+    } else if (isEditOpen) { // 편집 모달인 경우
+      setCategoryName(editingCategory.name);
+      setSelectedColor(editingCategory.color);
+    }
+  }, [isEditOpen, isAddOpen, editingCategory]);
 
-  // 카테고리 이름 상태 변경
+  // input 입력 시 카테고리명 상태 변경 핸들러
   const handleCategoryName = (e) => {
     setCategoryName(e.target.value);
   }
 
-  // 폼 제출 핸들러
+  // 폼 제출 핸들러 (추가 및 수정)
   const handleCategorySubmit = (e) => {
     e.preventDefault();
 
@@ -35,26 +44,56 @@ function CategoryForm({ isAddOpen, isEditOpen, categories, setCategories, openCa
       alert("카테고리 이름을 입력해주세요.");
       return;
     }
-
     if (!selectedColor) {
       alert("카테고리 색상을 선택해주세요.");
       return;
     }
 
-    // 새로운 카테고리 데이터
-    let newCategory = {
-      id: Date.now(),
-      name: categoryName,
-      color: selectedColor,
-    };
+    let newCategoryData; // 추가 및 수정 카테고리 데이터
 
-    // 새로운 카테고리 추가
-    setCategories(prev => [...prev, newCategory]);
-    localStorage.setItem("categories", JSON.stringify([...categories, newCategory]));
+    if (isAddOpen) { // 카테고리 추가
+      newCategoryData = {
+        id: categories.length > 0 ? categories[categories.length - 1].id + 1 : 0,
+        name: categoryName,
+        color: selectedColor,
+      }
+
+      setCategories(prev => [...prev, newCategoryData]); // 상태 업데이트
+      localStorage.setItem("categories", JSON.stringify([...categories, newCategoryData])); // 로컬 스토리지 업데이트
+
+    } else if (isEditOpen) { // 카테고리 수정
+      newCategoryData = {
+        id: editingCategory.id,
+        name: categoryName,
+        color: selectedColor,
+      }
+
+      // 해당 카테고리만 업데이트
+      const updatedCategories = categories.map(category =>
+        category.id === editingCategory.id ? newCategoryData : category
+      );
+
+      setCategories(updatedCategories); // 상태 업데이트
+      localStorage.setItem("categories", JSON.stringify(updatedCategories)); // 로컬 스토리지 업데이트
+    }
 
     setCategoryName(""); // 카테고리 input 초기화
+    openCategoryModal('isViewOpen'); // 카테고리 조회 모달로 돌아가기
+  }
 
-    openCategoryModal('isViewOpen'); // 카테고리 편집 모달로 돌아가기
+  // 카테고리 삭제 핸들러
+  const handleCategoryDelete = (e) => {
+    e.preventDefault();
+
+    if (window.confirm("정말로 삭제하시겠습니까?")) {
+      // 해당 카테고리 삭제
+      const updatedCategories = categories.filter(category => category.id !== editingCategory.id);
+
+      setCategories(updatedCategories); // 상태 업데이트
+      localStorage.setItem("categories", JSON.stringify(updatedCategories)); // 로컬 스토리지 업데이트
+
+      openCategoryModal('isViewOpen'); // 카테고리 조회 모달로 돌아가기
+    }
   }
 
   return (
@@ -70,6 +109,7 @@ function CategoryForm({ isAddOpen, isEditOpen, categories, setCategories, openCa
             placeholder="카테고리 이름을 입력하세요"
             value={categoryName}
             onChange={handleCategoryName}
+            autoFocus={isEditOpen}
           />
         </section>
         <section className="category-color-section">
@@ -96,7 +136,21 @@ function CategoryForm({ isAddOpen, isEditOpen, categories, setCategories, openCa
           ))}
         </section>
         <footer className="category-form-footer">
-          <button type="submit" className="btn-save-category">저장</button>
+          <button
+            type="submit"
+            className="btn-save-category"
+            onClick={handleCategorySubmit}
+          >
+            {isAddOpen ? "추가" : "수정"}
+          </button>
+          {isEditOpen && (
+            <button
+              className="btn-delete-category"
+              onClick={handleCategoryDelete}
+            >
+              삭제
+            </button>
+          )}
         </footer>
       </form>
     </section>

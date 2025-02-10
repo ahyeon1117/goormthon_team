@@ -89,8 +89,10 @@ function Calendar({ selectedDate, setSelectedDate,tasks }) {
             <FaChevronRight />
           </button>
         </div>
-        <div className="todo-check-value-box">
-          <div className="todo-check-value">{getMonthlyTaskStats()}</div>
+        <div className="todo-check-value-big-box">
+          <div className="todo-check-value-small-box">
+            <div className="todo-check-value">{getMonthlyTaskStats()}</div>
+          </div>
         </div>
       </header>
       <ReactCalendar
