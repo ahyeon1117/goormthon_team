@@ -1,8 +1,6 @@
 package io.goorm.backend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -12,14 +10,27 @@ public class Product {
   @Id
   private String title;
 
+  @Column(nullable = false)
   private String link;
+
+  @Column(nullable = false)
   private String image;
+
+  @Column(nullable = false)
   private String author;
-  private String discount;
+
+  @Column(nullable = false)
+  private Double discount;
+
+  @Column(nullable = false)
   private String publisher;
+
+  @Column(nullable = false)
   private String pubdate;
+
+  @Column(nullable = false)
   private String isbn;
 
-  @Column(columnDefinition = "TEXT")
+  @Column
   private String description;
 }

@@ -2,30 +2,27 @@ package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Data
 @Entity
-public class Member {
+public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @Column(nullable = false)
-    private String password;
-
-    @Column(length = 20)
-    private String phoneNumber;
-
-    @Column(length = 20)
-    private String role;
+    private Integer quantity;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

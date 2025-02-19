@@ -2,30 +2,31 @@ package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
-public class Member {
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "ordersheet_id")
+    private OrderSheet orderSheet;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @Column(nullable = false)
-    private String password;
+    private Integer quantity;
 
-    @Column(length = 20)
-    private String phoneNumber;
-
-    @Column(length = 20)
-    private String role;
+    @Column(nullable = false)
+    private BigDecimal price;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
