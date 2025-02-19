@@ -4,8 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-public class Users {
+public class Member {
     @Id
     private String id;
-    private String username;
+    private String name;
 }

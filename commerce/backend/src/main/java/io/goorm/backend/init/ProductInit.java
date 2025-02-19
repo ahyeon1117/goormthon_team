@@ -5,8 +5,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.goorm.backend.entity.Products;
-import io.goorm.backend.repository.ProductsRepository;
+import io.goorm.backend.entity.Product;
+import io.goorm.backend.repository.ProductRepository;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class ProductInit {
   public static final String clientSecret = "PjmHMqEa1w";
 
   @Autowired
-  private ProductsRepository repository;
+  private ProductRepository repository;
 
   @PostConstruct
   public void init() throws JsonMappingException, JsonProcessingException {
@@ -48,9 +48,9 @@ public class ProductInit {
     JsonNode root = mapper.readTree(response.getBody());
     // JSON 객체 내의 배열 필드를 추출 (여기서는 "products" 필드라고 가정)
     JsonNode productsNode = root.path("items");
-    List<Products> products = mapper.readValue(
+    List<Product> products = mapper.readValue(
       productsNode.toString(),
-      new TypeReference<List<Products>>() {}
+      new TypeReference<List<Product>>() {}
     );
     repository.saveAll(products);
     System.out.println("Status Code: " + response.getStatusCode());
