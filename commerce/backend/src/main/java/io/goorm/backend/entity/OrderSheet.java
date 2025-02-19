@@ -2,7 +2,6 @@ package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -21,7 +20,7 @@ public class OrderSheet {
     @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;
 
-    @Column(length = 20)
+    @Column(nullable = false)
     private String status;
 
     @Column(name = "created_at")
@@ -29,4 +28,15 @@ public class OrderSheet {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

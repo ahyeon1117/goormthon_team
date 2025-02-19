@@ -2,7 +2,6 @@ package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 
 @Data
@@ -25,4 +24,9 @@ public class Inventory {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

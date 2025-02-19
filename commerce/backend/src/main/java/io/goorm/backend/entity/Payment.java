@@ -2,7 +2,6 @@ package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 
 @Data
@@ -20,7 +19,7 @@ public class Payment {
     @Column(name = "payment_method", length = 50)
     private String paymentMethod;
 
-    @Column(length = 20)
+    @Column(nullable = false)
     private String status;
 
     @Column(name = "transaction_id", nullable = false, unique = true)
@@ -31,4 +30,15 @@ public class Payment {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }
