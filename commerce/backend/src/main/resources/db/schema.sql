@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "users" (
+CREATE TABLE IF NOT EXISTS "member" (
   "id" SERIAL PRIMARY KEY,
   "name" VARCHAR(100) NOT NULL,
   "email" VARCHAR(255) UNIQUE NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS "users" (
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS "products" (
+CREATE TABLE IF NOT EXISTS "product" (
   "title" VARCHAR(255) PRIMARY KEY,
   "link" VARCHAR(255) NOT NULL,
   "image" VARCHAR(255) NOT NULL,
@@ -28,21 +28,21 @@ CREATE TABLE IF NOT EXISTS "inventory" (
   "restock_date" TIMESTAMP,
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT inventory_product_id_fkey FOREIGN KEY ("product_id")
-    REFERENCES "products" ("title") ON DELETE CASCADE
+    REFERENCES "product" ("title") ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS "orders" (
+CREATE TABLE IF NOT EXISTS "order" (
   "id" SERIAL PRIMARY KEY,
-  "user_id" INT,
+  "member_id" INT,
   "total_price" DECIMAL(10,2) NOT NULL,
   "status" VARCHAR(20),
   "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT orders_user_id_fkey FOREIGN KEY ("user_id")
-    REFERENCES "users" ("id") ON DELETE CASCADE
+  CONSTRAINT orders_member_id_fkey FOREIGN KEY ("member_id")
+    REFERENCES "member" ("id") ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS "order_items" (
+CREATE TABLE IF NOT EXISTS "order_item" (
   "id" SERIAL PRIMARY KEY,
   "order_id" INT,
   "product_id" VARCHAR(255),
@@ -51,25 +51,25 @@ CREATE TABLE IF NOT EXISTS "order_items" (
   "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT order_items_order_id_fkey FOREIGN KEY ("order_id")
-    REFERENCES "orders" ("id") ON DELETE CASCADE,
+    REFERENCES "order" ("id") ON DELETE CASCADE,
   CONSTRAINT order_items_product_id_fkey FOREIGN KEY ("product_id")
-    REFERENCES "products" ("title") ON DELETE CASCADE
+    REFERENCES "product" ("title") ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS "cart_items" (
+CREATE TABLE IF NOT EXISTS "cart_item" (
   "id" SERIAL PRIMARY KEY,
-  "user_id" INT,
+  "member_id" INT,
   "product_id" VARCHAR(255),
   "quantity" INT NOT NULL,
   "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT cart_items_user_id_fkey FOREIGN KEY ("user_id")
-    REFERENCES "users" ("id") ON DELETE CASCADE,
+  CONSTRAINT cart_items_member_id_fkey FOREIGN KEY ("member_id")
+    REFERENCES "member" ("id") ON DELETE CASCADE,
   CONSTRAINT cart_items_product_id_fkey FOREIGN KEY ("product_id")
-    REFERENCES "products" ("title") ON DELETE CASCADE
+    REFERENCES "product" ("title") ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS "payments" (
+CREATE TABLE IF NOT EXISTS "payment" (
   "id" SERIAL PRIMARY KEY,
   "order_id" INT UNIQUE,
   "payment_method" VARCHAR(50),
@@ -78,10 +78,10 @@ CREATE TABLE IF NOT EXISTS "payments" (
   "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT payments_order_id_fkey FOREIGN KEY ("order_id")
-    REFERENCES "orders" ("id") ON DELETE CASCADE
+    REFERENCES "order" ("id") ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS "shipments" (
+CREATE TABLE IF NOT EXISTS "shipment" (
   "id" SERIAL PRIMARY KEY,
   "order_id" INT UNIQUE,
   "tracking_number" VARCHAR(255) UNIQUE NOT NULL,
@@ -91,19 +91,19 @@ CREATE TABLE IF NOT EXISTS "shipments" (
   "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT shipments_order_id_fkey FOREIGN KEY ("order_id")
-    REFERENCES "orders" ("id") ON DELETE CASCADE
+    REFERENCES "order" ("id") ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS "reviews" (
+CREATE TABLE IF NOT EXISTS "review" (
   "id" SERIAL PRIMARY KEY,
-  "user_id" INT,
+  "member_id" INT,
   "product_id" VARCHAR(255),
   "rating" INT,
   "comment" TEXT,
   "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT reviews_user_id_fkey FOREIGN KEY ("user_id")
-    REFERENCES "users" ("id") ON DELETE CASCADE,
+  CONSTRAINT reviews_member_id_fkey FOREIGN KEY ("member_id")
+    REFERENCES "member" ("id") ON DELETE CASCADE,
   CONSTRAINT reviews_product_id_fkey FOREIGN KEY ("product_id")
-    REFERENCES "products" ("title") ON DELETE CASCADE
+    REFERENCES "product" ("title") ON DELETE CASCADE
 );
