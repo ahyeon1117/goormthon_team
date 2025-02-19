@@ -3,6 +3,8 @@ package io.goorm.backend.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -26,6 +28,15 @@ public class Member {
 
     @Column(length = 20)
     private String role;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<OrderSheet> orderSheets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<CartItem> cartItems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

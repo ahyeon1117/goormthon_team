@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -22,6 +24,15 @@ public class OrderSheet {
 
     @Column(nullable = false)
     private String status;
+
+    @OneToMany(mappedBy = "orderSheet", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems = new ArrayList<>();
+
+    @OneToOne(mappedBy = "orderSheet", cascade = CascadeType.ALL)
+    private Payment payment;
+
+    @OneToOne(mappedBy = "orderSheet", cascade = CascadeType.ALL)
+    private Shipment shipment;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
