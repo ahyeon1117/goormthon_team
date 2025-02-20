@@ -14,7 +14,7 @@ public class Payment {
 
     @OneToOne
     @JoinColumn(name = "ordersheet_id", unique = true)
-    private OrderSheet orderSheet;
+    private Ordersheet ordersheet;
 
     @Column(name = "payment_method", length = 50)
     private String paymentMethod;

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class OrderSheet {
+public class Ordersheet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,13 +25,13 @@ public class OrderSheet {
     @Column(nullable = false)
     private String status;
 
-    @OneToMany(mappedBy = "orderSheet", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ordersheet", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne(mappedBy = "orderSheet", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "ordersheet", cascade = CascadeType.ALL)
     private Payment payment;
 
-    @OneToOne(mappedBy = "orderSheet", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "ordersheet", cascade = CascadeType.ALL)
     private Shipment shipment;
 
     @Column(name = "created_at")

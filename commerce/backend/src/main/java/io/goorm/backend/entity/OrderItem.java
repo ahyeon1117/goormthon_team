@@ -15,7 +15,7 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "ordersheet_id")
-    private OrderSheet orderSheet;
+    private Ordersheet ordersheet;
 
     @ManyToOne
     @JoinColumn(name = "product_id")

@@ -14,7 +14,7 @@ public class Shipment {
 
     @OneToOne
     @JoinColumn(name = "ordersheet_id", unique = true)
-    private OrderSheet orderSheet;
+    private Ordersheet ordersheet;
 
     @Column(name = "tracking_number", nullable = false, unique = true)
     private String trackingNumber;

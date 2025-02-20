@@ -30,7 +30,7 @@ public class Member {
     private String role;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<OrderSheet> orderSheets = new ArrayList<>();
+    private List<Ordersheet> ordersheets = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<CartItem> cartItems = new ArrayList<>();
