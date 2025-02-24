@@ -1,9 +1,9 @@
 package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Data;
 
 @Data
 @Entity
@@ -33,7 +33,7 @@ public class Product {
   @Column(nullable = false)
   private String isbn;
 
-  @Column
+  @Column(columnDefinition = "TEXT")
   private String description;
 
   @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
