@@ -9,6 +9,8 @@ interface SortingBarProps {
   itemsPerPageOptions: { id: string; label: string }[];
   selectedItemsPerPage: string;
   onItemsPerPageChange: (count: string) => void;
+  onAddToWishlist?: () => void;
+  onAddToCart?: () => void;
 }
 
 const SortingBar: React.FC<SortingBarProps> = ({
@@ -17,12 +19,24 @@ const SortingBar: React.FC<SortingBarProps> = ({
   onSortChange,
   itemsPerPageOptions,
   selectedItemsPerPage,
-  onItemsPerPageChange
+  onItemsPerPageChange,
+  onAddToWishlist,
+  onAddToCart
 }) => {
   return (
     <SortingBarStyled>
-      <button className="product-wishlist-button">찜하기</button>
-      <button className="product-cart-add-button">장바구니 담기</button>
+      <button
+        className="product-wishlist-button"
+        onClick={onAddToWishlist}
+      >
+        찜하기
+      </button>
+      <button
+        className="product-cart-add-button"
+        onClick={onAddToCart}
+      >
+        장바구니 담기
+      </button>
       <select
         className="sort-select"
         value={selectedSort}

@@ -32,7 +32,49 @@ export const MainHeader = styled.div`
     margin: 0 auto;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 0 16px;
+  }
+`;
+
+export const SearchContainer = styled.div`
+  flex: 1;
+  max-width: 500px;
+
+  form {
+    display: flex;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    font-size: 16px;
+    outline: none;
+
+    &:focus {
+      border-color: #888;
+    }
+  }
+
+  button {
+    padding: 10px 20px;
+    background-color: #888;
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #666;
+    }
   }
 `;

@@ -50,7 +50,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
   return (
     <ProductItemContainer>
       <CheckboxContainer onClick={handleCheckToggle}>
-        <Checkbox isChecked={book.isChecked} />
+        <Checkbox data-checked={book.isChecked} />
       </CheckboxContainer>
 
       <ProductImage>
@@ -76,7 +76,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
 
         <ButtonsContainer>
           <FavoriteButton
-            isFavored={book.isFavored}
+            data-favored={book.isFavored}
             onClick={() => onToggleFavorite(book.id)}
             aria-label="찜하기"
           >

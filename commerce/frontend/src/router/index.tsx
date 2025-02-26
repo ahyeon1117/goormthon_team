@@ -13,7 +13,7 @@ const router = createBrowserRouter([
         element: <div>홈 페이지</div>, // 홈 페이지 컴포넌트로 교체 가능
       },
       {
-        path: '/search-results',
+        path: '/search',
         element: <SearchResultsPage />,
       },
     ],
