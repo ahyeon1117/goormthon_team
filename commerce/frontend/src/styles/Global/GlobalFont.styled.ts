@@ -1,6 +1,6 @@
 // src/styles/globalStyles.ts
 import { createGlobalStyle } from 'styled-components';
-
+//폰트 사용
 // 폰트 파일 경로 상단에서 정의
 const LIGHT_FONT_PATH = '../../assets/fonts/GmarketSansTTFLight.ttf';
 const REGULAR_FONT_PATH = '../../assets/fonts/GmarketSansTTFMedium.ttf';
