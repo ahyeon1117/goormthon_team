@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import App from '../App';
 import SearchResultsPage from '../pages/SearchResults/SearchResultsPage';
+import MainPage from '../pages/MainPage/MainPage'
 
 // 라우터 설정
 const router = createBrowserRouter([
@@ -10,7 +11,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <div>홈 페이지</div>, // 홈 페이지 컴포넌트로 교체 가능
+        element: <MainPage />,
       },
       {
         path: '/search-results',

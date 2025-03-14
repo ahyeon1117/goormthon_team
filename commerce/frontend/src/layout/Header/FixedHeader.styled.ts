@@ -21,7 +21,6 @@ export const FixedHeaderContainer = styled.div`
   max-width: 1200px;
   height: 100%;
   margin: 0 auto;
-  padding: 0 20px;
   box-sizing: border-box;
 `;
 
@@ -32,20 +31,21 @@ const Section = styled.section`
 `;
 
 /* 헤더 섹션 - 개별 스타일 */
-export const MenuSection = styled(Section)``;
+export const MenuSection = styled.section``;
 
 export const LogoSection = styled(Section)`
-  padding-left: 30px;
-  padding-right: 50px;
+  padding-left: 20px;
+  padding-right: 30px;
 `;
+
 export const SearchSection = styled(Section)`
-  flex-grow: 2;
-  position: relative;
+  flex: 1;
+  width: 100%;
 `;
+
 export const UserSection = styled(Section)`
-  flex-grow: 2;
   justify-content: flex-end;
-  gap: 5px;
+  gap: 20px;
 `;
 
 /* 로고 이미지 */
@@ -54,11 +54,18 @@ export const LogoImage = styled.img`
   cursor: pointer;
 `;
 
-/* 검색창 */
+/* 검색 컨테이너 */
+export const SearchContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 500px;
+`;
+
+/* 검색 input */
 export const SearchInput = styled.input`
-  min-width: 100px;
   width: 100%;
-  height: 35px;
+  height: 40px;
   padding: 0 2.5rem 0rem 1.5rem;
   border: 1px solid #D9D9D9;
   border-radius: 30px;
@@ -73,7 +80,7 @@ const Button = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  padding: 5px;
+  padding: 8px; // 호버 범위 조정
 
   &:focus {
     outline: none;
@@ -88,12 +95,11 @@ export const SearchButton = styled(Button)`
   display: flex;
   position: absolute;
   right: 6px;
-  padding: 8px;
 `;
 
 /* 장바구니 버튼 */
 export const CartButton = styled(Button)`
-    margin-right: 1rem;
+  margin-left: 20px;
 `;
 
 /* 유저 버튼 */

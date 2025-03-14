@@ -2,9 +2,9 @@
 import { createGlobalStyle } from 'styled-components';
 //폰트 사용
 // 폰트 파일 경로 상단에서 정의
-const LIGHT_FONT_PATH = '../../assets/fonts/GmarketSansTTFLight.ttf';
-const REGULAR_FONT_PATH = '../../assets/fonts/GmarketSansTTFMedium.ttf';
-const BOLD_FONT_PATH = '../../assets/fonts/GmarketSansTTFBold.ttf';
+const LIGHT_FONT_PATH = 'src/assets/fonts/GmarketSansTTFLight.ttf';
+const REGULAR_FONT_PATH = 'src/assets/fonts/GmarketSansTTFMedium.ttf';
+const BOLD_FONT_PATH = 'src/assets/fonts/GmarketSansTTFBold.ttf';
 
 const GlobalFontStyle = createGlobalStyle`
   @font-face {
