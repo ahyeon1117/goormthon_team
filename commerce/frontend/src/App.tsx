@@ -2,7 +2,7 @@ import './App.css'
 import { Outlet } from 'react-router-dom'
 import GlobalFontStyle from './styles/Global/GlobalFont.styled';
 import {GlobalPageSize} from './styles/Global/GlobalPage.styled';
-import Main from './pages/MainPage/components/Main/Main.tsx';  // Main 컴포넌트 import
+import MainPageHeader from './layout/Header/MainPageHeader.tsx';  // MainPageHeader 컴포넌트 import
 
 function App() {
     return (
@@ -11,11 +11,10 @@ function App() {
             <GlobalFontStyle />
             <GlobalPageSize />
 
-            <Main />
+            <MainPageHeader />
             <Outlet />
         </div>
     )
 }
 
 export default App
-
