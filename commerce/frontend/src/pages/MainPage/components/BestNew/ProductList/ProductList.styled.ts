@@ -101,10 +101,10 @@ export const ProductItem = styled.div`
     box-sizing: border-box;
 `;
 
-export const Rank = styled.div<{ rank: number }>`
+export const Rank = styled.div<{ $rank: number }>`
     width: 35px;
     height: 35px;
-    background-color: ${({ rank }) => rank === 1 ? "#E896FF" : "#C0C0C0"};
+    background-color: ${({ $rank }) => $rank === 1 ? "#E896FF" : "#C0C0C0"};
     color: white;
     text-align: center;
     line-height: 35px;

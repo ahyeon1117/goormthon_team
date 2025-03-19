@@ -9,7 +9,7 @@ interface ProductItemProps {
 const ProductItem: React.FC<ProductItemProps> = ({ book, type }) => {
   return (
     <S.ProductItem key={book.id}>
-      {type === "best" && <S.Rank rank={book.rank}>{book.rank}</S.Rank>}
+      {type === "best" && <S.Rank $rank={book.rank}>{book.rank}</S.Rank>}
 
       {/* 도서 이미지 박스 */}
       <S.ProductImageBox>

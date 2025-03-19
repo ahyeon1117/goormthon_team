@@ -12,8 +12,8 @@ interface ProductListProps {
 }
 
 // 슬라이드 이전 화살표 컴포넌트
-const PrevArrow = (props: CustomArrowProps) => (
-  <div {...props}>
+const PrevArrow = ({ onClick, className }: CustomArrowProps) => (
+  <div className={className} onClick={onClick}>
     <S.StyledPrevArrow>
       <SlArrowLeft size={20} color="#A9ABB8" />
     </S.StyledPrevArrow>
@@ -21,8 +21,8 @@ const PrevArrow = (props: CustomArrowProps) => (
 );
 
 // 슬라이드 다음 화살표 컴포넌트
-const NextArrow = (props: CustomArrowProps) => (
-  <div {...props}>
+const NextArrow = ({ onClick, className }: CustomArrowProps) => (
+  <div className={className} onClick={onClick}>
     <S.StyledNextArrow>
       <SlArrowRight size={20} color="#A9ABB8" />
     </S.StyledNextArrow>

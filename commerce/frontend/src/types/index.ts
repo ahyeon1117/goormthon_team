@@ -26,7 +26,7 @@ export interface SortOption {
   label: string;
 }
 
-// BestNew컴포넌트 - 도서 타입 정의
+// BestNew 컴포넌트 - 도서 타입 정의
 export interface BestNewBook {
   id: string;
   title: string;
