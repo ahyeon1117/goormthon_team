@@ -48,14 +48,14 @@ const ProductList: React.FC<ProductListProps> = ({ type, books }) => {
         },
       },
       {
-        breakpoint: 900, // 화면 크기 768px 이하일 때
+        breakpoint: 900, // 화면 크기 900px 이하일 때
         settings: {
           slidesToShow: 3,
           slidesToScroll: 3,
         },
       },
       {
-        breakpoint: 700, // 화면 크기 480px 이하일 때
+        breakpoint: 700, // 화면 크기 700px 이하일 때
         settings: {
           slidesToShow: 2,
           slidesToScroll: 2,

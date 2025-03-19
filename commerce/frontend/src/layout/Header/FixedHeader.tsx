@@ -10,12 +10,11 @@ const FixedHeader: React.FC = () => {
   const nav = useNavigate();
   const location = useLocation();
 
-  // 스크롤 시 고정 헤더 보이기 **메인 페이지 헤더에 맞게 스크롤 위치 조정해야 함**
+  // 스크롤 시 고정 헤더 보이기
   useEffect(() => {
     // 마운트 시 스크롤 이벤트 핸들러 정의
     const handleScroll = () => {
-      // 삼항 연산자는 값을 반환해야 하는데 이 경우에는 반환값을 사용하지 않으므로 ESLint 경고 발생
-      setIsFixed(window.scrollY > 120); // 스크롤 위치가 120px보다 크면 고정 헤더 표시
+      setIsFixed(window.scrollY > 190); // 스크롤 위치가 메인헤더 크기보다 크면 고정 헤더 표시
     };
 
     window.addEventListener("scroll", handleScroll);
