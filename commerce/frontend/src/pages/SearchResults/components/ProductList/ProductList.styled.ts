@@ -26,15 +26,15 @@ export const CheckboxContainer = styled.div`
 `;
 
 interface CheckboxProps {
-  isChecked?: boolean;
+  'data-checked'?: boolean;
 }
 
 export const Checkbox = styled.div<CheckboxProps>`
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 2px solid ${props => props.isChecked ? '#e896ff' : '#ddd'};
-  background-color: ${props => props.isChecked ? '#e896ff' : 'white'};
+  border: 2px solid ${props => props['data-checked'] ? '#e896ff' : '#ddd'};
+  background-color: ${props => props['data-checked'] ? '#e896ff' : 'white'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,7 +42,7 @@ export const Checkbox = styled.div<CheckboxProps>`
 
   &:after {
     content: '';
-    display: ${props => props.isChecked ? 'block' : 'none'};
+    display: ${props => props['data-checked'] ? 'block' : 'none'};
     width: 4px;
     height: 8px;
     border: solid white;
@@ -182,16 +182,16 @@ export const ButtonsContainer = styled.div`
 `;
 
 interface FavoriteButtonProps {
-  isFavored?: boolean;
+  'data-favored'?: boolean;
 }
 
 export const FavoriteButton = styled.button<FavoriteButtonProps>`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: ${props => props.isFavored ? '#ffebee' : 'white'};
-  border: 1px solid ${props => props.isFavored ? '#ff8a80' : '#ddd'};
-  color: ${props => props.isFavored ? '#e53935' : '#666'};
+  background: ${props => props['data-favored'] ? '#ffebee' : 'white'};
+  border: 1px solid ${props => props['data-favored'] ? '#ff8a80' : '#ddd'};
+  color: ${props => props['data-favored'] ? '#e53935' : '#666'};
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -201,7 +201,7 @@ export const FavoriteButton = styled.button<FavoriteButtonProps>`
   margin-bottom: 20px;
 
   &:hover {
-    background: ${props => props.isFavored ? '#ffcdd2' : '#f5f5f5'};
+    background: ${props => props['data-favored'] ? '#ffcdd2' : '#f5f5f5'};
   }
 `;
 
