@@ -1,5 +1,4 @@
 import { createGlobalStyle } from "styled-components";
-//페이지 비율 고정
 export const GlobalPageSize = createGlobalStyle`
   html, body {
     margin: 0;
