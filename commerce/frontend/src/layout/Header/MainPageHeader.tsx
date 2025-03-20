@@ -1,21 +1,21 @@
 import {
-        STTopBar,
-        STMallInner,
-        STMainHeader,
-        Logo,
-        STSearchBox,
-        SearchIcon,
-        LoginIcon,
-        CartIcon,
-        STList,
-        STNewArrivals,
-        STBestSellers,
-        MenuIcon,
-        STMain,
-        STTopBarBox,
-        SearchForm,
-        SearchInput,
-        SearchButton
+  STTopBar,
+  STMallInner,
+  STMainHeader,
+  Logo,
+  STSearchBox,
+  SearchIcon,
+  LoginIcon,
+  CartIcon,
+  STList,
+  STNewArrivals,
+  STBestSellers,
+  MenuIcon,
+  STMain,
+  STTopBarBox,
+  SearchForm,
+  SearchInput,
+  SearchButton
 } from './MainPageHeader.styled';
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';

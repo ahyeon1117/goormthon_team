@@ -13,36 +13,36 @@ const StyledContainer = styled.div`
 // 베스트 임시 데이터
 const bestBooks: BestNewBook[] = [
   {
-      id: "1",
-      title: "반항하는 인간 1",
-      author: "알베르카뮈",
-      publisher: "민음사",
-      imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-      rank: 1
+    id: "1",
+    title: "반항하는 인간 1",
+    author: "알베르카뮈",
+    publisher: "민음사",
+    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
+    rank: 1
   },
   {
-      id: "2",
-      title: "반항하는 인간 2",
-      author: "알베르카뮈",
-      publisher: "민음사",
-      imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-      rank: 2
+    id: "2",
+    title: "반항하는 인간 2",
+    author: "알베르카뮈",
+    publisher: "민음사",
+    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
+    rank: 2
   },
   {
-      id: "3",
-      title: "반항하는 인간 3",
-      author: "알베르카뮈",
-      publisher: "민음사",
-      imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-      rank: 3
+    id: "3",
+    title: "반항하는 인간 3",
+    author: "알베르카뮈",
+    publisher: "민음사",
+    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
+    rank: 3
   },
   {
-      id: "4",
-      title: "반항하는 인간 4",
-      author: "알베르카뮈",
-      publisher: "민음사",
-      imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-      rank: 4
+    id: "4",
+    title: "반항하는 인간 4",
+    author: "알베르카뮈",
+    publisher: "민음사",
+    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
+    rank: 4
   },
   {
     id: "5",
@@ -97,36 +97,36 @@ const bestBooks: BestNewBook[] = [
 // 신상품 임시 데이터 (더 많은 개수로 테스트)
 const newBooks: BestNewBook[] = [
   {
-      id: "1",
-      title: "반항하는 인간 1",
-      author: "알베르카뮈",
-      publisher: "민음사",
-      imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-      rank: 1
+    id: "1",
+    title: "반항하는 인간 1",
+    author: "알베르카뮈",
+    publisher: "민음사",
+    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
+    rank: 1
   },
   {
-      id: "2",
-      title: "반항하는 인간 2",
-      author: "알베르카뮈",
-      publisher: "민음사",
-      imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-      rank: 2
+    id: "2",
+    title: "반항하는 인간 2",
+    author: "알베르카뮈",
+    publisher: "민음사",
+    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
+    rank: 2
   },
   {
-      id: "3",
-      title: "반항하는 인간 3",
-      author: "알베르카뮈",
-      publisher: "민음사",
-      imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-      rank: 3
+    id: "3",
+    title: "반항하는 인간 3",
+    author: "알베르카뮈",
+    publisher: "민음사",
+    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
+    rank: 3
   },
   {
-      id: "4",
-      title: "반항하는 인간 4",
-      author: "알베르카뮈",
-      publisher: "민음사",
-      imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-      rank: 4
+    id: "4",
+    title: "반항하는 인간 4",
+    author: "알베르카뮈",
+    publisher: "민음사",
+    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
+    rank: 4
   },
   {
     id: "5",

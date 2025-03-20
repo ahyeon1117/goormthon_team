@@ -9,13 +9,13 @@ function App() {
 
   return (
     <div className="App">
-        {/* 여기에 공통 레이아웃 요소를 추가할 수 있습니다 (헤더, 푸터 등) */}
-        <GlobalFontStyle />
-        <GlobalPageSize />
+      {/* 여기에 공통 레이아웃 요소를 추가할 수 있습니다 (헤더, 푸터 등) */}
+      <GlobalFontStyle />
+      <GlobalPageSize />
 
-        <MainPageHeader />
-        <FixedHeader />
-        <Outlet />
+      <MainPageHeader />
+      <FixedHeader />
+      <Outlet />
     </div>
   )
 }
