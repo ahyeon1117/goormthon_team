@@ -87,7 +87,7 @@ const Main = () => {
                                             key={index}
                                             src={src}
                                             alt={`Banner ${index + 1}`}
-                                            isActive={index === currentIndex}
+                                            $isActive={index === currentIndex}
                                             index={index}
                                         />
                                     ))}

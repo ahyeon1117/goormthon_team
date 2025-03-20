@@ -133,7 +133,7 @@ export const ProductImage = styled.img`
 // 스타일은 없지만 일관성을 위해 styled-components로 정의
 export const ProductInfo = styled.div``;
 
-export const ProductTitle = styled.a`
+export const ProductTitle = styled.div`
     display: block;
     font-size: 16px;
     font-weight: 700;

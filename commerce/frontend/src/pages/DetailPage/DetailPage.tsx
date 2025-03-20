@@ -173,19 +173,19 @@ const DetailPage = () => {
 
       <TabsSection>
         <TabButton
-          active={activeTab === 'info'}
+          $active={activeTab === 'info'}
           onClick={() => handleTabChange('info')}
         >
           도서정보
         </TabButton>
         <TabButton
-          active={activeTab === 'review'}
+          $active={activeTab === 'review'}
           onClick={() => handleTabChange('review')}
         >
           리뷰 ({product.reviewCount})
         </TabButton>
         <TabButton
-          active={activeTab === 'shipping'}
+          $active={activeTab === 'shipping'}
           onClick={() => handleTabChange('shipping')}
         >
           배송/반품

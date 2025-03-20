@@ -147,15 +147,15 @@ export const TabsSection = styled.div`
   margin-bottom: 30px;
 `;
 
-export const TabButton = styled.button<{ active?: boolean }>`
+export const TabButton = styled.button<{ $active?: boolean }>`
   padding: 15px 25px;
-  background: ${props => props.active ? '#fff' : '#f4f4f4'};
+  background: ${props => props.$active ? '#fff' : '#f4f4f4'};
   border: 1px solid #ddd;
-  border-bottom: ${props => props.active ? 'none' : '1px solid #ddd'};
+  border-bottom: ${props => props.$active ? 'none' : '1px solid #ddd'};
   border-radius: 4px 4px 0 0;
   margin-right: 5px;
   cursor: pointer;
-  font-weight: ${props => props.active ? 'bold' : 'normal'};
+  font-weight: ${props => props.$active ? 'bold' : 'normal'};
   position: relative;
   bottom: -1px;
 
