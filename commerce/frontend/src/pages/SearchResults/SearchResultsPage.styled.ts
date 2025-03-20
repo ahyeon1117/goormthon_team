@@ -91,7 +91,7 @@ export const ResultHeaderStyled = styled.div`
     font-size: 20px;
     color: #666;
 
-    strong:first-child {
+    strong.keyword {
       color: #e896ff;
       font-weight: bold;
     }

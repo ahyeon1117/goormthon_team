@@ -3,6 +3,7 @@ import FilterSidebar from './components/FilterSidebar/FilterSidebar.tsx';
 import ProductList from './components/ProductList/ProductList.tsx';
 import SortingBar from './components/SortingBar/SortingBar.tsx';
 import ApiDebugInfo from './components/ApiDebugInfo/ApiDebugInfo';
+import Pagination from './components/Pagination/Pagination.tsx';
 import { PageContainer, ResultHeaderStyled, CategoryTabsStyled } from './SearchResultsPage.styled';
 import { BookItem, SortOption } from '../../types';
 import { getAllProducts, searchProducts } from '../../api/productApi';
@@ -36,17 +37,20 @@ const SearchResultsPage: React.FC = () => {
   const [selectedSort, setSelectedSort] = useState<string>('popularity');
   const [itemsPerPage, setItemsPerPage] = useState<string>('20');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchKeyword = searchParams.get('keyword') || '';
 
   const [totalResults, setTotalResults] = useState<number>(0);
+  const [displayedBooks, setDisplayedBooks] = useState<BookItem[]>([]);
 
   // 검색어가 변경되거나 페이지가 로드될 때 API 호출
   useEffect(() => {
     const fetchBooks = async () => {
       setLoading(true);
       setError(null);
+      setCurrentPage(1); // 검색어 변경 시 첫 페이지로 초기화
 
       try {
         let result: BookItem[] = [];
@@ -76,8 +80,18 @@ const SearchResultsPage: React.FC = () => {
     fetchBooks();
   }, [searchKeyword]);
 
+  // 화면에 표시할 책 목록을 페이지와 아이템 수에 따라 필터링
+  useEffect(() => {
+    if (books.length === 0) return;
+
+    const startIndex = (currentPage - 1) * parseInt(itemsPerPage);
+    const endIndex = startIndex + parseInt(itemsPerPage);
+    setDisplayedBooks(books.slice(startIndex, endIndex));
+  }, [books, currentPage, itemsPerPage]);
+
   const handleSortChange = (sortId: string) => {
     setSelectedSort(sortId);
+    setCurrentPage(1); // 정렬 변경 시 첫 페이지로 초기화
     // 정렬 로직 구현
     const sortedBooks = [...books];
 
@@ -109,8 +123,14 @@ const SearchResultsPage: React.FC = () => {
 
   const handleItemsPerPageChange = (count: string) => {
     setItemsPerPage(count);
-    // 페이지당 아이템 수 변경 로직
-    // 실제 구현에서는 페이지네이션 로직 추가 필요
+    setCurrentPage(1); // 페이지당 아이템 수 변경 시 첫 페이지로 초기화
+  };
+
+  // 페이지 변경 핸들러
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    // 페이지 상단으로 스크롤
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // --------------------------------------------------------------------
@@ -164,6 +184,7 @@ const SearchResultsPage: React.FC = () => {
   // 카테고리 탭 변경 핸들러
   const handleCategoryChange = (categoryId: string) => {
     setSelectedCategory(categoryId);
+    setCurrentPage(1); // 카테고리 변경 시 첫 페이지로 초기화
     // TODO: 카테고리에 따른 데이터 필터링 로직 구현 필요
     console.log(`카테고리 변경: ${categoryId}`);
 
@@ -191,7 +212,7 @@ const SearchResultsPage: React.FC = () => {
         <div className="search-results-main-content">
           <ResultHeaderStyled>
             <div className="result-count">
-              {searchKeyword && <strong>{searchKeyword}</strong>}
+              {searchKeyword && <strong className="keyword">{searchKeyword}</strong>}
               <strong> 검색 결과 총 {totalResults}건</strong>
             </div>
             <SortingBar
@@ -234,11 +255,19 @@ const SearchResultsPage: React.FC = () => {
               )}
             </div>
           ) : (
-            <ProductList
-              books={books}
-              onToggleFavorite={handleToggleFavorite}
-              onToggleCheck={handleToggleCheck}
-            />
+            <>
+              <ProductList
+                books={displayedBooks}
+                onToggleFavorite={handleToggleFavorite}
+                onToggleCheck={handleToggleCheck}
+              />
+              <Pagination
+                currentPage={currentPage}
+                totalItems={books.length}
+                itemsPerPage={parseInt(itemsPerPage)}
+                onPageChange={handlePageChange}
+              />
+            </>
           )}
         </div>
       </div>
