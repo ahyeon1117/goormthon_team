@@ -17,6 +17,14 @@ export interface ProductApiItem {
   isbn: string;
 }
 
+/**
+ * 저자 이름 구분자 변경 함수
+ * 백엔드에서 공동저자를 '^' 구분자로 전달받아 ', '로 변경합니다.
+ */
+export const formatAuthor = (author: string): string => {
+  return author.replace(/\^/g, ', ');
+};
+
 // 프론트엔드에서 사용하는 BookItem과 백엔드 ProductApiItem 간의 매핑 함수
 export const mapProductApiToBookItem = (product: ProductApiItem, index: number): import('./index').BookItem => {
   return {
@@ -24,7 +32,7 @@ export const mapProductApiToBookItem = (product: ProductApiItem, index: number):
     id: product.isbn || `book-${index}`,
     title: product.title,
     imageUrl: product.image,
-    author: product.author,
+    author: formatAuthor(product.author),
     publisher: product.publisher,
     publishDate: product.pubdate,
     price: product.discount || 0,

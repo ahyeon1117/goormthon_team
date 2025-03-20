@@ -34,11 +34,6 @@ const ProductItem: React.FC<ProductItemProps> = ({
     return price.toLocaleString('ko-KR') + '원';
   };
 
-  // 저자 이름 구분자 변경 함수
-  const formatAuthor = (author: string) => {
-    return author.replace(/\^/g, ', ');
-  };
-
   const handleAddToCart = () => {
     // 장바구니 추가 로직 구현
     console.log('장바구니에 추가:', book.id);
@@ -75,7 +70,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
           <ProductTitle>{book.title}</ProductTitle>
         </Link>
         <ProductAuthor>
-          <span className="author">{formatAuthor(book.author)}</span>
+          <span className="author">{book.author}</span>
           <span className="publisher">{book.publisher}</span>
           <span className="publish-date">{book.publishDate}</span>
         </ProductAuthor>
