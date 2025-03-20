@@ -1,4 +1,27 @@
 import styled from 'styled-components';
+import { AiOutlineShopping } from 'react-icons/ai';
+
+// 찜하기 아이콘
+export const HeartIcon = styled.svg.attrs({
+  width: "24",
+  height: "24",
+  viewBox: "0 0 29 27",
+  fill: "none",
+  xmlns: "http://www.w3.org/2000/svg"
+})`
+  path {
+    stroke: #666666;
+    stroke-width: 2;
+  }
+`;
+
+// 장바구니 아이콘
+export const CartIcon = styled(AiOutlineShopping)`
+  width: 24px;
+  height: 24px;
+  color: #666666;
+  stroke-width: 2;
+`;
 
 export const PageContainer = styled.div`
   display: flex;
@@ -89,16 +112,23 @@ export const SortingBarStyled = styled.div`
   width: 50%;
 
   button {
-    padding: 6px 12px;
+    padding: 8px 14px;
     border-radius: 4px;
     font-size: 13px;
     cursor: pointer;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .product-wishlist-button {
     background: white;
     border: 1px solid #ddd;
     color: #666;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
 
     &:hover {
       background: #f5f5f5;
@@ -109,6 +139,8 @@ export const SortingBarStyled = styled.div`
     background: white;
     border: 1px solid #ddd;
     color: #666;
+    gap: 6px;
+    padding: 8px 12px;
 
     &:hover {
       background: #f5f5f5;
@@ -120,6 +152,7 @@ export const SortingBarStyled = styled.div`
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 13px;
+    height: 40px;
   }
 
   .sort-select, .items-per-page-select {

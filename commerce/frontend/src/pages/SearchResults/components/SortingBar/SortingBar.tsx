@@ -1,5 +1,5 @@
 import React from 'react';
-import { SortingBarStyled } from '../../SearchResultsPage.styled';
+import { SortingBarStyled, HeartIcon, CartIcon } from '../../SearchResultsPage.styled';
 import { SortOption } from '../../../../types';
 
 interface SortingBarProps {
@@ -29,12 +29,15 @@ const SortingBar: React.FC<SortingBarProps> = ({
         className="product-wishlist-button"
         onClick={onAddToWishlist}
       >
-        찜하기
+        <HeartIcon>
+          <path d="M14.5 25.5C14.5 25.5 1 14.5 1 8.5C1 4.5 4 1 8.5 1C11.5 1 14.5 3 14.5 5.5C14.5 3 17.5 1 20.5 1C25 1 28 4.5 28 8.5C28 14.5 14.5 25.5 14.5 25.5Z" />
+        </HeartIcon>
       </button>
       <button
         className="product-cart-add-button"
         onClick={onAddToCart}
       >
+        <CartIcon />
         장바구니 담기
       </button>
       <select

@@ -13,7 +13,9 @@ import {
   BuyNowButton,
   ButtonsContainer,
   CheckboxContainer,
-  Checkbox
+  Checkbox,
+  FavoredHeartIcon,
+  UnfavoredHeartIcon
 } from './ProductList.styled';
 
 interface ProductItemProps {
@@ -29,6 +31,11 @@ const ProductItem: React.FC<ProductItemProps> = ({
 }) => {
   const formatPrice = (price: number) => {
     return price.toLocaleString('ko-KR') + '원';
+  };
+
+  // 저자 이름 구분자 변경 함수
+  const formatAuthor = (author: string) => {
+    return author.replace(/\^/g, ', ');
   };
 
   const handleAddToCart = () => {
@@ -63,13 +70,13 @@ const ProductItem: React.FC<ProductItemProps> = ({
       <ProductInfo>
         <ProductTitle>{book.title}</ProductTitle>
         <ProductAuthor>
-          <span className="author">{book.author}</span>
+          <span className="author">{formatAuthor(book.author)}</span>
           <span className="publisher">{book.publisher}</span>
           <span className="publish-date">{book.publishDate}</span>
         </ProductAuthor>
         <ProductPrice>{formatPrice(book.price)}</ProductPrice>
         <ProductRating>
-          <span className="stars">★★★★★</span>
+          <span className="stars">★</span>
           <span className="rating">{book.rating}</span>
           <span className="review-count">({book.reviewCount})</span>
         </ProductRating>
@@ -80,9 +87,16 @@ const ProductItem: React.FC<ProductItemProps> = ({
             onClick={() => onToggleFavorite(book.id)}
             aria-label="찜하기"
           >
-            {book.isFavored ? '❤️' : '🤍'}
+            {book.isFavored ? (
+              <FavoredHeartIcon>
+                <path d="M14.5 25.5C14.5 25.5 1 14.5 1 8.5C1 4.5 4 1 8.5 1C11.5 1 14.5 3 14.5 5.5C14.5 3 17.5 1 20.5 1C25 1 28 4.5 28 8.5C28 14.5 14.5 25.5 14.5 25.5Z" />
+              </FavoredHeartIcon>
+            ) : (
+              <UnfavoredHeartIcon>
+                <path d="M14.5 25.5C14.5 25.5 1 14.5 1 8.5C1 4.5 4 1 8.5 1C11.5 1 14.5 3 14.5 5.5C14.5 3 17.5 1 20.5 1C25 1 28 4.5 28 8.5C28 14.5 14.5 25.5 14.5 25.5Z" />
+              </UnfavoredHeartIcon>
+            )}
           </FavoriteButton>
-
           <div className="product-action-buttons">
             <CartButton onClick={handleAddToCart}>
               장바구니
