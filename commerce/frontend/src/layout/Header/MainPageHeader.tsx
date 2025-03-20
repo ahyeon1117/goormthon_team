@@ -18,11 +18,12 @@ import {
         SearchButton
 } from './MainPageHeader.styled';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const MainPageHeader = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +33,13 @@ const MainPageHeader = () => {
       navigate(`/search?keyword=${encodeURIComponent(searchKeyword)}`);
       // 검색 후 입력창 초기화
       setSearchKeyword('');
+    }
+  };
+
+  const handleLogoClick = () => {
+    // 불필요한 렌더링 방지를 위해 현재 경로가 메인페이지가 아닐 때만 이동
+    if(location.pathname !== "/") {
+      navigate("/");
     }
   };
 
@@ -51,7 +59,7 @@ const MainPageHeader = () => {
 
         {/* MainHeader 컴포넌트 */}
         <STMainHeader>
-          <Logo />
+          <Logo onClick={handleLogoClick} style={{ cursor: 'pointer' }} />
           <STSearchBox>
             <SearchForm onSubmit={handleSearch}>
               <SearchInput
