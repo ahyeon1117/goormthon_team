@@ -34,23 +34,31 @@ export const getAllProducts = async (): Promise<BookItem[]> => {
 };
 
 /**
- * ID로 특정 상품을 가져오는 함수
+ * ID(ISBN)로 특정 상품을 가져오는 함수
  */
 export const getProductById = async (id: string): Promise<BookItem | null> => {
   try {
-    const response = await apiRequest.get<ProductApiItem>(PRODUCT_API.GET_BY_ID(id));
+    console.log(`ISBN(${id})으로 도서 정보 조회 중...`);
 
-    // API 응답이 성공적이고 데이터가 있는 경우
-    if (response.data.code === 200 && response.data.data) {
-      // ProductApiItem을 BookItem으로 변환
-      return mapProductApiToBookItem(response.data.data, 0);
+    // 백엔드 API가 아직 구현 중이므로, 모든 상품을 가져와서 ID(ISBN)로 필터링
+    const allProducts = await getAllProducts();
+    const foundProduct = allProducts.find(product => product.id === id);
+
+    if (foundProduct) {
+      console.log(`ISBN(${id})에 해당하는 도서를 찾았습니다:`, foundProduct.title);
+      return foundProduct;
     }
 
-    // 응답이 성공적이지 않거나 데이터가 없는 경우 null 반환
-    console.error(`ID ${id}에 해당하는 상품을 가져오는데 실패했습니다:`, response.data.msg);
+    // 나중에 백엔드 API가 구현되면 아래 코드로 교체
+    // const response = await apiRequest.get<ProductApiItem>(PRODUCT_API.GET_BY_ID(id));
+    // if (response.data.code === 200 && response.data.data) {
+    //   return mapProductApiToBookItem(response.data.data, 0);
+    // }
+
+    console.warn(`ISBN(${id})에 해당하는 도서를 찾지 못했습니다.`);
     return null;
   } catch (error) {
-    console.error('상품 API 호출 중 오류 발생:', error);
+    console.error(`ISBN(${id}) 도서 정보 조회 중 오류 발생:`, error);
     return null;
   }
 };

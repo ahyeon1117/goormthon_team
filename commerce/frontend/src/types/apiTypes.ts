@@ -20,6 +20,7 @@ export interface ProductApiItem {
 // 프론트엔드에서 사용하는 BookItem과 백엔드 ProductApiItem 간의 매핑 함수
 export const mapProductApiToBookItem = (product: ProductApiItem, index: number): import('./index').BookItem => {
   return {
+    // ISBN을 고유 식별자로 사용 (없는 경우에만 index 기반 임시 ID 생성)
     id: product.isbn || `book-${index}`,
     title: product.title,
     imageUrl: product.image,

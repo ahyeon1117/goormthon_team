@@ -1,5 +1,6 @@
 import * as S from "./ProductList.styled";
 import { BestNewBook } from "../../../../../types";
+import { Link } from "react-router-dom";
 
 interface ProductItemProps {
   book: BestNewBook;
@@ -13,12 +14,16 @@ const ProductItem: React.FC<ProductItemProps> = ({ book, type }) => {
 
       {/* 도서 이미지 박스 */}
       <S.ProductImageBox>
-        <a><S.ProductImage src={book.imageUrl} alt={book.title} /></a>
+        <Link to={`/detail/${book.id}`}>
+          <S.ProductImage src={book.imageUrl} alt={book.title} />
+        </Link>
       </S.ProductImageBox>
 
       {/* 도서 정보 */}
       <S.ProductInfo>
-        <S.ProductTitle>{book.title}</S.ProductTitle>
+        <Link to={`/detail/${book.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <S.ProductTitle>{book.title}</S.ProductTitle>
+        </Link>
         <S.AuthorPublisherWrapper>
           <S.ProductAuthor>{book.author}</S.ProductAuthor>
           <S.Divider>|</S.Divider>

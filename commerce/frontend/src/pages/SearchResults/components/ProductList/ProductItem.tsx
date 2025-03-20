@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { BookItem } from '../../../../types';
 import {
   ProductItemContainer,
@@ -61,14 +62,18 @@ const ProductItem: React.FC<ProductItemProps> = ({
       </CheckboxContainer>
 
       <ProductImage>
-        <img src={book.imageUrl || '/placeholder.jpg'} alt={book.title} />
-        <div className="product-image-overlay">
-          <button className="product-preview-button">미리보기</button>
-        </div>
+        <Link to={`/detail/${book.id}`}>
+          <img src={book.imageUrl || '/placeholder.jpg'} alt={book.title} />
+          <div className="product-image-overlay">
+            <button className="product-preview-button">미리보기</button>
+          </div>
+        </Link>
       </ProductImage>
 
       <ProductInfo>
-        <ProductTitle>{book.title}</ProductTitle>
+        <Link to={`/detail/${book.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <ProductTitle>{book.title}</ProductTitle>
+        </Link>
         <ProductAuthor>
           <span className="author">{formatAuthor(book.author)}</span>
           <span className="publisher">{book.publisher}</span>
