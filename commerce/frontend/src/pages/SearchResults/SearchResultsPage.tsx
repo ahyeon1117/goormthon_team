@@ -84,7 +84,10 @@ const SearchResultsPage: React.FC = () => {
     switch(sortId) {
       case 'recent':
         // 최신순 정렬 (출판일 기준)
-        sortedBooks.sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
+        sortedBooks.sort((a, b) => {
+          if (!a.publishDate || !b.publishDate) return 0;
+          return b.publishDate.localeCompare(a.publishDate);
+        });
         break;
       case 'price-low':
         // 가격 낮은순 정렬
@@ -109,6 +112,8 @@ const SearchResultsPage: React.FC = () => {
     // 페이지당 아이템 수 변경 로직
     // 실제 구현에서는 페이지네이션 로직 추가 필요
   };
+
+  // --------------------------------------------------------------------
 
   const handleToggleFavorite = (bookId: string) => {
     setBooks(books.map(book =>
