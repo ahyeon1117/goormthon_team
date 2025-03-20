@@ -41,6 +41,8 @@ const FixedHeader: React.FC = () => {
       nav(`/search?keyword=${encodeURIComponent(searchKeyword)}`);
       // 검색 후 입력창 초기화
       setSearchKeyword('');
+    } else {
+      alert("검색어를 입력하세요.");
     }
   };
 
