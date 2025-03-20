@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import FilterSidebar from './components/FilterSidebar/FilterSidebar.tsx';
 import ProductList from './components/ProductList/ProductList.tsx';
 import SortingBar from './components/SortingBar/SortingBar.tsx';
+import ApiDebugInfo from './components/ApiDebugInfo/ApiDebugInfo';
 import { PageContainer, ResultHeaderStyled, CategoryTabsStyled } from './SearchResultsPage.styled';
 import { BookItem, SortOption } from '../../types';
 import { getAllProducts, searchProducts } from '../../api/productApi';
@@ -200,21 +201,13 @@ const SearchResultsPage: React.FC = () => {
             />
           </ResultHeaderStyled>
 
-          {/* API 호출 디버깅 정보 */}
-          <div className="api-debug-info" style={{
-            margin: '10px 0',
-            padding: '10px',
-            backgroundColor: '#f5f5f5',
-            border: '1px solid #ddd',
-            borderRadius: '4px'
-          }}>
-            <h3 style={{ margin: '0 0 10px 0' }}>API 호출 정보</h3>
-            <p><strong>검색어:</strong> {searchKeyword || '(없음)'}</p>
-            <p><strong>API 엔드포인트:</strong> {searchKeyword ? `/product/search?keyword=${searchKeyword}` : '/product'}</p>
-            <p><strong>결과 수:</strong> {totalResults}</p>
-            <p><strong>로딩 상태:</strong> {loading ? '로딩 중...' : '완료'}</p>
-            {error && <p style={{ color: 'red' }}><strong>오류:</strong> {error}</p>}
-          </div>
+          {/* (임시) API 호출 디버깅 정보 */}
+          <ApiDebugInfo
+            searchKeyword={searchKeyword}
+            totalResults={totalResults}
+            loading={loading}
+            error={error}
+          />
 
           {loading ? (
             <div className="loading-indicator">로딩 중...</div>
