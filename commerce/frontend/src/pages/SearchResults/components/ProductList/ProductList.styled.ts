@@ -242,7 +242,7 @@ export const CartButton = styled.button`
   border-radius: 4px;
   background: white;
   border: 1px solid #ddd;
-  color: #666;
+  color: #333;
   cursor: pointer;
   font-size: 13px;
   width: 100%;

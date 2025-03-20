@@ -96,7 +96,7 @@ export const ResultHeaderStyled = styled.div`
       font-weight: bold;
     }
 
-    strong:last-child {
+    strong {
       color: #333;
       font-weight: bold;
     }
@@ -138,7 +138,7 @@ export const SortingBarStyled = styled.div`
   .product-cart-add-button {
     background: white;
     border: 1px solid #ddd;
-    color: #666;
+    color: #333;
     gap: 6px;
     padding: 8px 12px;
 
@@ -151,6 +151,7 @@ export const SortingBarStyled = styled.div`
     padding: 6px 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    color: #333;
     font-size: 13px;
     height: 40px;
   }
