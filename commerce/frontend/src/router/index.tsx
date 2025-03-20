@@ -1,7 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom';
 import App from '../App';
+import MainPage from '../pages/MainPage/MainPage';
 import SearchResultsPage from '../pages/SearchResults/SearchResultsPage';
-import MainPage from '../pages/MainPage/MainPage'
+import DetailPage from '../pages/DetailPage/DetailPage';
 
 // 라우터 설정
 const router = createBrowserRouter([
@@ -14,8 +15,12 @@ const router = createBrowserRouter([
         element: <MainPage />,
       },
       {
-        path: '/search-results',
+        path: '/search',
         element: <SearchResultsPage />,
+      },
+      {
+        path: '/detail/:id',
+        element: <DetailPage />,
       },
     ],
   },

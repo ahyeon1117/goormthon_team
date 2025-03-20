@@ -9,6 +9,7 @@ const FixedHeader: React.FC = () => {
   const [isFixed, setIsFixed] = useState(false); // 고정 헤더 표시 상태
   const nav = useNavigate();
   const location = useLocation();
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   // 스크롤 시 고정 헤더 보이기
   useEffect(() => {
@@ -18,7 +19,7 @@ const FixedHeader: React.FC = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -30,6 +31,19 @@ const FixedHeader: React.FC = () => {
       nav("/");
     }
   }
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (searchKeyword.trim()) {
+      // 검색 페이지로 이동하면서 검색어 전달
+      nav(`/search?keyword=${encodeURIComponent(searchKeyword)}`);
+      // 검색 후 입력창 초기화
+      setSearchKeyword('');
+    } else {
+      alert("검색어를 입력하세요.");
+    }
+  };
 
   return (
     <S.FixedHeaderWrapper $isFixed={isFixed}>
@@ -44,10 +58,17 @@ const FixedHeader: React.FC = () => {
         </S.LogoSection>
         <S.SearchSection> {/* 섹션: 검색 입력 및 버튼 */}
           <S.SearchContainer>
-            <S.SearchInput type="text" />
-            <S.SearchButton>
-              <AiOutlineSearch size={20} />
-            </S.SearchButton>
+            <S.SearchForm onSubmit={handleSearch}>
+              <S.SearchInput
+                type="text"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                placeholder="검색어를 입력하세요"
+              />
+              <S.SearchButton type="submit">
+                <AiOutlineSearch size={20} />
+              </S.SearchButton>
+            </S.SearchForm>
           </S.SearchContainer>
         </S.SearchSection>
         <S.UserSection> {/* 섹션: 사용자 메뉴 (장바구니, 유저 버튼) */}

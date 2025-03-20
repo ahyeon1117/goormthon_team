@@ -1,4 +1,3 @@
-import MainPageHeader from '../../../../layout/Header/MainPageHeader.tsx';  // MainPageHeader를 import
 import { AiOutlinePauseCircle, AiOutlinePlayCircle, AiOutlineLeft, AiOutlineRight   } from "react-icons/ai";
 import { useState, useEffect } from "react";
 import {
@@ -80,10 +79,6 @@ const Main = () => {
 
             return (
                 <div>
-                        {/* MainPageHeader를 Main 컴포넌트에 포함시킴 */}
-                        <MainPageHeader />
-
-                        {/* 여기에 Main 컴포넌트의 다른 내용 추가 */}
                         <div>
                             <STMainBannerBox>
                                 <STMainBannerA>
@@ -125,7 +120,6 @@ const Main = () => {
                                 <STSubBannerB>
                                     <Image src={imagesSBB[0]} alt="Sub Banner B"/>
                                 </STSubBannerB>
-
                             </STSubBannerBox>
                         </div>
                     </div>

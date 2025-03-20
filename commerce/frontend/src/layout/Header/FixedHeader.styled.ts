@@ -1,16 +1,16 @@
 import styled from "styled-components";
 
 export const FixedHeaderWrapper = styled.header<{ $isFixed: boolean }>`
-    position: fixed;
-    z-index: 100;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 75px;
-    box-sizing: border-box;
-    background-color: white;
-    box-shadow: 0 1px 16px rgba(0, 0, 0, 0.05);
-    visibility: ${props => props.$isFixed ? "visible" : "hidden"};
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 75px;
+  box-sizing: border-box;
+  background-color: white;
+  box-shadow: 0 1px 16px rgba(0, 0, 0, 0.05);
+  visibility: ${props => props.$isFixed ? "visible" : "hidden"};
 `;
 
 export const FixedHeaderContainer = styled.div`
@@ -26,8 +26,8 @@ export const FixedHeaderContainer = styled.div`
 
 /* 헤더 섹션 - 공통 스타일 */
 const Section = styled.section`
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 `;
 
 /* 헤더 섹션 - 개별 스타일 */
@@ -60,6 +60,12 @@ export const SearchContainer = styled.div`
   align-items: center;
   position: relative;
   width: 500px;
+`;
+
+/* 검색 폼 */
+export const SearchForm = styled.form`
+  display: flex;
+  width: 100%;
 `;
 
 /* 검색 input */

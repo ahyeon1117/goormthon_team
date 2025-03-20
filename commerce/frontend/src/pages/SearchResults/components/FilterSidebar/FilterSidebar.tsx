@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   SidebarContainer,
   SearchBox,
@@ -11,6 +12,10 @@ import {
 
 const FilterSidebar: React.FC = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const currentKeyword = searchParams.get('keyword') || '';
 
   // 필터 카테고리 및 옵션 데이터
   const filterCategories = [
@@ -60,12 +65,26 @@ const FilterSidebar: React.FC = () => {
       }
       return category;
     }));
+
+    // 필터 변경 시 API 호출 또는 상태 업데이트 로직 추가 가능
+    // 예: 필터 상태를 부모 컴포넌트로 전달하여 API 호출
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // 검색 로직 구현
-    console.log('Searching for:', searchKeyword);
+
+    if (searchKeyword.trim()) {
+      // 현재 URL의 검색 파라미터에 결과 내 재검색어 추가
+      const newKeyword = currentKeyword
+        ? `${currentKeyword} ${searchKeyword}`
+        : searchKeyword;
+
+      // 검색 페이지로 이동하면서 검색어 전달
+      navigate(`/search?keyword=${encodeURIComponent(newKeyword)}`);
+
+      // 검색 후 입력창 초기화
+      setSearchKeyword('');
+    }
   };
 
   return (
@@ -78,6 +97,7 @@ const FilterSidebar: React.FC = () => {
             className="search-keyword-input"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
+            placeholder={currentKeyword ? "결과 내 검색" : "검색어 입력"}
           />
           <button type="submit" className="search-submit-button">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
