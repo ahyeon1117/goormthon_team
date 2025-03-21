@@ -97,16 +97,19 @@ services:
       - app-tier
     depends_on:
       - postgresql
+      - redis
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/goorm
       - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATASOURCE_PASSWORD=post123!
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
 
   postgresql:
     environment:
-      - POSTGRESQL_PASSWORD=postgres
-      - POSTGRESQL_USERNAME=postgres
-      - POSTGRESQL_DATABASE=postgres
+      - POSTGRES_DB=goorm
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=post123!
     image: 'bitnami/postgresql:latest'
     networks:
       - app-tier
@@ -114,5 +117,15 @@ services:
       - testvolume1:/bitnami/postgresql
     ports:
       - "5432:5432"
+
+  redis:
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    image: 'bitnami/redis:latest'
+    networks:
+      - app-tier
+    ports:
+      - "6379:6379"
+
 volumes:
   testvolume1:

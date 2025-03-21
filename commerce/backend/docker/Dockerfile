@@ -9,7 +9,7 @@
 ################################################################################
 
 # Create a stage for resolving and downloading dependencies.
-FROM eclipse-temurin:17-jdk-jammy as build
+FROM eclipse-temurin:17-jdk-jammy AS build
 
 WORKDIR /app
 
