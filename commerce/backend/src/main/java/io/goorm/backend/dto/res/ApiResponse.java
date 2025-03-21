@@ -11,9 +11,18 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommonRes<T> {
+public class ApiResponse<T> {
 
   private Integer code;
-  private String msg;
+  private String message;
   private T data;
+
+  public static <T> ApiResponse<T> success(T data) {
+    return ApiResponse
+      .<T>builder()
+      .code(200)
+      .message("success")
+      .data(data)
+      .build();
+  }
 }

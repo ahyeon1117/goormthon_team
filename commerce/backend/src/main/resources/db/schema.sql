@@ -1,12 +1,8 @@
 CREATE TABLE IF NOT EXISTS "member" (
-  "id" SERIAL PRIMARY KEY,
-  "name" VARCHAR(100) NOT NULL,
-  "email" VARCHAR(255) UNIQUE NOT NULL,
-  "password" VARCHAR(255) NOT NULL,
-  "phone_number" VARCHAR(20),
-  "role" VARCHAR(20),
-  "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  "user_id" VARCHAR(100) PRIMARY KEY,
+  "password" VARCHAR(100) NOT NULL,
+  "nick_name" VARCHAR(100) NOT NULL,
+  "role" VARCHAR(20)
 );
 
 CREATE TABLE IF NOT EXISTS "product" (
@@ -33,13 +29,13 @@ CREATE TABLE IF NOT EXISTS "inventory" (
 
 CREATE TABLE IF NOT EXISTS "ordersheet" (
   "id" SERIAL PRIMARY KEY,
-  "member_id" INT,
+  "member_id" VARCHAR(255),
   "total_price" DECIMAL(10,2) NOT NULL,
   "status" VARCHAR(20),
   "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT ordersheet_member_id_fkey FOREIGN KEY ("member_id")
-    REFERENCES "member" ("id") ON DELETE CASCADE
+  CONSTRAINT ordersheet_member_id_fkey 
+    FOREIGN KEY ("member_id") REFERENCES "member" ("user_id") ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "order_item" (
@@ -58,13 +54,13 @@ CREATE TABLE IF NOT EXISTS "order_item" (
 
 CREATE TABLE IF NOT EXISTS "cart_item" (
   "id" SERIAL PRIMARY KEY,
-  "member_id" INT,
+  "member_id" VARCHAR(255),
   "product_id" VARCHAR(255),
   "quantity" INT NOT NULL,
   "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT cart_item_member_id_fkey FOREIGN KEY ("member_id")
-    REFERENCES "member" ("id") ON DELETE CASCADE,
+    REFERENCES "member" ("user_id") ON DELETE CASCADE,
   CONSTRAINT cart_item_product_id_fkey FOREIGN KEY ("product_id")
     REFERENCES "product" ("title") ON DELETE CASCADE
 );
@@ -96,14 +92,14 @@ CREATE TABLE IF NOT EXISTS "shipment" (
 
 CREATE TABLE IF NOT EXISTS "review" (
   "id" SERIAL PRIMARY KEY,
-  "member_id" INT,
+  "member_id" VARCHAR(255),
   "product_id" VARCHAR(255),
   "rating" INT,
   "message" TEXT,
   "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT review_member_id_fkey FOREIGN KEY ("member_id")
-    REFERENCES "member" ("id") ON DELETE CASCADE,
+    REFERENCES "member" ("user_id") ON DELETE CASCADE,
   CONSTRAINT review_product_id_fkey FOREIGN KEY ("product_id")
     REFERENCES "product" ("title") ON DELETE CASCADE
 );
