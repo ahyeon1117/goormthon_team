@@ -1,21 +1,6 @@
 import { AiOutlinePauseCircle, AiOutlinePlayCircle, AiOutlineLeft, AiOutlineRight   } from "react-icons/ai";
 import { useState, useEffect } from "react";
-import {
-  STMainBannerBox,
-  STMainBannerA,
-  ImageMove,
-  Image,
-  ButtonContainer,
-  Button,
-  InfoText,
-  ButtonContainerB,
-  ButtonB,
-  InfoTextB,
-  STMainBannerB,
-  STSubBannerBox,
-  STSubBannerA,
-  STSubBannerB,
-} from './Main.styled';
+import * as S from "./Main.styled";
 
 //MainBannerA
 const imagesMBA = [
@@ -31,14 +16,10 @@ const imagesMBB = [
   "src/assets/images/SubBanner2.png",
 ];
 //SubBannerA
-const imagesSBA = [
-  "src/assets/images/SubBannerA.jpg",
-];
+const imagesSBA = ["src/assets/images/SubBannerA.jpg"];
 
 //SubBannerB
-const imagesSBB = [
-  "src/assets/images/SubBannerB.jpg",
-];
+const imagesSBB = ["src/assets/images/SubBannerB.jpg"];
 
 const Main = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -58,7 +39,9 @@ const Main = () => {
 
   // 이전 이미지로 이동하는 함수
   const goToPreviousImage = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + imagesMBA.length) % imagesMBA.length);
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + imagesMBA.length) % imagesMBA.length,
+    );
   };
 
   // 다음 이미지로 이동하는 함수
@@ -69,7 +52,9 @@ const Main = () => {
   //B배너
   // 이전 이미지로 이동 (B 배너)
   const goToPreviousImageB = () => {
-    setCurrentIndexB((prevIndex) => (prevIndex - 1 + imagesMBB.length) % imagesMBB.length);
+    setCurrentIndexB(
+      (prevIndex) => (prevIndex - 1 + imagesMBB.length) % imagesMBB.length,
+    );
   };
 
   // 다음 이미지로 이동 (B 배너)
@@ -80,10 +65,10 @@ const Main = () => {
   return (
     <div>
       <div>
-        <STMainBannerBox>
-          <STMainBannerA>
+        <S.STMainBannerBox>
+          <S.STMainBannerA>
             {imagesMBA.map((src, index) => (
-              <ImageMove
+              <S.ImageMove
                 key={index}
                 src={src}
                 alt={`Banner ${index + 1}`}
@@ -91,36 +76,47 @@ const Main = () => {
                 index={index}
               />
             ))}
-            <ButtonContainer>
-              <Button onClick={() => setIsPlaying(!isPlaying)}>
+            <S.ButtonContainer>
+              <S.Button onClick={() => setIsPlaying(!isPlaying)}>
                 {isPlaying ? <AiOutlinePauseCircle /> : <AiOutlinePlayCircle />}
-              </Button>
-              <Button onClick={goToPreviousImage}><AiOutlineLeft /></Button>
-              <InfoText>
+              </S.Button>
+              <S.Button onClick={goToPreviousImage}>
+                <AiOutlineLeft />
+              </S.Button>
+              <S.InfoText>
                 {currentIndex + 1} / {imagesMBA.length}
-              </InfoText>
-              <Button onClick={goToNextImage}><AiOutlineRight/></Button>
-            </ButtonContainer>
-          </STMainBannerA>
-          <STMainBannerB>
-            <Image src={imagesMBB[currentIndexB]} alt={`Banner B ${currentIndexB + 1}`} />
-            <ButtonContainerB>
-              <ButtonB onClick={goToPreviousImageB}><AiOutlineLeft /></ButtonB>
-              <InfoTextB>
+              </S.InfoText>
+              <S.Button onClick={goToNextImage}>
+                <AiOutlineRight />
+              </S.Button>
+            </S.ButtonContainer>
+          </S.STMainBannerA>
+          <S.STMainBannerB>
+            <S.Image
+              src={imagesMBB[currentIndexB]}
+              alt={`Banner B ${currentIndexB + 1}`}
+            />
+            <S.ButtonContainerB>
+              <S.ButtonB onClick={goToPreviousImageB}>
+                <AiOutlineLeft />
+              </S.ButtonB>
+              <S.InfoTextB>
                 {currentIndexB + 1} / {imagesMBB.length}
-              </InfoTextB>
-              <ButtonB onClick={goToNextImageB}><AiOutlineRight/></ButtonB>
-            </ButtonContainerB>
-          </STMainBannerB>
-        </STMainBannerBox>
-        <STSubBannerBox>
-          <STSubBannerA>
-            <Image src={imagesSBA[0]} alt="Sub Banner A" />
-          </STSubBannerA>
-          <STSubBannerB>
-            <Image src={imagesSBB[0]} alt="Sub Banner B"/>
-          </STSubBannerB>
-        </STSubBannerBox>
+              </S.InfoTextB>
+              <S.ButtonB onClick={goToNextImageB}>
+                <AiOutlineRight />
+              </S.ButtonB>
+            </S.ButtonContainerB>
+          </S.STMainBannerB>
+        </S.STMainBannerBox>
+        <S.STSubBannerBox>
+          <S.STSubBannerA>
+            <S.Image src={imagesSBA[0]} alt="Sub Banner A" />
+          </S.STSubBannerA>
+          <S.STSubBannerB>
+            <S.Image src={imagesSBB[0]} alt="Sub Banner B" />
+          </S.STSubBannerB>
+        </S.STSubBannerBox>
       </div>
     </div>
   );

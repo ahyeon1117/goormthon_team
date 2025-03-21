@@ -1,37 +1,6 @@
 import { useState, ChangeEvent, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import {
-  DetailPageWrapper,
-  DetailContainer,
-  ProductImage,
-  ProductDetails,
-  ProductTitle,
-  ProductAuthor,
-  ProductPublisher,
-  ProductRating,
-  PriceSection,
-  Price,
-  QuantityControl,
-  QuantityButton,
-  QuantityInput,
-  ButtonsSection,
-  CartButton,
-  PurchaseButton,
-  TabsSection,
-  TabButton,
-  TotalPriceSection,
-  TotalPriceLabel,
-  TotalPriceValue,
-  BookTypeTag,
-  WishlistButton,
-  QuantityAndPriceContainer,
-  SectionTitle,
-  ShippingInfoSection,
-  ShippingInfoRow,
-  ProductInfoSection,
-  FavoredHeartIcon,
-  UnfavoredHeartIcon,
-} from "./DetailPage.styled";
+import * as S from "./DetailPage.styled";
 import { getProductById } from "../../api/productApi";
 import { BookItem } from "../../types";
 
@@ -148,53 +117,53 @@ const DetailPage = () => {
 
   // 로딩 중일 때 표시
   if (loading) {
-    return <DetailPageWrapper>로딩 중...</DetailPageWrapper>;
+    return <S.DetailPageWrapper>로딩 중...</S.DetailPageWrapper>;
   }
 
   // 상품이 없을 때 표시
   if (!product) {
-    return <DetailPageWrapper>상품을 찾을 수 없습니다.</DetailPageWrapper>;
+    return <S.DetailPageWrapper>상품을 찾을 수 없습니다.</S.DetailPageWrapper>;
   }
 
   // 총 가격 계산
   const totalPrice = product.price * quantity;
 
   return (
-    <DetailPageWrapper>
-      <DetailContainer>
-        <ProductImage src={product.imageUrl} alt={product.title} />
-        <ProductDetails>
-          <ProductInfoSection>
-            <BookTypeTag>소득공제</BookTypeTag>
-            <ProductTitle>{product.title}</ProductTitle>
-            <ProductAuthor>
+    <S.DetailPageWrapper>
+      <S.DetailContainer>
+        <S.ProductImage src={product.imageUrl} alt={product.title} />
+        <S.ProductDetails>
+          <S.ProductInfoSection>
+            <S.BookTypeTag>소득공제</S.BookTypeTag>
+            <S.ProductTitle>{product.title}</S.ProductTitle>
+            <S.ProductAuthor>
               {product.author} <span style={{ color: "#666" }}>저자</span>{" "}
               {product.translator && `| ${product.translator} `}
               <span style={{ color: "#666" }}>
                 {product.translator && "역자"}
               </span>
-            </ProductAuthor>
-            <ProductPublisher>
+            </S.ProductAuthor>
+            <S.ProductPublisher>
               {product.publisher} | {product.publishDate}
-            </ProductPublisher>
-            <ProductRating>
+            </S.ProductPublisher>
+            <S.ProductRating>
               <span className="stars">★</span>
               <span className="rating">{product.rating.toFixed(2)}</span>
               <span className="review-count">({product.reviewCount})</span>
-            </ProductRating>
-          </ProductInfoSection>
+            </S.ProductRating>
+          </S.ProductInfoSection>
 
-          <PriceSection>
-            <Price>{product.price.toLocaleString()}원</Price>
-          </PriceSection>
+          <S.PriceSection>
+            <S.Price>{product.price.toLocaleString()}원</S.Price>
+          </S.PriceSection>
 
-          <ShippingInfoSection>
-            <SectionTitle>배송정보</SectionTitle>
-            <ShippingInfoRow>
+          <S.ShippingInfoSection>
+            <S.SectionTitle>배송정보</S.SectionTitle>
+            <S.ShippingInfoRow>
               <span>배송비</span>
               <span>무료</span>
-            </ShippingInfoRow>
-            <ShippingInfoRow>
+            </S.ShippingInfoRow>
+            <S.ShippingInfoRow>
               <span>배송지</span>
               <span>
                 서울특별시 종로구 이화동 123{" "}
@@ -208,14 +177,16 @@ const DetailPage = () => {
                   지역변경 ▾
                 </span>
               </span>
-            </ShippingInfoRow>
-          </ShippingInfoSection>
+            </S.ShippingInfoRow>
+          </S.ShippingInfoSection>
 
-          <QuantityAndPriceContainer>
-            <QuantityControl>
+          <S.QuantityAndPriceContainer>
+            <S.QuantityControl>
               <div>
-                <QuantityButton onClick={decreaseQuantity}>-</QuantityButton>
-                <QuantityInput
+                <S.QuantityButton onClick={decreaseQuantity}>
+                  -
+                </S.QuantityButton>
+                <S.QuantityInput
                   type="number"
                   value={quantity}
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -223,54 +194,58 @@ const DetailPage = () => {
                   }
                   min="1"
                 />
-                <QuantityButton onClick={increaseQuantity}>+</QuantityButton>
+                <S.QuantityButton onClick={increaseQuantity}>
+                  +
+                </S.QuantityButton>
               </div>
-            </QuantityControl>
+            </S.QuantityControl>
 
-            <TotalPriceSection>
-              <TotalPriceLabel>총 상품 금액</TotalPriceLabel>
-              <TotalPriceValue>{totalPrice.toLocaleString()}원</TotalPriceValue>
-            </TotalPriceSection>
-          </QuantityAndPriceContainer>
+            <S.TotalPriceSection>
+              <S.TotalPriceLabel>총 상품 금액</S.TotalPriceLabel>
+              <S.TotalPriceValue>
+                {totalPrice.toLocaleString()}원
+              </S.TotalPriceValue>
+            </S.TotalPriceSection>
+          </S.QuantityAndPriceContainer>
 
-          <ButtonsSection>
-            <WishlistButton onClick={toggleWishlist}>
+          <S.ButtonsSection>
+            <S.WishlistButton onClick={toggleWishlist}>
               {isWishlist ? (
-                <FavoredHeartIcon>
+                <S.FavoredHeartIcon>
                   <path d="M14.5 25.5C14.5 25.5 1 14.5 1 8.5C1 4.5 4 1 8.5 1C11.5 1 14.5 3 14.5 5.5C14.5 3 17.5 1 20.5 1C25 1 28 4.5 28 8.5C28 14.5 14.5 25.5 14.5 25.5Z" />
-                </FavoredHeartIcon>
+                </S.FavoredHeartIcon>
               ) : (
-                <UnfavoredHeartIcon>
+                <S.UnfavoredHeartIcon>
                   <path d="M14.5 25.5C14.5 25.5 1 14.5 1 8.5C1 4.5 4 1 8.5 1C11.5 1 14.5 3 14.5 5.5C14.5 3 17.5 1 20.5 1C25 1 28 4.5 28 8.5C28 14.5 14.5 25.5 14.5 25.5Z" />
-                </UnfavoredHeartIcon>
+                </S.UnfavoredHeartIcon>
               )}
-            </WishlistButton>
-            <CartButton>장바구니</CartButton>
-            <PurchaseButton>바로구매</PurchaseButton>
-          </ButtonsSection>
-        </ProductDetails>
-      </DetailContainer>
+            </S.WishlistButton>
+            <S.CartButton>장바구니</S.CartButton>
+            <S.PurchaseButton>바로구매</S.PurchaseButton>
+          </S.ButtonsSection>
+        </S.ProductDetails>
+      </S.DetailContainer>
 
-      <TabsSection>
-        <TabButton
+      <S.TabsSection>
+        <S.TabButton
           $active={activeTab === "info"}
           onClick={() => handleTabChange("info")}
         >
           도서정보
-        </TabButton>
-        <TabButton
+        </S.TabButton>
+        <S.TabButton
           $active={activeTab === "review"}
           onClick={() => handleTabChange("review")}
         >
           리뷰 ({product.reviewCount})
-        </TabButton>
-        <TabButton
+        </S.TabButton>
+        <S.TabButton
           $active={activeTab === "shipping"}
           onClick={() => handleTabChange("shipping")}
         >
           배송/반품
-        </TabButton>
-      </TabsSection>
+        </S.TabButton>
+      </S.TabsSection>
 
       {/* 탭 내용 */}
       {activeTab === "info" && (
@@ -295,7 +270,7 @@ const DetailPage = () => {
           <p>반품/교환 안내: 상품 수령 후 7일 이내 가능</p>
         </div>
       )}
-    </DetailPageWrapper>
+    </S.DetailPageWrapper>
   );
 };
 
