@@ -6,20 +6,32 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
   private final UserDetailsService userDetailsService;
   private final JwtService jwtService;
+  private final RequestMatcher skipRequestMatcher;
+
+  public JwtAuthFilter(UserDetailsService userDetailsService, JwtService jwtService) {
+    this.userDetailsService = userDetailsService;
+    this.jwtService = jwtService;
+    this.skipRequestMatcher = null;
+  }
+
+  public JwtAuthFilter(UserDetailsService userDetailsService, JwtService jwtService, RequestMatcher skipRequestMatcher) {
+    this.userDetailsService = userDetailsService;
+    this.jwtService = jwtService;
+    this.skipRequestMatcher = skipRequestMatcher;
+  }
 
   @Override
   protected void doFilterInternal(
@@ -27,6 +39,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     HttpServletResponse response,
     FilterChain filterChain
   ) throws ServletException, IOException {
+    // 인증을 건너뛸 경로인 경우 필터를 통과시킴
+    if (skipRequestMatcher != null && skipRequestMatcher.matches(request)) {
+      filterChain.doFilter(request, response);
+      return;
+    }
+
     try {
       String authorizationHeader = request.getHeader("Authorization");
 

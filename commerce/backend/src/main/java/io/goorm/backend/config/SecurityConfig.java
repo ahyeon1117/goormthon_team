@@ -6,16 +6,18 @@ import io.goorm.backend.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -45,12 +47,6 @@ public class SecurityConfig {
   }
 
   @Bean
-  public WebSecurityCustomizer webSecurityCustomizer() {
-    return webSecurity ->
-      webSecurity.ignoring().requestMatchers("/waiting", "/api/v1/auth/**");
-  }
-
-  @Bean
   public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http)
     throws Exception {
     return http
@@ -61,22 +57,30 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    // 인증이 필요 없는 URL 패턴 정의
+    OrRequestMatcher publicUrlMatcher = new OrRequestMatcher(
+      new AntPathRequestMatcher("/waiting/**"),
+      new AntPathRequestMatcher("/api/v1/auth/**"),
+      new AntPathRequestMatcher("/api/v1/products/**", "GET") // GET 메서드만 허용
+    );
+
     http
       .csrf(AbstractHttpConfigurer::disable)
       .headers(AbstractHttpConfigurer::disable)
       .authorizeHttpRequests(request ->
         request
-          .requestMatchers("/api/v1/auth/**")
-          .permitAll() // 해당 경로로 시작하는 요청 모두 접근 허가
+          .requestMatchers("/waiting/**").permitAll()
+          .requestMatchers("/api/v1/auth/**").permitAll()
+          .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll() // GET 메서드만 허용
           .anyRequest()
           .authenticated() // 그 외 모든 요청 인증 처리
       )
       .addFilterBefore(
-        new JwtAuthenticationFilter(jwtService),
+        jwtAuthenticationFilter(), // 빈으로 정의된 필터 사용
         UsernamePasswordAuthenticationFilter.class
       )
       .addFilterAfter(
-        new JwtAuthFilter(customUserDetailsService, jwtService),
+        new JwtAuthFilter(customUserDetailsService, jwtService, publicUrlMatcher),
         UsernamePasswordAuthenticationFilter.class
       )
       .exceptionHandling(exception ->
