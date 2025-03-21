@@ -6,6 +6,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
@@ -15,9 +16,9 @@ public class WaitingFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(
-    HttpServletRequest request,
-    HttpServletResponse response,
-    FilterChain filterChain
+    @NonNull HttpServletRequest request,
+    @NonNull HttpServletResponse response,
+    @NonNull FilterChain filterChain
   ) throws ServletException, IOException {
     try {
       String waitingNumber = request.getHeader("WaitingNumber");

@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,9 +36,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(
-    HttpServletRequest request,
-    HttpServletResponse response,
-    FilterChain filterChain
+    @NonNull HttpServletRequest request,
+    @NonNull HttpServletResponse response,
+    @NonNull FilterChain filterChain
   ) throws ServletException, IOException {
     // 인증을 건너뛸 경로인 경우 필터를 통과시킴
     if (skipRequestMatcher != null && skipRequestMatcher.matches(request)) {
