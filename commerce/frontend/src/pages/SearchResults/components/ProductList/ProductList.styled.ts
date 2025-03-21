@@ -26,15 +26,15 @@ export const CheckboxContainer = styled.div`
 `;
 
 interface CheckboxProps {
-  isChecked?: boolean;
+  'data-checked'?: boolean;
 }
 
 export const Checkbox = styled.div<CheckboxProps>`
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  border: 2px solid ${props => props.isChecked ? '#e896ff' : '#ddd'};
-  background-color: ${props => props.isChecked ? '#e896ff' : 'white'};
+  border: 2px solid ${props => props['data-checked'] ? '#e896ff' : '#ddd'};
+  background-color: ${props => props['data-checked'] ? '#e896ff' : 'white'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,7 +42,7 @@ export const Checkbox = styled.div<CheckboxProps>`
 
   &:after {
     content: '';
-    display: ${props => props.isChecked ? 'block' : 'none'};
+    display: ${props => props['data-checked'] ? 'block' : 'none'};
     width: 4px;
     height: 8px;
     border: solid white;
@@ -102,6 +102,7 @@ export const ProductInfo = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  padding-right: 100px;
 
   .actions {
     display: flex;
@@ -172,6 +173,7 @@ export const ButtonsContainer = styled.div`
   flex-direction: column;
   gap: 10px;
   align-items: flex-end;
+  width: 90px;
 
   .product-action-buttons {
     display: flex;
@@ -182,16 +184,14 @@ export const ButtonsContainer = styled.div`
 `;
 
 interface FavoriteButtonProps {
-  isFavored?: boolean;
+  'data-favored'?: boolean;
 }
 
 export const FavoriteButton = styled.button<FavoriteButtonProps>`
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  background: ${props => props.isFavored ? '#ffebee' : 'white'};
-  border: 1px solid ${props => props.isFavored ? '#ff8a80' : '#ddd'};
-  color: ${props => props.isFavored ? '#e53935' : '#666'};
+  background: transparent;
+  border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -199,21 +199,54 @@ export const FavoriteButton = styled.button<FavoriteButtonProps>`
   font-size: 18px;
   align-self: flex-end;
   margin-bottom: 20px;
+  padding: 0;
+  outline: none;
 
-  &:hover {
-    background: ${props => props.isFavored ? '#ffcdd2' : '#f5f5f5'};
+  &:focus {
+    outline: none;
+  }
+
+  svg {
+    width: 24px;
+    height: 22px;
+  }
+`;
+
+export const FavoredHeartIcon = styled.svg.attrs({
+  width: "29",
+  height: "27",
+  viewBox: "0 0 29 27",
+  fill: "none",
+  xmlns: "http://www.w3.org/2000/svg"
+})`
+  path {
+    fill: #EE0000;
+    stroke: #EE0000;
+  }
+`;
+
+export const UnfavoredHeartIcon = styled.svg.attrs({
+  width: "29",
+  height: "27",
+  viewBox: "0 0 29 27",
+  fill: "none",
+  xmlns: "http://www.w3.org/2000/svg"
+})`
+  path {
+    stroke: #CCCCCC;
   }
 `;
 
 export const CartButton = styled.button`
-  padding: 8px 15px;
+  padding: 8px 12px;
   border-radius: 4px;
   background: white;
   border: 1px solid #ddd;
-  color: #666;
+  color: #333;
   cursor: pointer;
   font-size: 13px;
   width: 100%;
+  height: 36px;
 
   &:hover {
     background: #f5f5f5;
@@ -221,7 +254,7 @@ export const CartButton = styled.button`
 `;
 
 export const BuyNowButton = styled.button`
-  padding: 8px 15px;
+  padding: 8px 12px;
   border-radius: 4px;
   background: #e896ff;
   border: none;
@@ -229,6 +262,7 @@ export const BuyNowButton = styled.button`
   cursor: pointer;
   font-size: 13px;
   width: 100%;
+  height: 36px;
 
   &:hover {
     background: #d87ee9;

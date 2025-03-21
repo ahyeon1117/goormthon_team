@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { BookItem } from '../../../../types';
 import {
   ProductItemContainer,
@@ -13,7 +14,9 @@ import {
   BuyNowButton,
   ButtonsContainer,
   CheckboxContainer,
-  Checkbox
+  Checkbox,
+  FavoredHeartIcon,
+  UnfavoredHeartIcon
 } from './ProductList.styled';
 
 interface ProductItemProps {
@@ -50,18 +53,22 @@ const ProductItem: React.FC<ProductItemProps> = ({
   return (
     <ProductItemContainer>
       <CheckboxContainer onClick={handleCheckToggle}>
-        <Checkbox isChecked={book.isChecked} />
+        <Checkbox data-checked={book.isChecked} />
       </CheckboxContainer>
 
       <ProductImage>
-        <img src={book.imageUrl || '/placeholder.jpg'} alt={book.title} />
-        <div className="product-image-overlay">
-          <button className="product-preview-button">미리보기</button>
-        </div>
+        <Link to={`/detail/${book.id}`}>
+          <img src={book.imageUrl || '/placeholder.jpg'} alt={book.title} />
+          <div className="product-image-overlay">
+            <button className="product-preview-button">미리보기</button>
+          </div>
+        </Link>
       </ProductImage>
 
       <ProductInfo>
-        <ProductTitle>{book.title}</ProductTitle>
+        <Link to={`/detail/${book.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <ProductTitle>{book.title}</ProductTitle>
+        </Link>
         <ProductAuthor>
           <span className="author">{book.author}</span>
           <span className="publisher">{book.publisher}</span>
@@ -69,20 +76,27 @@ const ProductItem: React.FC<ProductItemProps> = ({
         </ProductAuthor>
         <ProductPrice>{formatPrice(book.price)}</ProductPrice>
         <ProductRating>
-          <span className="stars">★★★★★</span>
+          <span className="stars">★</span>
           <span className="rating">{book.rating}</span>
           <span className="review-count">({book.reviewCount})</span>
         </ProductRating>
 
         <ButtonsContainer>
           <FavoriteButton
-            isFavored={book.isFavored}
+            data-favored={book.isFavored}
             onClick={() => onToggleFavorite(book.id)}
             aria-label="찜하기"
           >
-            {book.isFavored ? '❤️' : '🤍'}
+            {book.isFavored ? (
+              <FavoredHeartIcon>
+                <path d="M14.5 25.5C14.5 25.5 1 14.5 1 8.5C1 4.5 4 1 8.5 1C11.5 1 14.5 3 14.5 5.5C14.5 3 17.5 1 20.5 1C25 1 28 4.5 28 8.5C28 14.5 14.5 25.5 14.5 25.5Z" />
+              </FavoredHeartIcon>
+            ) : (
+              <UnfavoredHeartIcon>
+                <path d="M14.5 25.5C14.5 25.5 1 14.5 1 8.5C1 4.5 4 1 8.5 1C11.5 1 14.5 3 14.5 5.5C14.5 3 17.5 1 20.5 1C25 1 28 4.5 28 8.5C28 14.5 14.5 25.5 14.5 25.5Z" />
+              </UnfavoredHeartIcon>
+            )}
           </FavoriteButton>
-
           <div className="product-action-buttons">
             <CartButton onClick={handleAddToCart}>
               장바구니

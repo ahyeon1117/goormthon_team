@@ -11,12 +11,16 @@
   },
   "dependencies": {
     "@types/react-router-dom": "^5.3.3",
+    "@types/react-slick": "^0.23.13",
     "@types/styled-components": "^5.1.34",
+    "axios": "^1.8.0",
     "frontend": "file:",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.1.5",
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.15"
   },
   "devDependencies": {

@@ -25,3 +25,13 @@ export interface SortOption {
   id: string;
   label: string;
 }
+
+// BestNew 컴포넌트 - 도서 타입 정의
+export interface BestNewBook {
+  id: string;
+  title: string;
+  imageUrl: string;
+  author: string;
+  publisher: string;
+  rank: number;
+}
