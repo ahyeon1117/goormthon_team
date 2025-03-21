@@ -80,14 +80,33 @@
 #   db-password:
 #     file: db/password.txt
 
+name: bookstore
+
 networks:
   app-tier:
     driver: bridge
 
 services:
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - app-tier
+    depends_on:
+      - postgresql
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+
   postgresql:
     environment:
-          - POSTGRESQL_PASSWORD=postgres # postgreSQL 컨테이너 호스트
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_DATABASE=postgres
     image: 'bitnami/postgresql:latest'
     networks:
       - app-tier
