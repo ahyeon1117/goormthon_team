@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProductRes {
+public class ProductResponse {
 
   private String title;
   private String link;

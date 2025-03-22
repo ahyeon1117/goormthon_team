@@ -1,7 +1,7 @@
 package io.goorm.backend.controller;
 
 import io.goorm.backend.dto.res.ApiResponse;
-import io.goorm.backend.dto.res.ProductRes;
+import io.goorm.backend.dto.res.ProductResponse;
 import io.goorm.backend.service.ProductService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class ProductController {
   private ProductService productService;
 
   @GetMapping
-  public ResponseEntity<ApiResponse<List<ProductRes>>> getProduct() {
+  public ResponseEntity<ApiResponse<List<ProductResponse>>> getProduct() {
     return ResponseEntity.ok(
       ApiResponse.success(productService.findAllProduct())
     );

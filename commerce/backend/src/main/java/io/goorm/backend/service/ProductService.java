@@ -1,6 +1,6 @@
 package io.goorm.backend.service;
 
-import io.goorm.backend.dto.res.ProductRes;
+import io.goorm.backend.dto.res.ProductResponse;
 import io.goorm.backend.entity.Product;
 import io.goorm.backend.repository.ProductRepository;
 import java.util.Iterator;
@@ -19,15 +19,15 @@ public class ProductService {
   @Autowired
   private ProductRepository productRepository;
 
-  public List<ProductRes> findAllProduct() {
+  public List<ProductResponse> findAllProduct() {
     Iterator<Product> products = productRepository.findAll().iterator();
-    List<ProductRes> result = StreamSupport
+    List<ProductResponse> result = StreamSupport
       .stream(
         Spliterators.spliteratorUnknownSize(products, Spliterator.ORDERED),
         false
       )
       .map(product -> {
-        ProductRes res = new ProductRes();
+        ProductResponse res = new ProductResponse();
         BeanUtils.copyProperties(product, res);
         return res;
       })
