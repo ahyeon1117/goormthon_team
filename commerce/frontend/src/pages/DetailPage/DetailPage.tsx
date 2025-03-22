@@ -16,6 +16,7 @@ interface Product {
   reviewCount: number;
   price: number;
   imageUrl: string;
+  description?: string;
 }
 
 // BookItem을 Product로 변환하는 함수
@@ -30,6 +31,7 @@ const mapBookItemToProduct = (bookItem: BookItem): Product => {
     reviewCount: bookItem.reviewCount,
     price: bookItem.price,
     imageUrl: bookItem.imageUrl,
+    description: bookItem.description,
   };
 };
 
@@ -46,6 +48,8 @@ const mockProduct: Product = {
   price: 25200,
   imageUrl:
     "https://shopping-phinf.pstatic.net/main_4933517/49335174628.20240725071120.jpg",
+  description:
+    "이 책은 자바스크립트 언어로 구현한 23가지 디자인 패턴을 소개합니다. 객체 지향 디자인 패턴을 자바스크립트 환경에 맞게 응용하는 방법을 설명하고, 각 패턴의 실제 사용 사례와 함께 코드 예제를 제공합니다.",
 };
 
 // 상품 상세 페이지 컴포넌트
@@ -249,26 +253,63 @@ const DetailPage = () => {
 
       {/* 탭 내용 */}
       {activeTab === "info" && (
-        <div>
-          <h3>책 읽으세요 왜냐면...</h3>
-          <p>독서는 인체에 매우 유익합니다.</p>
-        </div>
+        <S.TabContent>
+          <S.BookDescriptionSection>
+            <S.BookDescriptionTitle>도서 소개</S.BookDescriptionTitle>
+            <S.BookDescriptionText>
+              {product.description || "이 도서에 대한 설명이 없습니다."}
+            </S.BookDescriptionText>
+          </S.BookDescriptionSection>
+          <S.BookDescriptionSection>
+            <S.BookDescriptionTitle>상세 정보</S.BookDescriptionTitle>
+            <S.BookInfoTable>
+              <tbody>
+                <S.BookInfoRow>
+                  <S.BookInfoLabel>제목</S.BookInfoLabel>
+                  <S.BookInfoValue>{product.title}</S.BookInfoValue>
+                </S.BookInfoRow>
+                <S.BookInfoRow>
+                  <S.BookInfoLabel>저자</S.BookInfoLabel>
+                  <S.BookInfoValue>{product.author}</S.BookInfoValue>
+                </S.BookInfoRow>
+                {product.translator && (
+                  <S.BookInfoRow>
+                    <S.BookInfoLabel>역자</S.BookInfoLabel>
+                    <S.BookInfoValue>{product.translator}</S.BookInfoValue>
+                  </S.BookInfoRow>
+                )}
+                <S.BookInfoRow>
+                  <S.BookInfoLabel>출판사</S.BookInfoLabel>
+                  <S.BookInfoValue>{product.publisher}</S.BookInfoValue>
+                </S.BookInfoRow>
+                <S.BookInfoRow>
+                  <S.BookInfoLabel>출판일</S.BookInfoLabel>
+                  <S.BookInfoValue>{product.publishDate}</S.BookInfoValue>
+                </S.BookInfoRow>
+                <S.BookInfoRow>
+                  <S.BookInfoLabel>ISBN</S.BookInfoLabel>
+                  <S.BookInfoValue>{product.id}</S.BookInfoValue>
+                </S.BookInfoRow>
+              </tbody>
+            </S.BookInfoTable>
+          </S.BookDescriptionSection>
+        </S.TabContent>
       )}
 
       {activeTab === "review" && (
-        <div>
+        <S.TabContent>
           <h3>사용자 리뷰 ({product.reviewCount})</h3>
           <p>아직 등록된 리뷰가 없습니다.</p>
-        </div>
+        </S.TabContent>
       )}
 
       {activeTab === "shipping" && (
-        <div>
+        <S.TabContent>
           <h3>배송 및 반품 정보</h3>
           <p>배송비: 무료</p>
           <p>배송방법: 택배</p>
           <p>반품/교환 안내: 상품 수령 후 7일 이내 가능</p>
-        </div>
+        </S.TabContent>
       )}
     </S.DetailPageWrapper>
   );

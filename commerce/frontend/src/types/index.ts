@@ -11,6 +11,7 @@ export interface BookItem {
   reviewCount: number;
   isFavored?: boolean;
   isChecked?: boolean;
+  description?: string;
 }
 
 // 필터 옵션 타입 정의

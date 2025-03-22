@@ -17,4 +17,5 @@ public class ProductRes {
   private String publisher;
   private String pubdate;
   private String isbn;
+  private String description;
 }

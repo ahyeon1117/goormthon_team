@@ -15,6 +15,7 @@ export interface ProductApiItem {
   publisher: string;
   pubdate: string;
   isbn: string;
+  description?: string;
 }
 
 /**
@@ -39,6 +40,7 @@ export const mapProductApiToBookItem = (product: ProductApiItem, index: number):
     rating: 0, // 백엔드에서 제공하지 않는 정보는 기본값 설정
     reviewCount: 0, // 백엔드에서 제공하지 않는 정보는 기본값 설정
     isFavored: false,
-    isChecked: false
+    isChecked: false,
+    description: product.description
   };
 };
