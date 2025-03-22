@@ -19,7 +19,8 @@ public class ProductService {
   @Autowired
   private ProductRepository productRepository;
 
-  public List<ProductResponse> findAllProduct() {
+  // 외부 API용 (컨트롤러에서 사용)
+  public List<ProductResponse> getAllProduct() {
     Iterator<Product> products = productRepository.findAll().iterator();
     List<ProductResponse> result = StreamSupport
       .stream(
@@ -35,7 +36,17 @@ public class ProductService {
     return result;
   }
 
-  public Product getProductById(String id) {
+  public ProductResponse getProductByIsbn(String isbn) {
+    Product product = productRepository.findByIsbn(isbn)
+        .orElseThrow(() -> new IllegalArgumentException("해당 ISBN의 상품이 존재하지 않습니다: " + isbn));
+
+    ProductResponse productResponse = new ProductResponse();
+    BeanUtils.copyProperties(product, productResponse);
+    return productResponse;
+  }
+
+  // 내부 서비스용 (서비스에서 사용)
+  public Product findProductById(String id) {
     return productRepository.findById(id).orElseThrow();
   }
 }
