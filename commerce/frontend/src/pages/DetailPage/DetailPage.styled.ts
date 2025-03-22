@@ -293,19 +293,67 @@ export const TabsSection = styled.div`
   margin-bottom: 30px;
 `;
 
-export const TabButton = styled.button<{ $active?: boolean }>`
-  padding: 15px 25px;
-  background: ${props => props.$active ? '#fff' : '#f4f4f4'};
-  border: 1px solid #ddd;
-  border-bottom: ${props => props.$active ? 'none' : '1px solid #ddd'};
-  border-radius: 4px 4px 0 0;
-  margin-right: 5px;
+export const TabButton = styled.button<{ $active: boolean }>`
+  padding: 15px 20px;
+  background: transparent;
+  color: ${({ $active }) => ($active ? "#333" : "#999")};
+  border: none;
+  border-bottom: ${({ $active }) => ($active ? "2px solid #333" : "none")};
   cursor: pointer;
-  font-weight: ${props => props.$active ? 'bold' : 'normal'};
-  position: relative;
-  bottom: -1px;
+  font-size: 16px;
+  font-weight: ${({ $active }) => ($active ? "bold" : "normal")};
+  border-radius: 0;
+  outline: none;
 
   &:hover {
-    background: #fff;
+    background: transparent;
+    color: #333;
   }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const TabContent = styled.div`
+  padding: 20px 0;
+`;
+
+export const BookDescriptionSection = styled.div`
+  margin-bottom: 30px;
+`;
+
+export const BookDescriptionTitle = styled.h3`
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+`;
+
+export const BookDescriptionText = styled.p`
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+  white-space: pre-line;
+  margin-bottom: 20px;
+`;
+
+export const BookInfoTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+`;
+
+export const BookInfoRow = styled.tr`
+  border-bottom: none;
+  padding: 5px 0;
+`;
+
+export const BookInfoLabel = styled.td`
+  padding: 10px 0;
+  width: 120px;
+  color: #666;
+`;
+
+export const BookInfoValue = styled.td`
+  padding: 10px 0;
 `;
