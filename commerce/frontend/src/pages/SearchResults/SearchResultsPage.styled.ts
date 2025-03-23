@@ -27,7 +27,7 @@ export const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 10px auto 0px auto;
   padding: 20px;
 
   .search-content-wrapper {
@@ -39,43 +39,6 @@ export const PageContainer = styled.div`
     flex: 1;
     margin-left: 25px;
     margin-top: 5px;
-  }
-`;
-
-export const CategoryTabsStyled = styled.div`
-  display: flex;
-  margin-bottom: 20px;
-
-  .category-tab {
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 16px;
-    position: relative;
-
-    &:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      height: 14px;
-      width: 1px;
-      background-color: #ddd;
-    }
-
-    &.active {
-      color: #333;
-      font-weight: bold;
-    }
-
-    .label {
-      margin-right: 5px;
-    }
-
-    .count {
-      color: #666;
-      font-size: 14px;
-    }
   }
 `;
 

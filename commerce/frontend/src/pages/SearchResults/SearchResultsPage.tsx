@@ -4,11 +4,7 @@ import ProductList from "./components/ProductList/ProductList.tsx";
 import SortingBar from "./components/SortingBar/SortingBar.tsx";
 import Pagination from "./components/Pagination/Pagination.tsx";
 import SearchOptions from "./components/SearchOptions/SearchOptions.tsx";
-import {
-  PageContainer,
-  ResultHeaderStyled,
-  CategoryTabsStyled,
-} from "./SearchResultsPage.styled";
+import { PageContainer, ResultHeaderStyled } from "./SearchResultsPage.styled";
 import { BookItem, SortOption } from "../../types";
 import { getAllProducts, searchProducts } from "../../api/productApi";
 import { useLocation } from "react-router-dom";
@@ -529,14 +525,6 @@ const SearchResultsPage: React.FC = () => {
 
   return (
     <PageContainer>
-      {/* 카테고리 탭 영역 - 통합검색 */}
-      <CategoryTabsStyled>
-        <div key="all" className="category-tab active">
-          <span className="label">통합검색</span>
-          <span className="count">({totalResults})</span>
-        </div>
-      </CategoryTabsStyled>
-
       <div className="search-content-wrapper" style={{ display: "flex" }}>
         <FilterSidebar
           onWithinSearch={handleWithinSearch}
