@@ -48,6 +48,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
     {
       id: "category",
       title: "분야별 조회",
+      disabled: true, // 분야별 조회 카테고리를 비활성화하기 위한 플래그 추가
       options: [
         { id: "novel", label: "소설/에세이/시", checked: false },
         { id: "humanities", label: "인문/역사", checked: false },
@@ -189,8 +190,15 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   id={`${category.id}-${option.id}`}
                   checked={option.checked}
                   onChange={() => handleFilterChange(category.id, option.id)}
+                  disabled={category.disabled}
                 />
-                <label htmlFor={`${category.id}-${option.id}`}>
+                <label
+                  htmlFor={`${category.id}-${option.id}`}
+                  style={{
+                    color: category.disabled ? "#999" : "inherit",
+                    cursor: category.disabled ? "default" : "pointer",
+                  }}
+                >
                   {option.label}
                 </label>
               </FilterItem>
