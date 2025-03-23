@@ -27,13 +27,6 @@ const itemsPerPageOptions = [
   { id: "60", label: "60개씩 보기" },
 ];
 
-// 카테고리 탭 데이터
-const categoryTabs = [
-  { id: "all", label: "통합검색", count: 800 },
-  { id: "domestic", label: "국내도서", count: 200 },
-  { id: "foreign", label: "외국도서", count: 600 },
-];
-
 // 검색 태그 타입 정의
 interface SearchTag {
   id: string;
@@ -47,7 +40,6 @@ const SearchResultsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedSort, setSelectedSort] = useState<string>("popularity");
   const [itemsPerPage, setItemsPerPage] = useState<string>("20");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -535,32 +527,14 @@ const SearchResultsPage: React.FC = () => {
     setBooks(books.map((book) => ({ ...book, isChecked: false })));
   };
 
-  // 카테고리 탭 변경 핸들러
-  const handleCategoryChange = (categoryId: string) => {
-    setSelectedCategory(categoryId);
-    setCurrentPage(1); // 카테고리 변경 시 첫 페이지로 초기화
-    // TODO: 카테고리에 따른 데이터 필터링 로직 구현 필요
-    console.log(`카테고리 변경: ${categoryId}`);
-
-    // 실제 구현에서는 API 호출 또는 필터링 로직 추가 필요
-  };
-
   return (
     <PageContainer>
-      {/* 카테고리 탭 영역 - 통합검색, 국내도서, 외국도서 */}
+      {/* 카테고리 탭 영역 - 통합검색 */}
       <CategoryTabsStyled>
-        {categoryTabs.map((tab) => (
-          <div
-            key={tab.id}
-            className={`category-tab ${
-              selectedCategory === tab.id ? "active" : ""
-            }`}
-            onClick={() => handleCategoryChange(tab.id)}
-          >
-            <span className="label">{tab.label}</span>
-            <span className="count">({tab.count})</span>
-          </div>
-        ))}
+        <div key="all" className="category-tab active">
+          <span className="label">통합검색</span>
+          <span className="count">({totalResults})</span>
+        </div>
       </CategoryTabsStyled>
 
       <div className="search-content-wrapper" style={{ display: "flex" }}>
