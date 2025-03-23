@@ -4,7 +4,7 @@ import ProductList from "./components/ProductList/ProductList.tsx";
 import SortingBar from "./components/SortingBar/SortingBar.tsx";
 import Pagination from "./components/Pagination/Pagination.tsx";
 import SearchOptions from "./components/SearchOptions/SearchOptions.tsx";
-import { PageContainer, ResultHeaderStyled } from "./SearchResultsPage.styled";
+import { PageContainer, ResultHeaderStyled, NoResultsStyled } from "./SearchResultsPage.styled";
 import { BookItem, SortOption } from "../../types";
 import { getAllProducts, searchProducts } from "../../api/productApi";
 import { useLocation } from "react-router-dom";
@@ -370,15 +370,23 @@ const SearchResultsPage: React.FC = () => {
     if (checked) {
       // 태그 추가
       const tagExists = newTags.some((tag) => tag.type === conditionId);
+
       if (!tagExists) {
-        const tagText =
-          conditionId === "title"
-            ? "제목"
-            : conditionId === "author"
-            ? "저자"
-            : conditionId === "publisher"
-            ? "출판사"
-            : conditionId;
+        let tagText;
+        switch (conditionId) {
+          case "title":
+            tagText = "제목";
+            break;
+          case "author":
+            tagText = "저자";
+            break;
+          case "publisher":
+            tagText = "출판사";
+            break;
+          default:
+            tagText = conditionId;
+            break;
+        }
 
         newTags.push({
           id: getNewTagId(),
@@ -559,15 +567,7 @@ const SearchResultsPage: React.FC = () => {
           ) : error ? (
             <div className="error-message">{error}</div>
           ) : filteredBooks.length === 0 ? (
-            <div
-              className="no-results"
-              style={{
-                padding: "30px",
-                textAlign: "center",
-                fontSize: "18px",
-                color: "#666",
-              }}
-            >
+            <NoResultsStyled>
               <p>검색 결과가 없습니다.</p>
               {searchKeyword &&
               withinSearchTerms.length === 0 &&
@@ -575,8 +575,7 @@ const SearchResultsPage: React.FC = () => {
               !searchConditions.author &&
               !searchConditions.publisher ? (
                 <p>
-                  <strong>"{searchKeyword}"</strong>에 대한 검색 결과가
-                  없습니다.
+                  <strong>"{searchKeyword}"</strong>에 대한 검색 결과가 없습니다.
                   <br />
                   다른 검색어로 다시 시도해보세요.
                 </p>
@@ -584,11 +583,10 @@ const SearchResultsPage: React.FC = () => {
                 <p>
                   선택하신 조건에 맞는 결과가 없습니다.
                   <br />
-                  선택하신 옵션 조건을 변경하거나 다른 검색어로 다시 검색해
-                  주세요.
+                  선택하신 옵션 조건을 변경하거나 다른 검색어로 다시 검색해주세요.
                 </p>
               )}
-            </div>
+            </NoResultsStyled>
           ) : (
             <>
               <ProductList

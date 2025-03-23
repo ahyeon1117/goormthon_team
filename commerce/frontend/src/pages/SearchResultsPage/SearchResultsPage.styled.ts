@@ -123,3 +123,10 @@ export const SortingBarStyled = styled.div`
     min-width: 120px;
   }
 `;
+
+export const NoResultsStyled = styled.div`
+  padding: 30px;
+  text-align: center;
+  font-size: 18px;
+  color: #666;
+`;

@@ -38,11 +38,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       options: [
         { id: "title", label: "제목", checked: searchConditions.title },
         { id: "author", label: "저자", checked: searchConditions.author },
-        {
-          id: "publisher",
-          label: "출판사",
-          checked: searchConditions.publisher,
-        },
+        { id: "publisher", label: "출판사", checked: searchConditions.publisher },
       ],
     },
     {
