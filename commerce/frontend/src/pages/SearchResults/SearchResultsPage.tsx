@@ -3,6 +3,7 @@ import FilterSidebar from "./components/FilterSidebar/FilterSidebar.tsx";
 import ProductList from "./components/ProductList/ProductList.tsx";
 import SortingBar from "./components/SortingBar/SortingBar.tsx";
 import Pagination from "./components/Pagination/Pagination.tsx";
+import SearchOptions from "./components/SearchOptions/SearchOptions.tsx";
 import {
   PageContainer,
   ResultHeaderStyled,
@@ -237,6 +238,9 @@ const SearchResultsPage: React.FC = () => {
               onAddToCart={handleAddSelectedToCart}
             />
           </ResultHeaderStyled>
+
+          {/* 결과 내 검색 및 검색 조건 컴포넌트 */}
+          <SearchOptions />
 
           {loading ? (
             <div className="loading-indicator">로딩 중...</div>
