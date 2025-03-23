@@ -45,6 +45,21 @@ public class ProductService {
     return productResponse;
   }
 
+  public List<ProductResponse> searchProducts(String keyword) {
+    // 제목, 저자, 출판사로 검색하도록 변경
+    List<Product> products = productRepository.findByTitleContainingOrAuthorContainingOrPublisherContaining(
+            keyword, keyword, keyword);
+
+    // 엔티티를 응답 DTO로 변환
+    return products.stream()
+        .map(product -> {
+          ProductResponse res = new ProductResponse();
+          BeanUtils.copyProperties(product, res);
+          return res;
+        })
+        .collect(Collectors.toList());
+  }
+
   // 내부 서비스용 (서비스에서 사용)
   public Product findProductById(String id) {
     return productRepository.findById(id).orElseThrow();
