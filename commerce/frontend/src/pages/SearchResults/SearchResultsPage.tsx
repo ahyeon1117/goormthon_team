@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import FilterSidebar from "./components/FilterSidebar/FilterSidebar.tsx";
 import ProductList from "./components/ProductList/ProductList.tsx";
 import SortingBar from "./components/SortingBar/SortingBar.tsx";
-import ApiDebugInfo from "./components/ApiDebugInfo/ApiDebugInfo";
 import Pagination from "./components/Pagination/Pagination.tsx";
 import {
   PageContainer,
@@ -238,14 +237,6 @@ const SearchResultsPage: React.FC = () => {
               onAddToCart={handleAddSelectedToCart}
             />
           </ResultHeaderStyled>
-
-          {/* (임시) API 호출 디버깅 정보 */}
-          <ApiDebugInfo
-            searchKeyword={searchKeyword}
-            totalResults={totalResults}
-            loading={loading}
-            error={error}
-          />
 
           {loading ? (
             <div className="loading-indicator">로딩 중...</div>
