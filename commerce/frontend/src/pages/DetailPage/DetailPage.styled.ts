@@ -320,7 +320,7 @@ export const TabContent = styled.div`
 `;
 
 export const BookDescriptionSection = styled.div`
-  margin-bottom: 30px;
+  margin-bottom: 50px;
 `;
 
 export const BookDescriptionTitle = styled.h3`
