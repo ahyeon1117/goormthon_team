@@ -3,6 +3,7 @@ import App from '../App';
 import MainPage from '../pages/MainPage/MainPage';
 import SearchResultsPage from '../pages/SearchResultsPage/SearchResultsPage';
 import DetailPage from '../pages/DetailPage/DetailPage';
+import LoginPage from '../pages/LoginPage/LoginPage';
 
 // 라우터 설정
 const router = createBrowserRouter([
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: '/detail/:id',
         element: <DetailPage />,
+      },
+      {
+        path: '/login',
+        element: <LoginPage />,
       },
     ],
   },
