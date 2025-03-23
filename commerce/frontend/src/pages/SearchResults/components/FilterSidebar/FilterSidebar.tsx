@@ -20,32 +20,31 @@ const FilterSidebar: React.FC = () => {
   // 필터 카테고리 및 옵션 데이터
   const filterCategories = [
     {
-      id: 'condition',
-      title: '검색 조건',
+      id: "condition",
+      title: "검색 조건",
       options: [
-        { id: 'title', label: '제목명', checked: false },
-        { id: 'author', label: '저자', checked: false },
-        { id: 'publisher', label: '출판사', checked: false }
-      ]
+        { id: "title", label: "제목", checked: false },
+        { id: "author", label: "저자", checked: false },
+        { id: "publisher", label: "출판사", checked: false },
+      ],
     },
     {
-      id: 'category',
-      title: '분야별 조회',
+      id: "category",
+      title: "분야별 조회",
       options: [
-        { id: 'novel', label: '소설/에세이/시', checked: false },
-        { id: 'humanities', label: '인문/역사', checked: false },
-        { id: 'society', label: '정치/사회', checked: false },
-        { id: 'art', label: '예술', checked: false },
-        { id: 'education', label: '종교', checked: false },
-        { id: 'science', label: '경제/자기계발', checked: false },
-        { id: 'politics', label: '정치/사회', checked: false },
-        { id: 'children', label: '소설서/자격증', checked: false },
-        { id: 'computer', label: '사전', checked: false },
-        { id: 'travel', label: '건강/여행/요리', checked: false },
-        { id: 'science2', label: '경제/자기계발', checked: false },
-        { id: 'novel2', label: '소설/에세이/시', checked: false }
-      ]
-    }
+        { id: "novel", label: "소설/에세이/시", checked: false },
+        { id: "humanities", label: "인문/역사", checked: false },
+        { id: "society", label: "정치/사회", checked: false },
+        { id: "art", label: "예술", checked: false },
+        { id: "religion", label: "종교", checked: false },
+        { id: "economy", label: "경제/자기계발", checked: false },
+        { id: "politics", label: "정치/사회", checked: false },
+        { id: "study", label: "수험서/자격증", checked: false },
+        { id: "computer", label: "컴퓨터/IT", checked: false },
+        { id: "health", label: "건강/여행/요리", checked: false },
+        { id: "science", label: "과학", checked: false },
+      ],
+    },
   ];
 
   const [filters, setFilters] = useState(filterCategories);
