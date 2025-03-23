@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import {
   SearchOptionsContainer,
   SearchTags,
@@ -11,36 +11,40 @@ interface SearchTag {
   text: string;
 }
 
-// props가 없는 컴포넌트로 정의
-const SearchOptions: React.FC = () => {
-  // 검색 태그 상태 (예시 데이터)
-  const [searchTags, setSearchTags] = useState<SearchTag[]>([
-    { id: "1", type: "search", text: "통합검색" },
-    { id: "2", type: "title", text: "제목" },
-    { id: "3", type: "author", text: "저자" },
-  ]);
+interface SearchOptionsProps {
+  tags: SearchTag[];
+  onRemoveTag: (tagId: string, tagType: string) => void;
+}
 
-  // 태그 제거 핸들러 (실제 로직은 향후 구현 예정)
-  const handleRemoveTag = (tagId: string) => {
-    setSearchTags(searchTags.filter((tag) => tag.id !== tagId));
-  };
+const SearchOptions: React.FC<SearchOptionsProps> = ({ tags, onRemoveTag }) => {
+  // 디버깅용 태그 정보 출력
+  useEffect(() => {
+    console.log("현재 검색 태그:", tags);
+  }, [tags]);
 
-  if (searchTags.length === 0) {
+  if (tags.length === 0) {
     return null;
   }
 
   return (
     <SearchOptionsContainer>
       <SearchTags>
-        {searchTags.map((tag) => (
-          <Tag key={tag.id}>
+        {tags.map((tag) => (
+          <Tag key={tag.id} className={`tag-${tag.type}`}>
             {tag.text}
-            <button
-              className="tag-remove"
-              onClick={() => handleRemoveTag(tag.id)}
-            >
-              ×
-            </button>
+            {tag.id !== "1" && (
+              <button
+                className="tag-remove"
+                onClick={() => {
+                  console.log(
+                    `태그 제거: ${tag.id} (${tag.type}) - ${tag.text}`
+                  );
+                  onRemoveTag(tag.id, tag.type);
+                }}
+              >
+                ×
+              </button>
+            )}
           </Tag>
         ))}
       </SearchTags>

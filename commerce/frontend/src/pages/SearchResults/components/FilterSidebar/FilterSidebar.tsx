@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import {
   SidebarContainer,
   SearchBox,
@@ -10,22 +10,39 @@ import {
   Checkbox,
 } from "./FilterSidebar.styled.ts";
 
-const FilterSidebar: React.FC = () => {
+interface FilterSidebarProps {
+  onWithinSearch: (searchTerm: string) => void;
+  searchConditions: {
+    title: boolean;
+    author: boolean;
+    publisher: boolean;
+  };
+  onSearchConditionChange: (conditionId: string, checked: boolean) => void;
+}
+
+const FilterSidebar: React.FC<FilterSidebarProps> = ({
+  onWithinSearch,
+  searchConditions,
+  onSearchConditionChange,
+}) => {
   const [searchKeyword, setSearchKeyword] = useState("");
-  const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const currentKeyword = searchParams.get("keyword") || "";
 
-  // 필터 카테고리 및 옵션 데이터
-  const filterCategories = [
+  // 필터 카테고리 및 옵션 데이터를 useState로 초기화
+  const [filterCategories, setFilterCategories] = useState([
     {
       id: "condition",
       title: "검색 조건",
       options: [
-        { id: "title", label: "제목", checked: false },
-        { id: "author", label: "저자", checked: false },
-        { id: "publisher", label: "출판사", checked: false },
+        { id: "title", label: "제목", checked: searchConditions.title },
+        { id: "author", label: "저자", checked: searchConditions.author },
+        {
+          id: "publisher",
+          label: "출판사",
+          checked: searchConditions.publisher,
+        },
       ],
     },
     {
@@ -45,13 +62,63 @@ const FilterSidebar: React.FC = () => {
         { id: "science", label: "과학", checked: false },
       ],
     },
-  ];
+  ]);
 
-  const [filters, setFilters] = useState(filterCategories);
+  // searchConditions props가 변경될 때마다 필터 옵션 업데이트
+  useEffect(() => {
+    console.log("검색 조건 업데이트:", searchConditions);
+
+    setFilterCategories((prevCategories) => {
+      const updatedCategories = [...prevCategories]; // 새 배열 생성
+
+      // 검색 조건 카테고리 찾기
+      const conditionCategoryIndex = updatedCategories.findIndex(
+        (category) => category.id === "condition"
+      );
+
+      if (conditionCategoryIndex !== -1) {
+        // 검색 조건 카테고리의 옵션들 업데이트
+        const updatedOptions = updatedCategories[
+          conditionCategoryIndex
+        ].options.map((option) => ({
+          ...option,
+          checked:
+            searchConditions[option.id as keyof typeof searchConditions] ||
+            false,
+        }));
+
+        // 업데이트된 옵션으로 카테고리 업데이트
+        updatedCategories[conditionCategoryIndex] = {
+          ...updatedCategories[conditionCategoryIndex],
+          options: updatedOptions,
+        };
+
+        return updatedCategories;
+      }
+
+      return prevCategories;
+    });
+  }, [searchConditions]);
 
   const handleFilterChange = (categoryId: string, optionId: string) => {
-    setFilters(
-      filters.map((category) => {
+    if (categoryId === "condition") {
+      // 검색 조건 변경 시 부모 컴포넌트에 알림
+      const category = filterCategories.find((c) => c.id === categoryId);
+      const option = category?.options.find((o) => o.id === optionId);
+
+      if (option) {
+        console.log("검색 조건 변경:", optionId, !option.checked);
+        onSearchConditionChange(optionId, !option.checked);
+
+        // 여기서는 로컬 상태를 변경하지 않고, props로부터 전달받은 searchConditions가
+        // 변경되면 위의 useEffect에서 filterCategories를 업데이트합니다.
+        return;
+      }
+    }
+
+    // 다른 카테고리(분야별 조회 등)의 로컬 상태 업데이트
+    setFilterCategories(
+      filterCategories.map((category) => {
         if (category.id === categoryId) {
           return {
             ...category,
@@ -66,22 +133,14 @@ const FilterSidebar: React.FC = () => {
         return category;
       })
     );
-
-    // 필터 변경 시 API 호출 또는 상태 업데이트 로직 추가 가능
-    // 예: 필터 상태를 부모 컴포넌트로 전달하여 API 호출
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (searchKeyword.trim()) {
-      // 현재 URL의 검색 파라미터에 결과 내 재검색어 추가
-      const newKeyword = currentKeyword
-        ? `${currentKeyword} ${searchKeyword}`
-        : searchKeyword;
-
-      // 검색 페이지로 이동하면서 검색어 전달
-      navigate(`/search?keyword=${encodeURIComponent(newKeyword)}`);
+      // 결과 내 재검색 실행
+      onWithinSearch(searchKeyword);
 
       // 검색 후 입력창 초기화
       setSearchKeyword("");
@@ -119,7 +178,7 @@ const FilterSidebar: React.FC = () => {
         </SearchBox>
       </FilterSection>
 
-      {filters.map((category) => (
+      {filterCategories.map((category) => (
         <FilterSection key={category.id}>
           <FilterTitle>{category.title}</FilterTitle>
           <FilterList>
