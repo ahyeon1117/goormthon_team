@@ -15,10 +15,15 @@ import {
   STTopBarBox,
   SearchForm,
   SearchInput,
-  SearchButton
+  SearchButton,
+  // STUserSection,
+  // CartLink,
+  // CartCnt
 } from './MainPageHeader.styled';
+
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+// import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 const MainPageHeader = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -64,10 +69,17 @@ const MainPageHeader = () => {
     }
   };
 
+  
+  // 메인페이지 -> 메인페이지로 이동 시 리렌더링이 발생하지 않아 직접 스크롤 처리
+  // const handleLogoClick = () => {
+  //   if (location.pathname === "/") {
+  //     window.scrollTo(0, 0);
+  //   }
+  // };
+
   return (
     <>
       <STMain>
-
         {/* TopBar 컴포넌트 */}
         <STTopBar>
           <STTopBarBox>
@@ -86,6 +98,9 @@ const MainPageHeader = () => {
         {/* MainHeader 컴포넌트 */}
         <STMainHeader>
           <Logo onClick={handleLogoClick} style={{ cursor: 'pointer' }} />
+          {/* <Link to="/" onClick={handleLogoClick}>
+            <Logo style={{ cursor: 'pointer' }} />
+          </Link> */}
           <STSearchBox>
             <SearchForm onSubmit={handleSearch}>
               <SearchInput
@@ -103,6 +118,13 @@ const MainPageHeader = () => {
             <CartIcon />
             <LoginIcon/>
           </div>
+          {/* <STUserSection>
+            <CartLink to="/cart">
+              <CartIcon />
+              <CartCnt>3</CartCnt>
+            </CartLink>
+            <LoginIcon />
+          </STUserSection> */}
         </STMainHeader>
 
         {/* List 컴포넌트 */}
@@ -114,8 +136,8 @@ const MainPageHeader = () => {
 
 
       </STMain>
-
     </>
   );
 };
+
 export default MainPageHeader;

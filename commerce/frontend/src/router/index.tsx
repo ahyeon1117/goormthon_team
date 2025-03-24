@@ -4,6 +4,7 @@ import MainPage from '../pages/MainPage/MainPage';
 import SearchResultsPage from '../pages/SearchResultsPage/SearchResultsPage';
 import DetailPage from '../pages/DetailPage/DetailPage';
 import LoginPage from '../pages/LoginPage/LoginPage';
+import CartPage from '../pages/CartPage/CartPage';
 
 // 라우터 설정
 const router = createBrowserRouter([
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: '/login',
         element: <LoginPage />,
+      },
+      {
+        path: '/cart',
+        element: <CartPage />,
       },
     ],
   },
