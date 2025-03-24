@@ -102,6 +102,7 @@ const LoginPage: React.FC = () => {
             }}
             onBlur={(e) => validateUserId(e.target.value)}
             placeholder="아이디를 입력하세요"
+            autoComplete="username"
             required
           />
           {userIdError && <ErrorMessage>{userIdError}</ErrorMessage>}
@@ -119,6 +120,7 @@ const LoginPage: React.FC = () => {
             }}
             onBlur={(e) => validatePassword(e.target.value)}
             placeholder="비밀번호를 입력하세요"
+            autoComplete="current-password"
             required
           />
           {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
