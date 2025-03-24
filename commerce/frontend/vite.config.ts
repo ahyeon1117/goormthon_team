@@ -9,10 +9,6 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:8080',
         changeOrigin: true
-      },
-      '/product': {
-        target: 'http://localhost:8080',
-        changeOrigin: true
       }
     }
   }
