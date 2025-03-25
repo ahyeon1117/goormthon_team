@@ -5,6 +5,14 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+
+// 회원가입 데이터 타입
+export interface SignupRequest {
+  userId: string;       // 사용자 아이디 (예: 이메일)
+  password: string;     // 비밀번호
+  nickname: string;     // 닉네임
+}
+
 // 백엔드에서 받는 상품 데이터 타입
 export interface ProductApiItem {
   title: string;

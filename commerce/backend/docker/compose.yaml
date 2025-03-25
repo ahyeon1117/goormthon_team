@@ -87,23 +87,23 @@ networks:
     driver: bridge
 
 services:
-  backend:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
-    ports:
-      - "8080:8080"
-    networks:
-      - app-tier
-    depends_on:
-      - postgresql
-      - redis
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/goorm
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=post123!
-      - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_DATA_REDIS_PORT=6379
+#  backend:
+#    build:
+#      context: ..
+#      dockerfile: docker/Dockerfile
+#    ports:
+#      - "6379:6379"
+#    networks:
+#      - app-tier
+#    depends_on:
+#      - postgresql
+#      - redis
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/goorm
+#      - SPRING_DATASOURCE_USERNAME=postgres
+#      - SPRING_DATASOURCE_PASSWORD=post123!
+#      - SPRING_DATA_REDIS_HOST=redis
+#      - SPRING_DATA_REDIS_PORT=6379
 
   postgresql:
     environment:
