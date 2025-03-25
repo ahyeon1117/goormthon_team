@@ -7,23 +7,18 @@ import {
   SearchIcon,
   LoginIcon,
   CartIcon,
-  STList,
-  STNewArrivals,
-  STBestSellers,
-  MenuIcon,
   STMain,
   STTopBarBox,
   SearchForm,
   SearchInput,
   SearchButton,
-  // STUserSection,
-  // CartLink,
-  // CartCnt
+  STUserSection,
+  CartLink,
+  CartCnt
 } from './MainPageHeader.styled';
 
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-// import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 const MainPageHeader = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -62,20 +57,15 @@ const MainPageHeader = () => {
     }
   };
 
-  const handleLogoClick = () => {
-    // 불필요한 렌더링 방지를 위해 현재 경로가 메인페이지가 아닐 때만 이동
-    if(location.pathname !== "/") {
-      navigate("/");
+  // 현재 페이지로 이동 시 스크롤 처리 (메인->메인, 카트->카트 페이지로 이동 시 스크롤 처리)
+  const handleSamePageScroll = (destinationPath: string) => {
+    // 현재 경로와 이동하려는 경로가 같을 때만 직접 스크롤
+    // 이유: 현재 페이지로 다시 이동하는 경우에는, 현재 페이지의 useEffect가 실행되지 않아 스크롤이 처리되지 않기 때문
+    if (location.pathname === destinationPath) {
+      console.log("현재 페이지로 이동 시 스크롤 처리");
+      window.scrollTo(0, 0);
     }
   };
-
-  
-  // 메인페이지 -> 메인페이지로 이동 시 리렌더링이 발생하지 않아 직접 스크롤 처리
-  // const handleLogoClick = () => {
-  //   if (location.pathname === "/") {
-  //     window.scrollTo(0, 0);
-  //   }
-  // };
 
   return (
     <>
@@ -89,7 +79,7 @@ const MainPageHeader = () => {
               <STMallInner onClick={() => navigate('/login')} style={{ cursor: 'pointer' }}>로그인</STMallInner>
             )}
             <STMallInner onClick={() => navigate('/signup')} style={{ cursor: 'pointer' }}>회원가입</STMallInner>
-            <STMallInner>장바구니</STMallInner>
+            <STMallInner onClick={() => navigate('/cart')} style={{ cursor: 'pointer' }}>장바구니</STMallInner>
             <STMallInner>주문배송</STMallInner>
             <STMallInner>고객센터</STMallInner>
           </STTopBarBox>
@@ -97,10 +87,9 @@ const MainPageHeader = () => {
 
         {/* MainHeader 컴포넌트 */}
         <STMainHeader>
-          <Logo onClick={handleLogoClick} style={{ cursor: 'pointer' }} />
-          {/* <Link to="/" onClick={handleLogoClick}>
+          <Link to="/" onClick={() => handleSamePageScroll("/")}>
             <Logo style={{ cursor: 'pointer' }} />
-          </Link> */}
+          </Link>
           <STSearchBox>
             <SearchForm onSubmit={handleSearch}>
               <SearchInput
@@ -114,26 +103,14 @@ const MainPageHeader = () => {
               </SearchButton>
             </SearchForm>
           </STSearchBox>
-          <div>
-            <CartIcon />
-            <LoginIcon onClick={() => navigate('/login')} style={{ cursor: 'pointer' }}></LoginIcon>
-          </div>
-          {/* <STUserSection>
-            <CartLink to="/cart">
+          <STUserSection>
+            <CartLink to="/cart" onClick={() => handleSamePageScroll("/cart")}>
               <CartIcon />
-              <CartCnt>3</CartCnt>
+              <CartCnt>6</CartCnt>
             </CartLink>
-            <LoginIcon />
-          </STUserSection> */}
+            <LoginIcon onClick={() => navigate('/login')} style={{ cursor: 'pointer' }}></LoginIcon>
+          </STUserSection>
         </STMainHeader>
-
-        {/* List 컴포넌트 */}
-        <STList>
-          <MenuIcon />
-          <STNewArrivals>신상품</STNewArrivals>
-          <STBestSellers>베스트</STBestSellers>
-        </STList>
-
 
       </STMain>
     </>

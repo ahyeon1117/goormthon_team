@@ -1,4 +1,52 @@
 import styled from 'styled-components';
+import { AiOutlineMenu } from 'react-icons/ai';
+
+// Main 컴포넌트 내 모든 컴포넌트를 감싸는 컨테이너
+export const MainContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+// List 컴포넌트
+export const STList = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 80%;
+  height: 100px;
+`;
+
+// 신상품 컴포넌트
+export const STNewArrivals = styled.div`
+  width: 58px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  color: #442D4A;
+  cursor: pointer;
+`;
+
+// 베스트 컴포넌트
+export const STBestSellers = styled.div`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  margin-left: 20px;
+  margin-right: 45px;
+  align-items: center;
+  text-align: center;
+  color: #442D4A;
+  cursor: pointer;
+`;
+
+
+export const MenuIcon = styled(AiOutlineMenu)`
+  color: #442D4A;  /* 아이콘 색상 */
+  font-size: 24px;  /* 아이콘 크기 */
+  margin-right: 12px;
+  cursor: pointer;
+`;
 
 export const STMainBannerBox = styled.div`
   position: relative;

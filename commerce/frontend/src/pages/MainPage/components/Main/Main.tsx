@@ -1,4 +1,4 @@
-import { AiOutlinePauseCircle, AiOutlinePlayCircle, AiOutlineLeft, AiOutlineRight   } from "react-icons/ai";
+import { AiOutlinePauseCircle, AiOutlinePlayCircle, AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { useState, useEffect } from "react";
 import * as S from "./Main.styled";
 
@@ -21,7 +21,13 @@ const imagesSBA = ["src/assets/images/SubBannerA.jpg"];
 //SubBannerB
 const imagesSBB = ["src/assets/images/SubBannerB.jpg"];
 
-const Main = () => {
+// 내비게이션 바의 베스트/신상품 클릭 시 화면을 이동하기 위해 MainPage로부터 받은 props
+interface MainProps {
+  onBestClick: () => void;
+  onNewClick: () => void;
+}
+
+const Main = ({ onBestClick, onNewClick }: MainProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentIndexB, setCurrentIndexB] = useState(0);
@@ -63,7 +69,13 @@ const Main = () => {
   };
 
   return (
-    <div>
+    <S.MainContainer>
+      {/* List 컴포넌트 */}
+      <S.STList>
+        <S.MenuIcon />
+        <S.STBestSellers onClick={onBestClick}>베스트</S.STBestSellers>
+        <S.STNewArrivals onClick={onNewClick}>신상품</S.STNewArrivals>
+      </S.STList>
       <div>
         <S.STMainBannerBox>
           <S.STMainBannerA>
@@ -118,7 +130,7 @@ const Main = () => {
           </S.STSubBannerB>
         </S.STSubBannerBox>
       </div>
-    </div>
+    </S.MainContainer>
   );
 };
 

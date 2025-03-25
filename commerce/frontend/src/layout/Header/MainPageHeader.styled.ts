@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { AiOutlineSearch, AiOutlineUser, AiOutlineShopping ,AiOutlineMenu} from 'react-icons/ai';
+import { AiOutlineSearch, AiOutlineUser, AiOutlineShopping} from 'react-icons/ai';
 import logo from '../../assets/images/logo.png';
+import { Link } from 'react-router-dom';
 
 export const STMain = styled.div`
   position: relative;
@@ -110,49 +111,42 @@ export const SearchIcon = styled(AiOutlineSearch)`
 export const LoginIcon = styled(AiOutlineUser)`
   width: 40px;
   height: 39px;
-  margin-top: 40px;
 `;
 
 export const CartIcon = styled(AiOutlineShopping)`
   width: 40px;
   height: 39px;
-  margin-top: 40px;
-  margin-right: 55px;
 `;
 
-// List 컴포넌트
-export const STList = styled.div`
+export const CartLink = styled(Link)`
   position: relative;
+  margin-right: 55px;
+  color: black;
+
+  &:hover {
+    color: black;
+  }
+`;
+
+// 장바구니 개수
+export const CartCnt = styled.span`
+  position: absolute;
+  top: 2px;
+  right: 0px;
   display: flex;
+  justify-content: center;
   align-items: center;
-  width: 80%;
-  height: 100px;
+  width: 20px;
+  height: 20px;
+  background-color: #E896FF;
+  border-radius: 50%;
+  font-size: 12px;
+  color: white;
+  font-weight: bold;
 `;
 
-// 신상품 컴포넌트
-export const STNewArrivals = styled.div`
-  width: 58px;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 20px;
-  margin-left: 20px;
-  margin-right: 45px;
-  color: #442D4A;
-`;
-
-// 베스트 컴포넌트
-export const STBestSellers = styled.div`
-  font-style: normal;
-  font-weight: 500;
-  font-size: 20px;
-  align-items: center;
-  text-align: center;
-  color: #442D4A;
-`;
-
-
-export const MenuIcon = styled(AiOutlineMenu)`
-  color: #442D4A;  /* 아이콘 색상 */
-  font-size: 24px;  /* 아이콘 크기 */
-  margin-right: 12px;
+// 장바구니, 로그인 버튼 (flex 처리를 위해 묶음)
+export const STUserSection = styled.section`
+  display: flex;
+  margin-top: 40px;
 `;

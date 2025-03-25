@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+import { Link } from "react-router-dom";
 export const FixedHeaderWrapper = styled.header<{ $isFixed: boolean }>`
   position: fixed;
   z-index: 100;
@@ -25,7 +25,7 @@ export const FixedHeaderContainer = styled.div`
 `;
 
 /* 헤더 섹션 - 공통 스타일 */
-const Section = styled.section`
+const SectionStyle = styled.section`
   display: flex;
   align-items: center;
 `;
@@ -33,17 +33,17 @@ const Section = styled.section`
 /* 헤더 섹션 - 개별 스타일 */
 export const MenuSection = styled.section``;
 
-export const LogoSection = styled(Section)`
+export const LogoSection = styled(SectionStyle)`
   padding-left: 20px;
   padding-right: 30px;
 `;
 
-export const SearchSection = styled(Section)`
+export const SearchSection = styled(SectionStyle)`
   flex: 1;
   width: 100%;
 `;
 
-export const UserSection = styled(Section)`
+export const UserSection = styled(SectionStyle)`
   justify-content: flex-end;
   gap: 20px;
 `;
@@ -82,7 +82,7 @@ export const SearchInput = styled.input`
 `;
 
 /* 버튼 공통 스타일 */
-const Button = styled.button`
+const ButtonStyle = styled.button`
   background: none;
   border: none;
   cursor: pointer;
@@ -94,19 +94,40 @@ const Button = styled.button`
 `;
 
 /* 메뉴 버튼 */
-export const MenuButton = styled(Button)``;
+export const MenuButton = styled(ButtonStyle)``;
 
 /* 검색 버튼 */
-export const SearchButton = styled(Button)`
+export const SearchButton = styled(ButtonStyle)`
   display: flex;
   position: absolute;
   right: 6px;
 `;
 
-/* 장바구니 버튼 */
-export const CartButton = styled(Button)`
-  margin-left: 20px;
+export const CartLink = styled(Link)`
+  position: relative;
+  color: black;
+
+  &:hover {
+    color: black;
+  }
+`;
+
+// 장바구니 개수
+export const CartCnt = styled.span`
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  background-color: #E896FF;
+  border-radius: 50%;
+  font-size: 12px;
+  color: white;
+  font-weight: bold;
 `;
 
 /* 유저 버튼 */
-export const UserButton = styled(Button)``;
+export const UserButton = styled(ButtonStyle)``;
