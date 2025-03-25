@@ -22,7 +22,7 @@ interface LoginResponse {
 export const login = async (userId: string, password: string): Promise<LoginResponse> => {
   try {
     const response = await apiRequest.post<string>(AUTH_API.LOGIN, {
-      user_id: userId,
+      userId,
       password
     });
 
