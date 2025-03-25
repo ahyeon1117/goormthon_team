@@ -13,7 +13,7 @@ const Banner: React.FC<{ type: "best" | "new" }> = ({ type }) => {
   const bannerText = BANNER_TEXTS[type];
 
   return (
-    <S.BannerSection type = { type } >
+    <S.BannerSection type = { type } className="banner-section">
       <S.BannerLink>
         <S.BannerText>{bannerText}</S.BannerText>
         <S.BannerImage src={type === "best" ? bestBannerImage : newBannerImage} />

@@ -1,14 +1,6 @@
-import ProductList from "./ProductList/ProductList"
+import BNProductList from "./ProductList/BNProductList"
 import Banner from "./Banner/Banner"
-import styled from "styled-components";
 import { BestNewBook } from "../../../../types";
-
-// 컨테이너 스타일
-const StyledContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-`;
 
 // 베스트 임시 데이터
 const bestBooks: BestNewBook[] = [
@@ -220,10 +212,10 @@ const newBooks: BestNewBook[] = [
 
 const BestNew: React.FC<{ type: "best" | "new" }> = ({ type }) => {
   return (
-    <StyledContainer>
-      <ProductList type={type} books={type === "best" ? bestBooks : newBooks} />
+    <>
+      <BNProductList type={type} books={type === "best" ? bestBooks : newBooks} />
       <Banner type={type} />
-    </StyledContainer>
+    </>
   )
 }
 
