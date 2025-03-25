@@ -126,25 +126,6 @@ const CartPage: React.FC = () => {
 
           {/* 2-2. 주문 정보 사이드바 */}
           <S.CartOrderInfo className={isSidebarFixed ? 'fixed' : ''}>
-            {/* 배송지 섹션 */}
-            <S.AddressSection>
-              <div>배송지</div>
-
-              {/* 배송지 컨트롤 바 */}
-              <S.AddressControlBar>
-                <S.BaseAddressCheckbox>
-                  {isBaseAddressChecked ? <S.CheckAddressIcon /> : <S.UncheckAddressIcon />}
-                  <span>기본 배송지 선택</span>
-                </S.BaseAddressCheckbox>
-                <S.ChangeAddressButton onClick={handleOpenModal}>변경</S.ChangeAddressButton>
-              </S.AddressControlBar>
-
-              {/* 배송지 정보 */}
-              <S.AddressInfo>
-                <div>이구름</div>
-                <div>서울특별시 종로구 이화동 123</div>
-              </S.AddressInfo>
-            </S.AddressSection>
 
             {/* 주문 합계 섹션 */}
             <S.OrderSummarySection>
@@ -179,7 +160,7 @@ const CartPage: React.FC = () => {
       </S.CartContainer>
 
       {/* 주소 변경 모달 */}
-      {isModalOpen && <AddressModal onClose={handleCloseModal} isModalOpen={isModalOpen} />}
+      {/* {isModalOpen && <AddressModal onClose={handleCloseModal} isModalOpen={isModalOpen} />} */}
     </>
   )
 }
