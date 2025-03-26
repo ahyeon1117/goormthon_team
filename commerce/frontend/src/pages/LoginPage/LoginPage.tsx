@@ -10,7 +10,6 @@ import {
   Input,
   LoginButton,
   SignupLink,
-  BackButton,
   ErrorMessage,
 } from "./LoginPage.styled";
 
@@ -80,13 +79,8 @@ const LoginPage: React.FC = () => {
     setIsLoading(false);
   };
 
-  const handleBack = () => {
-    navigate(-1); // 이전 페이지로 돌아가기
-  };
-
   return (
     <Container>
-      <BackButton onClick={handleBack}>← 뒤로가기</BackButton>
       <LoginForm onSubmit={handleSubmit}>
         <Title>로그인</Title>
 
