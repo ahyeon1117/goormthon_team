@@ -22,10 +22,10 @@ CREATE TABLE IF NOT EXISTS "products" (
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX "idx_product_title" ON "products" ("title");
-CREATE INDEX "idx_product_author" ON "products" ("author");
-CREATE INDEX "idx_product_publisher" ON "products" ("publisher");
-CREATE INDEX "idx_product_search" ON "products" ("title", "author", "publisher");
+CREATE INDEX IF NOT EXISTS "idx_product_title" ON "products" ("title");
+CREATE INDEX IF NOT EXISTS "idx_product_author" ON "products" ("author");
+CREATE INDEX IF NOT EXISTS "idx_product_publisher" ON "products" ("publisher");
+CREATE INDEX IF NOT EXISTS "idx_product_search" ON "products" ("title", "author", "publisher");
 
 CREATE TABLE IF NOT EXISTS "orders" (
   "id" BIGSERIAL PRIMARY KEY,
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS "orders" (
     REFERENCES "users" ("id") ON DELETE CASCADE
 );
 
-CREATE INDEX "idx_order_user" ON "orders" ("user_id");
+CREATE INDEX IF NOT EXISTS "idx_order_user" ON "orders" ("user_id");
 
 CREATE TABLE IF NOT EXISTS "inventories" (
   "id" BIGSERIAL PRIMARY KEY,
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS "order_items" (
     REFERENCES "products" ("id") ON DELETE CASCADE
 );
 
-CREATE INDEX "idx_order_item_order_product" ON "order_items" ("order_id", "product_id");
+CREATE INDEX IF NOT EXISTS "idx_order_item_order_product" ON "order_items" ("order_id", "product_id");
 
 CREATE TABLE IF NOT EXISTS "inventory_items" (
   "id" BIGSERIAL PRIMARY KEY,
@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS "wishes" (
   CONSTRAINT user_product_wish_unique UNIQUE ("user_id", "product_id")
 );
 
-CREATE INDEX "idx_wish_product" ON "wishes" ("product_id");
+CREATE INDEX IF NOT EXISTS "idx_wish_product" ON "wishes" ("product_id");
 
 CREATE TABLE IF NOT EXISTS "payments" (
   "id" BIGSERIAL PRIMARY KEY,
