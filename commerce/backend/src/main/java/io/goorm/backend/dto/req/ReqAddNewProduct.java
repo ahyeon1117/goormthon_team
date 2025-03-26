@@ -15,7 +15,4 @@ public class ReqAddNewProduct {
 
   @NotBlank
   private String productId;
-
-  @NotBlank
-  private String size;
 }

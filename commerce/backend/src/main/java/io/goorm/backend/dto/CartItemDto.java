@@ -8,16 +8,14 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @Builder
 @RequiredArgsConstructor
-public class WishItem {
+public class CartItemDto {
 
   private final String productId;
-  private final String size;
 
-  public static WishItem of(ReqAddNewProduct requestDto) {
-    return WishItem
+  public static CartItemDto of(ReqAddNewProduct requestDto) {
+    return CartItemDto
       .builder()
       .productId(requestDto.getProductId())
-      .size(requestDto.getSize())
       .build();
   }
 }

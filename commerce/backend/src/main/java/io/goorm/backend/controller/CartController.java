@@ -1,14 +1,18 @@
 package io.goorm.backend.controller;
 
-import io.goorm.backend.dto.WishItem;
+import io.goorm.backend.dto.CartItemDto;
 import io.goorm.backend.dto.req.ReqAddNewProduct;
 import io.goorm.backend.dto.res.ApiResponse;
 import io.goorm.backend.dto.res.ResAddNewProductToCart;
+import io.goorm.backend.entity.CartItem;
 import io.goorm.backend.service.CartService;
+import io.goorm.backend.service.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class CartController {
 
   private final CartService cartService;
+  private final JwtService jwtService;
 
   @PostMapping("/add")
   public ResponseEntity<ApiResponse<ResAddNewProductToCart>> addItem(
@@ -23,30 +28,29 @@ public class CartController {
   ) {
     return ResponseEntity.ok(
       ApiResponse.success(
-        cartService.addNewProductToCart(WishItem.of(requestMessage))
+        cartService.addNewProductToCart(CartItemDto.of(requestMessage))
       )
     );
   }
 
   @GetMapping("/view")
-  public ResponseEntity<ApiResponse<?>> view(
-    @RequestBody ReqAddNewProduct requestMessage
-  ) {
+  public ResponseEntity<ApiResponse<List<CartItem>>> view() {
+    String userId = jwtService.getUserId();
     return ResponseEntity.ok(
       ApiResponse.success(
-        cartService.addNewProductToCart(WishItem.of(requestMessage))
+        cartService.getCartItems(userId)
       )
     );
   }
 
-  @PostMapping("/delete/item")
-  public ResponseEntity<ApiResponse<?>> delete(
-    @RequestBody ReqAddNewProduct requestMessage
+  @DeleteMapping("/delete/item/{productId}")
+  public ResponseEntity<ApiResponse<String>> deleteItem(
+    @PathVariable String productId
   ) {
+    String userId = jwtService.getUserId();
+    cartService.removeCartItem(userId, productId);
     return ResponseEntity.ok(
-      ApiResponse.success(
-        cartService.addNewProductToCart(WishItem.of(requestMessage))
-      )
+      ApiResponse.success("Item removed successfully")
     );
   }
 }
