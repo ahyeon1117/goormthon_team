@@ -60,15 +60,14 @@ export const STMainBannerBox = styled.div`
 
 export const STMainBannerA = styled.div`
   position: relative;
-  width: 85%;
+  width: calc(100% - 350px); /* STMainBannerB의 너비와 마진을 제외한 남은 공간 */
   height: 380px;
   margin: 0 auto; /* 화면 중앙 정렬 */
   display: flex;
   justify-content: space-between;
-    border-radius: 20px;
-    overflow: hidden;  /* 부모 요소에서 넘치는 부분을 숨기도록 설정 */
+  border-radius: 20px;
+  overflow: hidden;  /* 부모 요소에서 넘치는 부분을 숨기도록 설정 */
   align-items: center;
-
 `;
 
 export const ImageMove = styled.img<{ $isActive: boolean; index: number }>`
@@ -125,9 +124,9 @@ export const Image = styled.img`
 
 export const STMainBannerB = styled.div`
     position: relative;
-    width: 30%;
+    width: 320px; /* 퍼센트 대신 고정 픽셀 너비 */
     height: 380px;
-    margin: 0 auto 0 2.5%; /* 화면 중앙 정렬 */
+    margin: 0 0 0 20px; /* 왼쪽 여백 고정 */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -139,7 +138,7 @@ export const STMainBannerB = styled.div`
 export const ButtonContainerB = styled.div`
     position: absolute;
     bottom: 30px; /* 화면 아래에서 20px 떨어짐 */
-    right: 20px; 
+    right: 20px;
     width: 180px; /* 원하는 너비 */
     height: 30px; /* 원하는 높이 */
     display: flex;

@@ -7,7 +7,7 @@ const imagesMBA = [
   "src/assets/images/MainBanner1.jpg",
   "src/assets/images/MainBanner2.jpg",
   "src/assets/images/MainBanner3.jpg",
-  "src/assets/images/MainBanner4.jpg",
+  // "src/assets/images/MainBanner4.jpg",
 ];
 
 //MainBannerB
