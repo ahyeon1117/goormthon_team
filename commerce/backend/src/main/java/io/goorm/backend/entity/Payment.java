@@ -1,15 +1,14 @@
 package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "payments")
@@ -49,7 +48,13 @@ public class Payment {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Payment(String paymentMethod, PaymentStatus status, String transactionId, BigDecimal amount, LocalDateTime paymentDate) {
+    public Payment(
+        String paymentMethod,
+        PaymentStatus status,
+        String transactionId,
+        BigDecimal amount,
+        LocalDateTime paymentDate
+    ) {
         this.paymentMethod = paymentMethod;
         this.status = status;
         this.transactionId = transactionId;
@@ -69,4 +74,4 @@ public class Payment {
         this.status = PaymentStatus.COMPLETED;
         this.paymentDate = paymentDate;
     }
-} 
+}

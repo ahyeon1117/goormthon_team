@@ -1,6 +1,8 @@
 package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,17 +10,19 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name = "products",
-       indexes = {
-           @Index(name = "idx_product_title", columnList = "title"),
-           @Index(name = "idx_product_author", columnList = "author"),
-           @Index(name = "idx_product_publisher", columnList = "publisher"),
-           @Index(name = "idx_product_search", columnList = "title, author, publisher")
-       })
+@Table(
+    name = "products",
+    indexes = {
+        @Index(name = "idx_product_title", columnList = "title"),
+        @Index(name = "idx_product_author", columnList = "author"),
+        @Index(name = "idx_product_publisher", columnList = "publisher"),
+        @Index(
+            name = "idx_product_search",
+            columnList = "title, author, publisher"
+        ),
+    }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product {
@@ -63,8 +67,17 @@ public class Product {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Product(String title, String link, String image, String author, BigDecimal discount,
-                  String publisher, String pubdate, String isbn, String description) {
+    public Product(
+        String title,
+        String link,
+        String image,
+        String author,
+        BigDecimal discount,
+        String publisher,
+        String pubdate,
+        String isbn,
+        String description
+    ) {
         this.title = title;
         this.link = link;
         this.image = image;
@@ -75,4 +88,4 @@ public class Product {
         this.isbn = isbn;
         this.description = description;
     }
-} 
+}

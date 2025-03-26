@@ -13,16 +13,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ApiResponse<T> {
 
-  private Integer code;
-  private String message;
-  private T data;
+    private Integer code;
+    private String message;
+    private T data;
 
-  public static <T> ApiResponse<T> success(T data) {
-    return ApiResponse
-      .<T>builder()
-      .code(200)
-      .message("success")
-      .data(data)
-      .build();
-  }
+    public static <T> ApiResponse<T> success(T data) {
+        return ApiResponse.<T>builder()
+            .code(200)
+            .message("success")
+            .data(data)
+            .build();
+    }
 }

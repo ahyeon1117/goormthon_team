@@ -1,6 +1,7 @@
 package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,13 +9,16 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name = "cart_items",
-       uniqueConstraints = {
-           @UniqueConstraint(name = "cart_product_unique", columnNames = {"cart_id", "product_id"})
-       })
+@Table(
+    name = "cart_items",
+    uniqueConstraints = {
+        @UniqueConstraint(
+            name = "cart_product_unique",
+            columnNames = { "cart_id", "product_id" }
+        ),
+    }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartItem {
@@ -47,4 +51,4 @@ public class CartItem {
     public void setCart(Cart cart) {
         this.cart = cart;
     }
-} 
+}

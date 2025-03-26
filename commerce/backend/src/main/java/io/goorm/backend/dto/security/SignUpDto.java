@@ -8,17 +8,16 @@ import lombok.Data;
 //@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SignUpDto {
 
-  private String userId;
-  private String password;
-  private String nickname;
+    private String userId;
+    private String password;
+    private String nickname;
 
-  public UserInfo toService() {
-    return UserInfo
-      .builder()
-      .userId(userId)
-      .password(password)
-      .nickname(nickname)
-      .role("USER")
-      .build();
-  }
+    public UserInfo toService() {
+        return UserInfo.builder()
+            .userId(userId)
+            .password(password)
+            .nickname(nickname)
+            .role("USER")
+            .build();
+    }
 }

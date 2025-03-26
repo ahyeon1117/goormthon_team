@@ -8,6 +8,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class JwtUserInfoDto {
 
-  private String userId;
-  private Authority role;
+    private String userId;
+    private Authority role;
 }

@@ -16,52 +16,61 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductService {
 
-  @Autowired
-  private ProductRepository productRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
-  // 외부 API용 (컨트롤러에서 사용)
-  public List<ProductResponse> getAllProduct() {
-    Iterator<Product> products = productRepository.findAll().iterator();
-    List<ProductResponse> result = StreamSupport
-      .stream(
-        Spliterators.spliteratorUnknownSize(products, Spliterator.ORDERED),
-        false
-      )
-      .map(product -> {
-        ProductResponse res = new ProductResponse();
-        BeanUtils.copyProperties(product, res);
-        return res;
-      })
-      .collect(Collectors.toList());
-    return result;
-  }
+    // 외부 API용 (컨트롤러에서 사용)
+    public List<ProductResponse> getAllProduct() {
+        Iterator<Product> products = productRepository.findAll().iterator();
+        List<ProductResponse> result = StreamSupport.stream(
+            Spliterators.spliteratorUnknownSize(products, Spliterator.ORDERED),
+            false
+        )
+            .map(product -> {
+                ProductResponse res = new ProductResponse();
+                BeanUtils.copyProperties(product, res);
+                return res;
+            })
+            .collect(Collectors.toList());
+        return result;
+    }
 
-  public ProductResponse getProductByIsbn(String isbn) {
-    Product product = productRepository.findByIsbn(isbn)
-        .orElseThrow(() -> new IllegalArgumentException("해당 ISBN의 상품이 존재하지 않습니다: " + isbn));
+    public ProductResponse getProductByIsbn(String isbn) {
+        Product product = productRepository
+            .findByIsbn(isbn)
+            .orElseThrow(() ->
+                new IllegalArgumentException(
+                    "해당 ISBN의 상품이 존재하지 않습니다: " + isbn
+                )
+            );
 
-    ProductResponse productResponse = new ProductResponse();
-    BeanUtils.copyProperties(product, productResponse);
-    return productResponse;
-  }
+        ProductResponse productResponse = new ProductResponse();
+        BeanUtils.copyProperties(product, productResponse);
+        return productResponse;
+    }
 
-  public List<ProductResponse> searchProducts(String keyword) {
-    // 제목, 저자, 출판사로 검색하도록 변경
-    List<Product> products = productRepository.findByTitleContainingOrAuthorContainingOrPublisherContaining(
-            keyword, keyword, keyword);
+    public List<ProductResponse> searchProducts(String keyword) {
+        // 제목, 저자, 출판사로 검색하도록 변경
+        List<Product> products =
+            productRepository.findByTitleContainingOrAuthorContainingOrPublisherContaining(
+                keyword,
+                keyword,
+                keyword
+            );
 
-    // 엔티티를 응답 DTO로 변환
-    return products.stream()
-        .map(product -> {
-          ProductResponse res = new ProductResponse();
-          BeanUtils.copyProperties(product, res);
-          return res;
-        })
-        .collect(Collectors.toList());
-  }
+        // 엔티티를 응답 DTO로 변환
+        return products
+            .stream()
+            .map(product -> {
+                ProductResponse res = new ProductResponse();
+                BeanUtils.copyProperties(product, res);
+                return res;
+            })
+            .collect(Collectors.toList());
+    }
 
-  // 내부 서비스용 (서비스에서 사용)
-  public Product findProductById(String id) {
-    return productRepository.findById(id).orElseThrow();
-  }
+    // 내부 서비스용 (서비스에서 사용)
+    public Product findProductById(String id) {
+        return productRepository.findById(id).orElseThrow();
+    }
 }

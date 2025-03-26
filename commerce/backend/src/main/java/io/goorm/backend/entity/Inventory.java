@@ -1,16 +1,15 @@
 package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "inventories")
@@ -37,7 +36,11 @@ public class Inventory {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+        mappedBy = "inventory",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
     private List<InventoryItem> inventoryItems = new ArrayList<>();
 
     @Builder
@@ -56,4 +59,4 @@ public class Inventory {
         this.inventoryItems.remove(inventoryItem);
         this.itemsCount = Math.max(0, this.itemsCount - 1);
     }
-} 
+}

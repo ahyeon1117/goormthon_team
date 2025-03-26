@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 //@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ReqAddNewProduct {
 
-  @NotBlank
-  private String productId;
+    @NotBlank
+    private String productId;
 }

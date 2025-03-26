@@ -1,19 +1,23 @@
 package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name = "inventory_items",
-       uniqueConstraints = {
-           @UniqueConstraint(name = "inventory_product_unique", columnNames = {"inventory_id", "product_id"})
-       })
+@Table(
+    name = "inventory_items",
+    uniqueConstraints = {
+        @UniqueConstraint(
+            name = "inventory_product_unique",
+            columnNames = { "inventory_id", "product_id" }
+        ),
+    }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InventoryItem {
@@ -42,10 +46,16 @@ public class InventoryItem {
     private LocalDateTime createdAt;
 
     @Builder
-    public InventoryItem(Product product, OrderItem orderItem, LocalDateTime lastAccessed) {
+    public InventoryItem(
+        Product product,
+        OrderItem orderItem,
+        LocalDateTime lastAccessed
+    ) {
         this.product = product;
         this.orderItem = orderItem;
-        this.lastAccessed = lastAccessed != null ? lastAccessed : LocalDateTime.now();
+        this.lastAccessed = lastAccessed != null
+            ? lastAccessed
+            : LocalDateTime.now();
     }
 
     public void setInventory(Inventory inventory) {
@@ -55,4 +65,4 @@ public class InventoryItem {
     public void updateLastAccessed() {
         this.lastAccessed = LocalDateTime.now();
     }
-} 
+}

@@ -23,11 +23,11 @@ public class UserInit {
         if (userRepository.count() == 0) {
             // 샘플 사용자 생성
             User sampleUser = User.builder()
-                    .id("goorm")
-                    .password(passwordEncoder.encode("qwer1234"))
-                    .nickname("구르미")
-                    .role(Authority.USER)
-                    .build();
+                .id("goorm")
+                .password(passwordEncoder.encode("qwer1234"))
+                .nickname("구르미")
+                .role(Authority.USER)
+                .build();
 
             // 사용자 저장
             userRepository.save(sampleUser);

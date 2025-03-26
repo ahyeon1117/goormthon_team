@@ -16,35 +16,38 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
-  @Autowired
-  private ProductService productService;
+    @Autowired
+    private ProductService productService;
 
-  @GetMapping
-  public ResponseEntity<ApiResponse<List<ProductResponse>>> getProduct() {
-    return ResponseEntity.ok(
-      ApiResponse.success(productService.getAllProduct())
-    );
-  }
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getProduct() {
+        return ResponseEntity.ok(
+            ApiResponse.success(productService.getAllProduct())
+        );
+    }
 
-  // @GetMapping("/{id}")
-  // public ResponseEntity<ApiResponse<ProductResponse>> getProductById(@PathVariable String id) {
-  //   return ResponseEntity.ok(
-  //     ApiResponse.success(productService.getProductById(id))
-  //   );
-  // }
+    // @GetMapping("/{id}")
+    // public ResponseEntity<ApiResponse<ProductResponse>> getProductById(@PathVariable String id) {
+    //   return ResponseEntity.ok(
+    //     ApiResponse.success(productService.getProductById(id))
+    //   );
+    // }
 
-  @GetMapping("/{isbn}")
-  public ResponseEntity<ApiResponse<ProductResponse>> getProductByIsbn(@PathVariable String isbn) {
-    return ResponseEntity.ok(
-      ApiResponse.success(productService.getProductByIsbn(isbn))
-    );
-  }
+    @GetMapping("/{isbn}")
+    public ResponseEntity<ApiResponse<ProductResponse>> getProductByIsbn(
+        @PathVariable String isbn
+    ) {
+        return ResponseEntity.ok(
+            ApiResponse.success(productService.getProductByIsbn(isbn))
+        );
+    }
 
-  @GetMapping("/search")
-  public ResponseEntity<ApiResponse<List<ProductResponse>>> searchProducts(
-      @RequestParam String keyword) {
-    return ResponseEntity.ok(
-      ApiResponse.success(productService.searchProducts(keyword))
-    );
-  }
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> searchProducts(
+        @RequestParam String keyword
+    ) {
+        return ResponseEntity.ok(
+            ApiResponse.success(productService.searchProducts(keyword))
+        );
+    }
 }

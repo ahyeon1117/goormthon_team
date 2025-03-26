@@ -8,5 +8,5 @@ import lombok.*;
 @Builder
 public class ResAddNewProductToCart {
 
-  private String result;
+    private String result;
 }

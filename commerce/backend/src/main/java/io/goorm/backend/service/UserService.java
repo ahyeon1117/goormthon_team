@@ -15,22 +15,24 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
-  private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-  public User findById(String id) {
-    return userRepository.findById(id).orElseThrow(NotFoundUserException::new);
-  }
+    public User findById(String id) {
+        return userRepository
+            .findById(id)
+            .orElseThrow(NotFoundUserException::new);
+    }
 
-  @Override
-  @Transactional(readOnly = true)
-  public UserDetails loadUserByUsername(String username)
-    throws UsernameNotFoundException {
-    User user = userRepository
-      .findById(username)
-      .orElseThrow(() ->
-        new UsernameNotFoundException("해당하는 유저는 없습니다.")
-      );
+    @Override
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByUsername(String username)
+        throws UsernameNotFoundException {
+        User user = userRepository
+            .findById(username)
+            .orElseThrow(() ->
+                new UsernameNotFoundException("해당하는 유저는 없습니다.")
+            );
 
-    return AuthenticationToken.of(user);
-  }
+        return AuthenticationToken.of(user);
+    }
 }

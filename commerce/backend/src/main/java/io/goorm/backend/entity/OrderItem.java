@@ -1,20 +1,24 @@
 package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name = "order_items",
-       indexes = {
-           @Index(name = "idx_order_item_order_product", columnList = "order_id, product_id")
-       })
+@Table(
+    name = "order_items",
+    indexes = {
+        @Index(
+            name = "idx_order_item_order_product",
+            columnList = "order_id, product_id"
+        ),
+    }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
@@ -47,4 +51,4 @@ public class OrderItem {
     public void setOrder(Order order) {
         this.order = order;
     }
-} 
+}

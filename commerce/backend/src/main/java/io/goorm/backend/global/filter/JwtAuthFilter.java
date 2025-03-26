@@ -18,68 +18,75 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-  private final UserDetailsService userDetailsService;
-  private final JwtService jwtService;
-  private final RequestMatcher skipRequestMatcher;
+    private final UserDetailsService userDetailsService;
+    private final JwtService jwtService;
+    private final RequestMatcher skipRequestMatcher;
 
-  public JwtAuthFilter(UserDetailsService userDetailsService, JwtService jwtService) {
-    this.userDetailsService = userDetailsService;
-    this.jwtService = jwtService;
-    this.skipRequestMatcher = null;
-  }
-
-  public JwtAuthFilter(UserDetailsService userDetailsService, JwtService jwtService, RequestMatcher skipRequestMatcher) {
-    this.userDetailsService = userDetailsService;
-    this.jwtService = jwtService;
-    this.skipRequestMatcher = skipRequestMatcher;
-  }
-
-  @Override
-  protected void doFilterInternal(
-    @NonNull HttpServletRequest request,
-    @NonNull HttpServletResponse response,
-    @NonNull FilterChain filterChain
-  ) throws ServletException, IOException {
-    // 인증을 건너뛸 경로인 경우 필터를 통과시킴
-    if (skipRequestMatcher != null && skipRequestMatcher.matches(request)) {
-      filterChain.doFilter(request, response);
-      return;
+    public JwtAuthFilter(
+        UserDetailsService userDetailsService,
+        JwtService jwtService
+    ) {
+        this.userDetailsService = userDetailsService;
+        this.jwtService = jwtService;
+        this.skipRequestMatcher = null;
     }
 
-    try {
-      String authorizationHeader = request.getHeader("Authorization");
+    public JwtAuthFilter(
+        UserDetailsService userDetailsService,
+        JwtService jwtService,
+        RequestMatcher skipRequestMatcher
+    ) {
+        this.userDetailsService = userDetailsService;
+        this.jwtService = jwtService;
+        this.skipRequestMatcher = skipRequestMatcher;
+    }
 
-      if (
-        authorizationHeader != null && authorizationHeader.startsWith("Bearer ")
-      ) {
-        String token = authorizationHeader.substring(7);
-        if (jwtService.validateAccessToken(token, response)) {
-          String userId = jwtService.getUserId(token);
-          UserDetails userDetails = userDetailsService.loadUserByUsername(
-            userId
-          );
-
-          if (userDetails != null) {
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-              userDetails,
-              null,
-              userDetails.getAuthorities()
-            );
-            SecurityContextHolder
-              .getContext()
-              .setAuthentication(authentication);
-          }
+    @Override
+    protected void doFilterInternal(
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
+        // 인증을 건너뛸 경로인 경우 필터를 통과시킴
+        if (skipRequestMatcher != null && skipRequestMatcher.matches(request)) {
+            filterChain.doFilter(request, response);
+            return;
         }
-      } else {
-        throw new BadCredentialsException("It is Not Token in Header");
-      }
-    } catch (BadCredentialsException | UsernameNotFoundException e) {
-      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      response.setContentType("application/json");
-      response.getWriter().write(e.getMessage());
-      return;
-    }
 
-    filterChain.doFilter(request, response);
-  }
+        try {
+            String authorizationHeader = request.getHeader("Authorization");
+
+            if (
+                authorizationHeader != null &&
+                authorizationHeader.startsWith("Bearer ")
+            ) {
+                String token = authorizationHeader.substring(7);
+                if (jwtService.validateAccessToken(token, response)) {
+                    String userId = jwtService.getUserId(token);
+                    UserDetails userDetails =
+                        userDetailsService.loadUserByUsername(userId);
+
+                    if (userDetails != null) {
+                        UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
+                            );
+                        SecurityContextHolder.getContext()
+                            .setAuthentication(authentication);
+                    }
+                }
+            } else {
+                throw new BadCredentialsException("It is Not Token in Header");
+            }
+        } catch (BadCredentialsException | UsernameNotFoundException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write(e.getMessage());
+            return;
+        }
+
+        filterChain.doFilter(request, response);
+    }
 }

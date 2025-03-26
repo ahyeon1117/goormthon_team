@@ -16,25 +16,28 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-  private final AuthService authService;
+    private final AuthService authService;
 
-  @PostMapping("/login")
-  public ResponseEntity<ApiResponse<String>> signIn(
-    @RequestBody SignInDto signInDto
-  ) {
-    return ResponseEntity.ok(
-      ApiResponse.success(
-        authService.signIn(signInDto.getUserId(), signInDto.getPassword())
-      )
-    );
-  }
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<String>> signIn(
+        @RequestBody SignInDto signInDto
+    ) {
+        return ResponseEntity.ok(
+            ApiResponse.success(
+                authService.signIn(
+                    signInDto.getUserId(),
+                    signInDto.getPassword()
+                )
+            )
+        );
+    }
 
-  @PostMapping("/join")
-  public ResponseEntity<ApiResponse<User>> signUp(
-    @RequestBody SignUpDto signUpDto
-  ) {
-    return ResponseEntity.ok(
-      ApiResponse.success(authService.signUp(signUpDto.toService()))
-    );
-  }
+    @PostMapping("/join")
+    public ResponseEntity<ApiResponse<User>> signUp(
+        @RequestBody SignUpDto signUpDto
+    ) {
+        return ResponseEntity.ok(
+            ApiResponse.success(authService.signUp(signUpDto.toService()))
+        );
+    }
 }

@@ -6,15 +6,15 @@ import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
 public class AuthorityConverter
-  implements AttributeConverter<Authority, Integer> {
+    implements AttributeConverter<Authority, Integer> {
 
-  @Override
-  public Integer convertToDatabaseColumn(Authority authority) {
-    return authority.getGrade();
-  }
+    @Override
+    public Integer convertToDatabaseColumn(Authority authority) {
+        return authority.getGrade();
+    }
 
-  @Override
-  public Authority convertToEntityAttribute(Integer integer) {
-    return Authority.valueOf(integer);
-  }
+    @Override
+    public Authority convertToEntityAttribute(Integer integer) {
+        return Authority.valueOf(integer);
+    }
 }

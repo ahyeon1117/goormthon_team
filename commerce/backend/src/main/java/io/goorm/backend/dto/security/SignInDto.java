@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 //@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SignInDto {
 
-  private String userId;
-  private String password;
+    private String userId;
+    private String password;
 }

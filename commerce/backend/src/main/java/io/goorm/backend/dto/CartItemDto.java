@@ -10,12 +10,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CartItemDto {
 
-  private final String productId;
+    private final String productId;
 
-  public static CartItemDto of(ReqAddNewProduct requestDto) {
-    return CartItemDto
-      .builder()
-      .productId(requestDto.getProductId())
-      .build();
-  }
+    public static CartItemDto of(ReqAddNewProduct requestDto) {
+        return CartItemDto.builder()
+            .productId(requestDto.getProductId())
+            .build();
+    }
 }

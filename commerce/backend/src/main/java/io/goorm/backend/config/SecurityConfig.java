@@ -24,73 +24,83 @@ import org.springframework.security.web.util.matcher.OrRequestMatcher;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  private final JwtService jwtService;
-  private final UserDetailsService customUserDetailsService;
-  private final AuthenticationConfiguration authenticationConfiguration;
-  private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtService jwtService;
+    private final UserDetailsService customUserDetailsService;
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-  @Bean
-  public AuthenticationManager authenticationManager(
-    AuthenticationConfiguration config
-  ) throws Exception {
-    return config.getAuthenticationManager();
-  }
+    @Bean
+    public AuthenticationManager authenticationManager(
+        AuthenticationConfiguration config
+    ) throws Exception {
+        return config.getAuthenticationManager();
+    }
 
-  // 3.
-  @Bean
-  public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-    JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtService);
-    filter.setAuthenticationManager(
-      authenticationManager(authenticationConfiguration)
-    );
-    return filter;
-  }
+    // 3.
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(
+            jwtService
+        );
+        filter.setAuthenticationManager(
+            authenticationManager(authenticationConfiguration)
+        );
+        return filter;
+    }
 
-  @Bean
-  public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http)
-    throws Exception {
-    return http
-      .securityMatcher("/admin/**")
-      .authorizeHttpRequests(auth -> auth.anyRequest().hasRole("ADMIN"))
-      .build();
-  }
+    @Bean
+    public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http)
+        throws Exception {
+        return http
+            .securityMatcher("/admin/**")
+            .authorizeHttpRequests(auth -> auth.anyRequest().hasRole("ADMIN"))
+            .build();
+    }
 
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    // 인증이 필요 없는 URL 패턴 정의
-    OrRequestMatcher publicUrlMatcher = new OrRequestMatcher(
-      new AntPathRequestMatcher("/waiting/**"),
-      new AntPathRequestMatcher("/api/v1/auth/**"),
-      new AntPathRequestMatcher("/api/v1/products/**", "GET") // GET 메서드만 허용
-    );
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // 인증이 필요 없는 URL 패턴 정의
+        OrRequestMatcher publicUrlMatcher = new OrRequestMatcher(
+            new AntPathRequestMatcher("/waiting/**"),
+            new AntPathRequestMatcher("/api/v1/auth/**"),
+            new AntPathRequestMatcher("/api/v1/products/**", "GET") // GET 메서드만 허용
+        );
 
-    http
-      .csrf(AbstractHttpConfigurer::disable)
-      .headers(AbstractHttpConfigurer::disable)
-      .authorizeHttpRequests(request ->
-        request
-          .requestMatchers("/waiting/**").permitAll()
-          .requestMatchers("/api/v1/auth/**").permitAll()
-          .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll() // GET 메서드만 허용
-          .anyRequest()
-          .authenticated() // 그 외 모든 요청 인증 처리
-      )
-      .addFilterBefore(
-        jwtAuthenticationFilter(), // 빈으로 정의된 필터 사용
-        UsernamePasswordAuthenticationFilter.class
-      )
-      .addFilterAfter(
-        new JwtAuthFilter(customUserDetailsService, jwtService, publicUrlMatcher),
-        UsernamePasswordAuthenticationFilter.class
-      )
-      .exceptionHandling(exception ->
-        exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-      );
-    return http.build();
-  }
+        http
+            .csrf(AbstractHttpConfigurer::disable)
+            .headers(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(
+                request ->
+                    request
+                        .requestMatchers("/waiting/**")
+                        .permitAll()
+                        .requestMatchers("/api/v1/auth/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/products/**")
+                        .permitAll() // GET 메서드만 허용
+                        .anyRequest()
+                        .authenticated() // 그 외 모든 요청 인증 처리
+            )
+            .addFilterBefore(
+                jwtAuthenticationFilter(), // 빈으로 정의된 필터 사용
+                UsernamePasswordAuthenticationFilter.class
+            )
+            .addFilterAfter(
+                new JwtAuthFilter(
+                    customUserDetailsService,
+                    jwtService,
+                    publicUrlMatcher
+                ),
+                UsernamePasswordAuthenticationFilter.class
+            )
+            .exceptionHandling(exception ->
+                exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+            );
+        return http.build();
+    }
 
-  @Bean
-  public BCryptPasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

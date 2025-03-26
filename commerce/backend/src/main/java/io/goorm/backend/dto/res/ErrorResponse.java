@@ -6,17 +6,17 @@ import lombok.*;
 @RequiredArgsConstructor
 public class ErrorResponse {
 
-  private final int code;
-  private final String error;
-  private final String requestPath;
-  private final String requestMessage;
+    private final int code;
+    private final String error;
+    private final String requestPath;
+    private final String requestMessage;
 
-  public static ErrorResponse of(
-    int code,
-    String error,
-    String requestPath,
-    String requestMessage
-  ) {
-    return new ErrorResponse(code, error, requestPath, requestMessage);
-  }
+    public static ErrorResponse of(
+        int code,
+        String error,
+        String requestPath,
+        String requestMessage
+    ) {
+        return new ErrorResponse(code, error, requestPath, requestMessage);
+    }
 }

@@ -1,22 +1,24 @@
 package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name = "wishes",
-       uniqueConstraints = {
-           @UniqueConstraint(name = "user_product_wish_unique", columnNames = {"user_id", "product_id"})
-       },
-       indexes = {
-           @Index(name = "idx_wish_product", columnList = "product_id")
-       })
+@Table(
+    name = "wishes",
+    uniqueConstraints = {
+        @UniqueConstraint(
+            name = "user_product_wish_unique",
+            columnNames = { "user_id", "product_id" }
+        ),
+    },
+    indexes = { @Index(name = "idx_wish_product", columnList = "product_id") }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Wish {
@@ -42,4 +44,4 @@ public class Wish {
         this.user = user;
         this.product = product;
     }
-} 
+}

@@ -9,13 +9,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProductResponse {
 
-  private String title;
-  private String link;
-  private String image;
-  private String author;
-  private Double discount;
-  private String publisher;
-  private String pubdate;
-  private String isbn;
-  private String description;
+    private String title;
+    private String link;
+    private String image;
+    private String author;
+    private Double discount;
+    private String publisher;
+    private String pubdate;
+    private String isbn;
+    private String description;
 }
