@@ -6,18 +6,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "reviews",
+@Table(name = "wishes",
        uniqueConstraints = {
-           @UniqueConstraint(name = "user_product_review_unique", columnNames = {"user_id", "product_id"})
+           @UniqueConstraint(name = "user_product_wish_unique", columnNames = {"user_id", "product_id"})
+       },
+       indexes = {
+           @Index(name = "idx_wish_product", columnList = "product_id")
        })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review {
+public class Wish {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,35 +33,13 @@ public class Review {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(nullable = false)
-    private Long rating;
-
-    @Column
-    private String title;
-
-    @Column(columnDefinition = "TEXT")
-    private String message;
-
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
     @Builder
-    public Review(User user, Product product, Long rating, String title, String message) {
+    public Wish(User user, Product product) {
         this.user = user;
         this.product = product;
-        this.rating = rating;
-        this.title = title;
-        this.message = message;
-    }
-
-    public void update(Long rating, String title, String message) {
-        this.rating = rating;
-        this.title = title;
-        this.message = message;
     }
 } 

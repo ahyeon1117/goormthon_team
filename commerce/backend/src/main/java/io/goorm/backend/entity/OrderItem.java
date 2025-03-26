@@ -1,46 +1,50 @@
 package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import lombok.Data;
 
-@Data
 @Entity
+@Table(name = "order_items",
+       indexes = {
+           @Index(name = "idx_order_item_order_product", columnList = "order_id, product_id")
+       })
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @ManyToOne
-  @JoinColumn(name = "ordersheet_id")
-  private Ordersheet ordersheet;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 
-  @ManyToOne
-  @JoinColumn(name = "product_id")
-  private Product product;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
-  @Column(nullable = false)
-  private Integer quantity;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
 
-  @Column(nullable = false)
-  private BigDecimal price;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-  @Column(name = "created_at")
-  private LocalDateTime createdAt;
+    @Builder
+    public OrderItem(Product product, BigDecimal price) {
+        this.product = product;
+        this.price = price;
+    }
 
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
-
-  @PrePersist
-  protected void onCreate() {
-    createdAt = LocalDateTime.now();
-    updatedAt = LocalDateTime.now();
-  }
-
-  @PreUpdate
-  protected void onUpdate() {
-    updatedAt = LocalDateTime.now();
-  }
-}
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+} 

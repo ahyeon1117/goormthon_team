@@ -1,31 +1,50 @@
 package io.goorm.backend.entity;
 
-import io.goorm.backend.entity.converter.AuthorityConverter;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "MEMBER")
+@Table(name = "users")
 @Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
-  @Id
-  @Column(name = "user_id", nullable = false)
-  private String id;
+    @Id
+    @Column(length = 100)
+    private String id;
 
-  private String password;
+    @Column(nullable = false, length = 100)
+    private String password;
 
-  @Column(name = "nick_name", nullable = false)
-  private String nickname;
+    @Column(name = "nick_name", nullable = false, length = 100)
+    private String nickname;
 
-  @Convert(converter = AuthorityConverter.class)
-  private Authority role;
+    @Column(nullable = false)
+    private Authority role;
 
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "cart_id")
-  private Cart cart;
-}
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Builder
+    public User(String id, String password, String nickname, Authority role) {
+        this.id = id;
+        this.password = password;
+        this.nickname = nickname;
+        this.role = role;
+    }
+} 

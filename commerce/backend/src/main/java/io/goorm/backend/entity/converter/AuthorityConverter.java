@@ -2,7 +2,9 @@ package io.goorm.backend.entity.converter;
 
 import io.goorm.backend.entity.Authority;
 import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
+@Converter(autoApply = true)
 public class AuthorityConverter
   implements AttributeConverter<Authority, Integer> {
 

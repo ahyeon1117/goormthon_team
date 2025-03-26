@@ -1,42 +1,50 @@
 package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-@Data
+import java.time.LocalDateTime;
+
 @Entity
+@Table(name = "cart_items",
+       uniqueConstraints = {
+           @UniqueConstraint(name = "cart_product_unique", columnNames = {"cart_id", "product_id"})
+       })
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartItem {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @ManyToOne
-  @JoinColumn(name = "member_id")
-  private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", nullable = false)
+    private Cart cart;
 
-  @ManyToOne
-  @JoinColumn(name = "product_id")
-  private Product product;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
-  @Column(nullable = false)
-  private Integer quantity;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-  @Column(name = "created_at")
-  private LocalDateTime createdAt;
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
+    @Builder
+    public CartItem(Product product) {
+        this.product = product;
+    }
 
-  @PrePersist
-  protected void onCreate() {
-    createdAt = LocalDateTime.now();
-    updatedAt = LocalDateTime.now();
-  }
-
-  @PreUpdate
-  protected void onUpdate() {
-    updatedAt = LocalDateTime.now();
-  }
-}
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+} 
