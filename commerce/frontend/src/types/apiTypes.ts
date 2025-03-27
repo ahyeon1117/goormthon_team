@@ -14,7 +14,7 @@ export interface SignupRequest {
 }
 
 // 백엔드에서 받는 상품 데이터 타입
-export interface ProductApiItem {
+export interface ProductResponse {
   id: string;           // 상품 고유 ID
   title: string;
   link: string;
@@ -36,7 +36,7 @@ export const formatAuthor = (author: string): string => {
 };
 
 // 프론트엔드에서 사용하는 BookItem과 백엔드 ProductApiItem 간의 매핑 함수
-export const mapProductApiToBookItem = (product: ProductApiItem, index: number): import('./index').BookItem => {
+export const mapProductApiToBookItem = (product: ProductResponse, index: number): import('./index').BookItem => {
   return {
     // 고유 ID 사용 (없는 경우에만 index 기반 임시 ID 생성)
     id: product.id || `book-${index}`,
