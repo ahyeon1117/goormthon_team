@@ -1,29 +1,37 @@
+springdoc:
+    api-docs:
+        path: /v3/api-docs
+    swagger-ui:
+        path: /swagger-ui.html
+        operations-sorter: method
+        tags-sorter: alpha
+
 spring:
-  profiles:
-    active: dev
-  datasource:
-    url: jdbc:postgresql://localhost:5432/goorm
-    username: postgres
-    password: post123!
-  sql:
-    init:
-      mode: always
-      schema-locations:
-        - classpath:db/schema.sql
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: create # DB ??? ?? (none, create, create-drop, update, validate - ?? ??? ??)
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true # ?? ?? ?? (??)
-        show_sql: true # ?? ?? ??
-  data:
-    redis:
-      host: localhost
-      port: 6379
+    profiles:
+        active: dev
+    datasource:
+        url: jdbc:postgresql://localhost:5432/goorm
+        username: postgres
+        password: post123!
+    sql:
+        init:
+            mode: always
+            schema-locations:
+                - classpath:db/schema.sql
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        hibernate:
+            ddl-auto: create # DB ??? ?? (none, create, create-drop, update, validate - ?? ??? ??)
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+                format_sql: true # ?? ?? ?? (??)
+                show_sql: true # ?? ?? ??
+    data:
+        redis:
+            host: localhost
+            port: 6379
 jwt:
-  secret: "cm9ja2V0X2VxdWF0aW9ucm9ja2V0X2VxdWF0aW9ucm9ja2V0X2VxdWF0aW9u"
-  refresh_secret: "cm9ja2V0X2VxdWF0aW9ucm9ja2V0X2VxdWF0aW9ucm9ja2V0X2VxdWF0aW9ucm9ja2V0X2VxdWF0aW9u"
-  expiration_time: 30 # min
+    secret: "cm9ja2V0X2VxdWF0aW9ucm9ja2V0X2VxdWF0aW9ucm9ja2V0X2VxdWF0aW9u"
+    refresh_secret: "cm9ja2V0X2VxdWF0aW9ucm9ja2V0X2VxdWF0aW9ucm9ja2V0X2VxdWF0aW9ucm9ja2V0X2VxdWF0aW9u"
+    expiration_time: 30 # min
