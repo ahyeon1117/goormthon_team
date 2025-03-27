@@ -25,6 +25,7 @@ export const CheckedIcon = styled(BsCheckCircleFill)`
     width: 24px;
     height: 24px;
     color: #E896FF;
+    // color: #E078CA;
     cursor: pointer;
 `;
 export const UncheckedIcon = styled(BsCheckCircle)`
@@ -55,12 +56,13 @@ export const ProductInfo = styled.div`
     display: flex;
     flex-direction: column;
     gap: 5px;
+    width: 400px;
 
     > .product-tag {
         display: flex;
         justify-content: center;
         width: 60px;
-        padding: 4px 0;
+        padding: 2px 0;
         background-color: #E896FF;
         color: #FFF;
         font-size: 12px;
@@ -68,58 +70,8 @@ export const ProductInfo = styled.div`
     }
 
     > .product-title {
-        font-size: 16px;
+        font-size: 15px;
         color: #000;
-    }
-`;
-
-export const QuantityControl = styled.div`
-    display: flex;
-    align-items: center;
-
-    > div {
-        display: flex;
-        align-items: center; 
-    }
-`;
-
-export const QuantityButton = styled.button`
-    width: 30px;
-    height: 30px;
-    background-color: #F4F4F4;
-    border: 1px solid #DDD;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
-
-    &:hover {
-        border: 1px solid #DDD;
-        background-color: #E9E9E9;
-    }
-    
-    &:focus {
-        outline: none;
-    }
-`;
-
-export const QuantityInput = styled.input`
-    width: 40px;
-    height: 30px;
-    border: 1px solid #DDD;
-    text-align: center;
-    margin: 0 5px;
-
-    // 화살표 숨기기
-    &::-webkit-inner-spin-button,
-    &::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    -moz-appearance: textfield;
-
-    &:focus {
-        outline: none;
     }
 `;
 
