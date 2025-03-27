@@ -80,7 +80,7 @@ const MainPageHeader = () => {
             )}
             <STMallInner onClick={() => navigate('/signup')} style={{ cursor: 'pointer' }}>회원가입</STMallInner>
             <STMallInner onClick={() => navigate('/cart')} style={{ cursor: 'pointer' }}>장바구니</STMallInner>
-            <STMallInner>주문배송</STMallInner>
+            <STMallInner>주문조회</STMallInner>
             <STMallInner>고객센터</STMallInner>
           </STTopBarBox>
         </STTopBar>
