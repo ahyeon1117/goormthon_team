@@ -3,6 +3,7 @@ package io.goorm.backend.dto.res;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -14,7 +15,7 @@ public class ProductResponse {
     private String link;
     private String image;
     private String author;
-    private Double discount;
+    private BigDecimal discount;
     private String publisher;
     private String pubdate;
     private String isbn;

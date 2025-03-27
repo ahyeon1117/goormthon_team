@@ -2,6 +2,7 @@ package io.goorm.backend.dto.res;
 
 import io.goorm.backend.entity.CartItem;
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +18,7 @@ public class ResCartItemDto {
     private String title;
     private String image;
     private String author;
-    private Double discount;
+    private BigDecimal discount;
     private String publisher;
     private LocalDateTime createdAt;
 
@@ -28,7 +29,7 @@ public class ResCartItemDto {
                 .title(cartItem.getProduct().getTitle())
                 .image(cartItem.getProduct().getImage())
                 .author(cartItem.getProduct().getAuthor())
-                .discount(cartItem.getProduct().getDiscount().doubleValue())
+                .discount(cartItem.getProduct().getDiscount())
                 .publisher(cartItem.getProduct().getPublisher())
                 .createdAt(cartItem.getCreatedAt())
                 .build();
