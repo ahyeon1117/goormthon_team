@@ -9,4 +9,16 @@ import lombok.*;
 public class ResAddNewProductToCart {
 
     private String result;
+
+    public static ResAddNewProductToCart success() {
+        return ResAddNewProductToCart.builder()
+                .result("success")
+                .build();
+    }
+
+    public static ResAddNewProductToCart itemAlreadyExists() {
+        return ResAddNewProductToCart.builder()
+                .result("item already exists")
+                .build();
+    }
 }

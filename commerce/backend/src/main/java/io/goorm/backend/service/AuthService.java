@@ -21,6 +21,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final InventoryService inventoryService;
+    private final CartService cartService;
 
     @Transactional
     public String signIn(String userId, String password) {
@@ -47,6 +48,8 @@ public class AuthService {
 
         // 유저 생성 후 인벤토리도 함께 생성
         inventoryService.createInventoryForUser(savedUser);
+        // 유저 생성 후 장바구니도 함께 생성
+        cartService.createCartForUser(savedUser);
 
         return savedUser;
     }
