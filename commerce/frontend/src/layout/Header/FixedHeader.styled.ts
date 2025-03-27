@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+
 export const FixedHeaderWrapper = styled.header<{ $isFixed: boolean }>`
   position: fixed;
   z-index: 100;

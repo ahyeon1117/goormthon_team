@@ -13,7 +13,7 @@ const FixedHeader: React.FC = () => {
   useEffect(() => {
     // 마운트 시 스크롤 이벤트 핸들러 정의
     const handleScroll = () => {
-      setIsFixed(window.scrollY > 190); // 스크롤 위치가 메인헤더 크기보다 크면 고정 헤더 표시
+      setIsFixed(window.scrollY > 170); // 스크롤 위치가 메인헤더 크기보다 크면 고정 헤더 표시
     };
 
     window.addEventListener("scroll", handleScroll);

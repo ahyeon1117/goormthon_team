@@ -118,7 +118,8 @@ export const Rank = styled.div<{ $rank: number }>`
 export const ProductImageBox = styled.div`
     width: 200px;
     height: 300px;
-    box-shadow: 10px 10px 4px rgba(232, 150, 255, 0.43);
+    // box-shadow: 10px 10px 4px rgba(232, 150, 255, 0.4);
+    box-shadow: 10px 10px 4px rgba(224, 120, 202, 0.4);
     margin-bottom: 30px;
     border: 1px solid #D9D9D9;
 
