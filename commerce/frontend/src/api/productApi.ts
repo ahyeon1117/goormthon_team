@@ -30,21 +30,21 @@ export const getAllProducts = async (): Promise<BookItem[]> => {
 };
 
 /**
- * ID(ISBN)로 개별 상품을 가져오는 함수
+ * ID로 개별 상품을 가져오는 함수
  */
 export const getProductById = async (id: string): Promise<BookItem | null> => {
   try {
-    console.log(`ISBN(${id})으로 도서 정보 조회 중...`);
+    console.log(`상품 ID(${id})로 도서 정보 조회 중...`);
 
     const response = await apiRequest.get<ProductApiItem>(PRODUCT_API.GET_BY_ID(id));
     if (response.data.code === 200 && response.data.data) {
       return mapProductApiToBookItem(response.data.data, 0);
     }
 
-    console.warn(`ISBN(${id})에 해당하는 도서를 찾지 못했습니다.`);
+    console.warn(`ID(${id})에 해당하는 도서를 찾지 못했습니다.`);
     return null;
   } catch (error) {
-    console.error(`ISBN(${id}) 도서 정보 조회 중 오류 발생:`, error);
+    console.error(`ID(${id}) 도서 정보 조회 중 오류 발생:`, error);
     return null;
   }
 };

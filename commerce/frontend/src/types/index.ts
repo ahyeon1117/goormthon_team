@@ -11,6 +11,7 @@ export interface BookItem {
   reviewCount: number;
   isFavored?: boolean;
   isChecked?: boolean;
+  isbn?: string;
   description?: string;
 }
 

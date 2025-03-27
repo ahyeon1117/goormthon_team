@@ -15,6 +15,7 @@ export interface SignupRequest {
 
 // 백엔드에서 받는 상품 데이터 타입
 export interface ProductApiItem {
+  id: string;           // 상품 고유 ID
   title: string;
   link: string;
   image: string;
@@ -22,7 +23,7 @@ export interface ProductApiItem {
   discount: number;
   publisher: string;
   pubdate: string;
-  isbn: string;
+  isbn?: string;
   description?: string;
 }
 
@@ -37,8 +38,8 @@ export const formatAuthor = (author: string): string => {
 // 프론트엔드에서 사용하는 BookItem과 백엔드 ProductApiItem 간의 매핑 함수
 export const mapProductApiToBookItem = (product: ProductApiItem, index: number): import('./index').BookItem => {
   return {
-    // ISBN을 고유 식별자로 사용 (없는 경우에만 index 기반 임시 ID 생성)
-    id: product.isbn || `book-${index}`,
+    // 고유 ID 사용 (없는 경우에만 index 기반 임시 ID 생성)
+    id: product.id || `book-${index}`,
     title: product.title,
     imageUrl: product.image,
     author: formatAuthor(product.author),
@@ -49,6 +50,7 @@ export const mapProductApiToBookItem = (product: ProductApiItem, index: number):
     reviewCount: 0, // 백엔드에서 제공하지 않는 정보는 기본값 설정
     isFavored: false,
     isChecked: false,
+    isbn: product.isbn,
     description: product.description
   };
 };
