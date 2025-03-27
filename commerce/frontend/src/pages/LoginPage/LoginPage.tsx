@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { login } from "../../api/authApi";
 import {
   Container,
@@ -21,6 +21,7 @@ const LoginPage: React.FC = () => {
   const [loginError, setLoginError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // 아이디 유효성 검사
   const validateUserId = (value: string) => {
@@ -69,8 +70,9 @@ const LoginPage: React.FC = () => {
     const loginResult = await login(userId, password);
 
     if (loginResult.success) {
-      // 로그인 성공 시 메인 페이지로 이동
-      navigate('/');
+      // 로그인 성공 시 이전 페이지로 이동 (또는 메인 페이지)
+      const from = location.state?.from?.pathname || '/';
+      navigate(from, { replace: true });
     } else {
       // 로그인 실패 시 에러 메시지 표시
       setLoginError(loginResult.message || "로그인에 실패했습니다");

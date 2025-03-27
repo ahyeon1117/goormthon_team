@@ -17,30 +17,23 @@ import {
   CartCnt
 } from './MainPageHeader.styled';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useAuthStore } from '../../store/authStore';
+import { logout as logoutApi } from '../../api/authApi';
 
 const MainPageHeader = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 컴포넌트 마운트 및 경로 변경 시 로그인 상태 확인
-  useEffect(() => {
-    checkLoginStatus();
-  }, [location]);
-
-  // 로그인 상태 확인 함수
-  const checkLoginStatus = () => {
-    const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token);
-  };
+  // Zustand 스토어에서 인증 상태를 가져옵니다
+  const { isAuthenticated } = useAuthStore();
 
   // 로그아웃 처리 함수
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    setIsLoggedIn(false);
+    // authApi의 logout 함수 호출
+    logoutApi();
     navigate('/');
   };
 
@@ -73,7 +66,7 @@ const MainPageHeader = () => {
         {/* TopBar 컴포넌트 */}
         <STTopBar>
           <STTopBarBox>
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <STMallInner onClick={handleLogout} style={{ cursor: 'pointer' }}>로그아웃</STMallInner>
             ) : (
               <STMallInner onClick={() => navigate('/login')} style={{ cursor: 'pointer' }}>로그인</STMallInner>
@@ -108,7 +101,11 @@ const MainPageHeader = () => {
               <CartIcon />
               <CartCnt>6</CartCnt>
             </CartLink>
-            <LoginIcon onClick={() => navigate('/login')} style={{ cursor: 'pointer' }}></LoginIcon>
+            {isAuthenticated ? (
+              <LoginIcon onClick={handleLogout} style={{ cursor: 'pointer' }}></LoginIcon>
+            ) : (
+              <LoginIcon onClick={() => navigate('/login')} style={{ cursor: 'pointer' }}></LoginIcon>
+            )}
           </STUserSection>
         </STMainHeader>
 
