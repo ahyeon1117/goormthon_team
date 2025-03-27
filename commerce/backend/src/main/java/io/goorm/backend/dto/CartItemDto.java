@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CartItemDto {
 
-    private final String productId;
+    private final Long productId;
 
     public static CartItemDto of(ReqAddNewProduct requestDto) {
         return CartItemDto.builder()

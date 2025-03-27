@@ -26,21 +26,21 @@ public class ProductController {
         );
     }
 
-    // @GetMapping("/{id}")
-    // public ResponseEntity<ApiResponse<ProductResponse>> getProductById(@PathVariable String id) {
-    //   return ResponseEntity.ok(
-    //     ApiResponse.success(productService.getProductById(id))
-    //   );
-    // }
-
-    @GetMapping("/{isbn}")
-    public ResponseEntity<ApiResponse<ProductResponse>> getProductByIsbn(
-        @PathVariable String isbn
-    ) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<ProductResponse>> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(
-            ApiResponse.success(productService.getProductByIsbn(isbn))
+            ApiResponse.success(productService.getProductById(id))
         );
     }
+
+    // @GetMapping("/isbn/{isbn}")
+    // public ResponseEntity<ApiResponse<ProductResponse>> getProductByIsbn(
+    //     @PathVariable String isbn
+    // ) {
+    //     return ResponseEntity.ok(
+    //         ApiResponse.success(productService.getProductByIsbn(isbn))
+    //     );
+    // }
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<ProductResponse>>> searchProducts(

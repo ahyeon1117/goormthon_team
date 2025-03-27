@@ -32,6 +32,7 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
+    @Transactional
     public Cart getCart(User user) {
         Optional<Cart> cartOptional = cartRepository.findByUser(user);
 
@@ -68,6 +69,7 @@ public class CartService {
         }
     }
 
+    @Transactional
     public List<CartItem> getCartItems(String userId) {
         User user = userService.findById(userId);
         Cart cart = getCart(user);
@@ -75,7 +77,7 @@ public class CartService {
     }
 
     @Transactional
-    public void removeCartItem(String userId, String productId) {
+    public void removeCartItem(String userId, Long productId) {
         User user = userService.findById(userId);
         Cart cart = getCart(user);
         Product product = productService.findProductById(productId);

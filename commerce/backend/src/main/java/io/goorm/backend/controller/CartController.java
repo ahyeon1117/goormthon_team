@@ -42,7 +42,7 @@ public class CartController {
 
     @DeleteMapping("/delete/item/{productId}")
     public ResponseEntity<ApiResponse<String>> deleteItem(
-        @PathVariable String productId
+        @PathVariable Long productId
     ) {
         String userId = jwtService.getUserId();
         cartService.removeCartItem(userId, productId);
