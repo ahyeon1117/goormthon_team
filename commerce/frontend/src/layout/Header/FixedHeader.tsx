@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.png"; // 로고 이미지
 import { AiOutlineSearch, AiOutlineUser, AiOutlineShopping } from "react-icons/ai"; // 아이콘
 import * as S from "./FixedHeader.styled";
+import { useAuthStore } from '../../store/authStore';
+import { logout as logoutApi } from '../../api/authApi';
 
 const FixedHeader: React.FC = () => {
   const [isFixed, setIsFixed] = useState(false); // 고정 헤더 표시 상태
@@ -10,10 +12,34 @@ const FixedHeader: React.FC = () => {
   const navigate = useNavigate();
   const [searchKeyword, setSearchKeyword] = useState('');
 
+  // Zustand 스토어에서 인증 상태를 가져옵니다
+  const { isAuthenticated } = useAuthStore();
+
+  // 로그아웃 처리 함수
+  const handleLogout = () => {
+    // authApi의 logout 함수 호출
+    logoutApi();
+    navigate('/');
+  };
+
+  // 사용자 아이콘 클릭 처리 함수
+  const handleUserIconClick = () => {
+    if (isAuthenticated) {
+      // 로그인 상태: 프로필 페이지로 이동하거나 드롭다운 메뉴 표시
+      // 여기서는 간단히 로그아웃 처리
+      if (confirm('로그아웃 하시겠습니까?')) {
+        handleLogout();
+      }
+    } else {
+      // 비로그인 상태: 로그인 페이지로 이동
+      navigate('/login');
+    }
+  };
+
   useEffect(() => {
     // 마운트 시 스크롤 이벤트 핸들러 정의
     const handleScroll = () => {
-      setIsFixed(window.scrollY > 190); // 스크롤 위치가 메인헤더 크기보다 크면 고정 헤더 표시
+      setIsFixed(window.scrollY > 170); // 스크롤 위치가 메인헤더 크기보다 크면 고정 헤더 표시
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -88,8 +114,9 @@ const FixedHeader: React.FC = () => {
             <AiOutlineShopping size={38} />
             <S.CartCnt>6</S.CartCnt>
           </S.CartLink>
-          <S.UserButton>
+          <S.UserButton onClick={handleUserIconClick}>
             <AiOutlineUser size={38} />
+            {isAuthenticated && <span style={{ fontSize: '12px', marginLeft: '4px' }}>로그아웃</span>}
           </S.UserButton>
         </S.UserSection>
 

@@ -48,3 +48,68 @@ export default tseslint.config({
   },
 })
 ```
+
+# 인증 상태 관리 시스템 사용 예시
+
+## 컴포넌트에서 인증 상태 사용하기
+
+```tsx
+import { useAuth } from '../hooks/useAuth';
+
+function ProfilePage() {
+  const { isAuthenticated, userId, logout } = useAuth();
+
+  if (!isAuthenticated) {
+    return <div>로그인이 필요합니다</div>;
+  }
+
+  return (
+    <div>
+      <h1>프로필 페이지</h1>
+      <p>사용자 ID: {userId}</p>
+      <button onClick={logout}>로그아웃</button>
+    </div>
+  );
+}
+```
+
+## API 호출 시 사용
+
+```tsx
+import { useAuth } from '../hooks/useAuth';
+import { apiRequest } from '../api/client';
+
+function UserDataComponent() {
+  const { token } = useAuth();
+  const [userData, setUserData] = useState(null);
+
+  const fetchUserData = async () => {
+    try {
+      // 토큰이 이미 Zustand 스토어에 의해 관리되므로 별도로 설정할 필요 없음
+      const response = await apiRequest.get('/api/v1/user/data');
+      setUserData(response.data);
+    } catch (error) {
+      console.error('사용자 데이터 가져오기 실패:', error);
+    }
+  };
+
+  // ... 컴포넌트 코드
+}
+```
+
+## 인증 상태에 따른 라우트 보호
+
+```tsx
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+
+function ProtectedRoute({ children }) {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
+```

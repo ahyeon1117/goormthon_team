@@ -2,6 +2,8 @@ package io.goorm.backend.service;
 
 import io.goorm.backend.dto.CartItemDto;
 import io.goorm.backend.dto.res.ResAddNewProductToCart;
+import io.goorm.backend.dto.res.ResDeleteProductFromCart;
+import io.goorm.backend.dto.res.ResGetCartItems;
 import io.goorm.backend.entity.Cart;
 import io.goorm.backend.entity.CartItem;
 import io.goorm.backend.entity.Product;
@@ -26,17 +28,24 @@ public class CartService {
     private final JwtService jwtService;
 
     @Transactional
-    public Cart makeCart(User user) {
+    public Cart createCartForUser(User user) {
         Cart cart = Cart.builder().user(user).itemsCount(0L).build();
 
         return cartRepository.save(cart);
     }
 
-    public Cart getCart(User user) {
-        Optional<Cart> cartOptional = cartRepository.findByUser(user);
+    @Transactional
+    public ResGetCartItems getCurrentUserCartItems() {
+        String userId = jwtService.getUserId();
+        User user = userService.findById(userId);
+        Cart cart = cartRepository.findByUser(user)
+            .orElseThrow(() -> new RuntimeException("사용자의 장바구니를 찾을 수 없습니다."));
 
-        // 장바구니가 없는 경우 새로 생성
-        return cartOptional.orElseGet(() -> makeCart(user));
+        // 장바구니 아이템 목록 가져오기
+        List<CartItem> cartItems = cart.getCartItems();
+
+        // 응답 DTO 생성 및 반환
+        return ResGetCartItems.of(cartItems);
     }
 
     @Transactional
@@ -45,8 +54,9 @@ public class CartService {
         User user = userService.findById(userId);
         Product product = productService.findProductById(item.getProductId());
 
-        // 사용자의 장바구니 조회 또는 생성
-        Cart cart = getCart(user);
+        // 사용자의 장바구니 조회
+        Cart cart = cartRepository.findByUser(user)
+            .orElseThrow(() -> new RuntimeException("사용자의 장바구니를 찾을 수 없습니다."));
 
         // 장바구니에 상품이 이미 있는지 확인
         Optional<CartItem> existingItem =
@@ -54,9 +64,7 @@ public class CartService {
 
         if (existingItem.isPresent()) {
             // 전자책은 이미 장바구니에 있으면 추가하지 않음
-            return ResAddNewProductToCart.builder()
-                .result("item already exists")
-                .build();
+            return ResAddNewProductToCart.itemAlreadyExists();
         } else {
             // 새 상품 추가
             CartItem cartItem = CartItem.builder().product(product).build();
@@ -64,27 +72,58 @@ public class CartService {
             cart.addCartItem(cartItem);
             cartItemRepository.save(cartItem);
 
-            return ResAddNewProductToCart.builder().result("success").build();
+            return ResAddNewProductToCart.success();
         }
     }
 
-    public List<CartItem> getCartItems(String userId) {
-        User user = userService.findById(userId);
-        Cart cart = getCart(user);
-        return cart.getCartItems();
-    }
-
     @Transactional
-    public void removeCartItem(String userId, String productId) {
+    public ResDeleteProductFromCart deleteProductFromCart(CartItemDto item) {
+        String userId = jwtService.getUserId();
         User user = userService.findById(userId);
-        Cart cart = getCart(user);
-        Product product = productService.findProductById(productId);
+        Product product = productService.findProductById(item.getProductId());
 
-        cartItemRepository
-            .findByCartAndProduct(cart, product)
-            .ifPresent(cartItem -> {
-                cart.removeCartItem(cartItem);
-                cartItemRepository.delete(cartItem);
-            });
+        // 사용자의 장바구니 조회
+        Cart cart = cartRepository.findByUser(user)
+            .orElseThrow(() -> new RuntimeException("사용자의 장바구니를 찾을 수 없습니다."));
+
+        // 장바구니에 해당 상품이 있는지 확인
+        Optional<CartItem> cartItemOptional = cartItemRepository.findByCartAndProduct(cart, product);
+
+        if (cartItemOptional.isPresent()) {
+            CartItem cartItem = cartItemOptional.get();
+            // 장바구니에서 아이템 제거
+            cart.removeCartItem(cartItem);
+            // DB에서도 삭제
+            cartItemRepository.delete(cartItem);
+            return ResDeleteProductFromCart.success();
+        } else {
+            // 장바구니에 상품이 없는 경우
+            return ResDeleteProductFromCart.itemNotExists();
+        }
     }
+
+    // @Transactional
+    // public List<CartItem> getCartItems(String userId) {
+    //     User user = userService.findById(userId);
+    //     Cart cart = cartRepository.findByUser(user)
+    //         .orElseThrow(() -> new RuntimeException("사용자의 장바구니를 찾을 수 없습니다."));
+
+    //     return cart.getCartItems();
+    // }
+
+    // @Transactional
+    // public void removeCartItem(String userId, Long productId) {
+    //     User user = userService.findById(userId);
+    //     Cart cart = cartRepository.findByUser(user)
+    //         .orElseThrow(() -> new RuntimeException("사용자의 장바구니를 찾을 수 없습니다."));
+
+    //     Product product = productService.findProductById(productId);
+
+    //     cartItemRepository
+    //         .findByCartAndProduct(cart, product)
+    //         .ifPresent(cartItem -> {
+    //             cart.removeCartItem(cartItem);
+    //             cartItemRepository.delete(cartItem);
+    //         });
+    // }
 }

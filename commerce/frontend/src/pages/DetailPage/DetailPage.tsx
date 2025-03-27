@@ -6,7 +6,7 @@ import { BookItem } from "../../types";
 
 // 상품 정보 인터페이스
 interface Product {
-  id: string; // ISBN 값이 저장됨
+  id: string; // 상품 고유 ID
   title: string;
   author: string;
   translator?: string;
@@ -16,13 +16,14 @@ interface Product {
   reviewCount: number;
   price: number;
   imageUrl: string;
+  isbn?: string; // ISBN은 별도 필드로 저장
   description?: string;
 }
 
 // BookItem을 Product로 변환하는 함수
 const mapBookItemToProduct = (bookItem: BookItem): Product => {
   return {
-    id: bookItem.id, // ISBN 값
+    id: bookItem.id, // 고유 ID
     title: bookItem.title,
     author: bookItem.author,
     publisher: bookItem.publisher,
@@ -31,13 +32,14 @@ const mapBookItemToProduct = (bookItem: BookItem): Product => {
     reviewCount: bookItem.reviewCount,
     price: bookItem.price,
     imageUrl: bookItem.imageUrl,
+    isbn: bookItem.isbn,
     description: bookItem.description,
   };
 };
 
 // 임시 상품 데이터
 const mockProduct: Product = {
-  id: "1", // 실제로는 ISBN 값이 들어갈 위치
+  id: "1", // 고유 ID
   title: "자바스크립트 디자인 패턴",
   author: "에디 오스마니",
   translator: "윤병식",
@@ -48,13 +50,13 @@ const mockProduct: Product = {
   price: 25200,
   imageUrl:
     "https://shopping-phinf.pstatic.net/main_4933517/49335174628.20240725071120.jpg",
+  isbn: "1234567890",
   description:
     "이 책은 자바스크립트 언어로 구현한 23가지 디자인 패턴을 소개합니다. 객체 지향 디자인 패턴을 자바스크립트 환경에 맞게 응용하는 방법을 설명하고, 각 패턴의 실제 사용 사례와 함께 코드 예제를 제공합니다.",
 };
 
 // 상품 상세 페이지 컴포넌트
 const DetailPage = () => {
-  // URL 파라미터에서 ISBN 값을 가져옴
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -66,11 +68,11 @@ const DetailPage = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
-      console.log(`상세 페이지 - ISBN(${id}) 도서 정보 요청 중...`);
+      console.log(`상세 페이지 - 상품 ID(${id}) 도서 정보 요청 중...`);
 
       try {
         if (id) {
-          // API에서 상품 정보 가져오기 시도 (ISBN으로 조회)
+          // API에서 상품 정보 가져오기 시도 (ID로 조회)
           const bookItem = await getProductById(id);
 
           if (bookItem) {
@@ -84,7 +86,7 @@ const DetailPage = () => {
             setProduct(mockProduct);
           }
         } else {
-          console.error("도서 ISBN이 제공되지 않았습니다.");
+          console.error("도서 ID가 제공되지 않았습니다.");
           setProduct(null);
         }
       } catch (error) {
@@ -288,7 +290,7 @@ const DetailPage = () => {
                 </S.BookInfoRow>
                 <S.BookInfoRow>
                   <S.BookInfoLabel>ISBN</S.BookInfoLabel>
-                  <S.BookInfoValue>{product.id}</S.BookInfoValue>
+                  <S.BookInfoValue>{product.isbn || "ISBN 정보 없음"}</S.BookInfoValue>
                 </S.BookInfoRow>
               </tbody>
             </S.BookInfoTable>

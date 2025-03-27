@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ApiResponse } from '../types/apiTypes';
+import { useAuthStore } from '../store/authStore';
 
 // 백엔드 서버 기본 URL 설정
 // const BASE_URL = 'http://localhost:8080';
@@ -19,7 +20,9 @@ const apiClient: AxiosInstance = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     // 요청 전에 수행할 작업 (예: 토큰 추가)
-    const token = localStorage.getItem('token');
+    const authStore = useAuthStore.getState();
+    const token = authStore.token;
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

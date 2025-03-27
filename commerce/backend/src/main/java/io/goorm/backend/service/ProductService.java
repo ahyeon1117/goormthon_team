@@ -35,12 +35,12 @@ public class ProductService {
         return result;
     }
 
-    public ProductResponse getProductByIsbn(String isbn) {
+    public ProductResponse getProductById(Long id) {
         Product product = productRepository
-            .findByIsbn(isbn)
+            .findById(id)
             .orElseThrow(() ->
                 new IllegalArgumentException(
-                    "해당 ISBN의 상품이 존재하지 않습니다: " + isbn
+                    "해당 ID의 상품이 존재하지 않습니다: " + id
                 )
             );
 
@@ -48,6 +48,20 @@ public class ProductService {
         BeanUtils.copyProperties(product, productResponse);
         return productResponse;
     }
+
+    // public ProductResponse getProductByIsbn(String isbn) {
+    //     Product product = productRepository
+    //         .findByIsbn(isbn)
+    //         .orElseThrow(() ->
+    //             new IllegalArgumentException(
+    //                 "해당 ISBN의 상품이 존재하지 않습니다: " + isbn
+    //             )
+    //         );
+
+    //     ProductResponse productResponse = new ProductResponse();
+    //     BeanUtils.copyProperties(product, productResponse);
+    //     return productResponse;
+    // }
 
     public List<ProductResponse> searchProducts(String keyword) {
         // 제목, 저자, 출판사로 검색하도록 변경
@@ -70,7 +84,9 @@ public class ProductService {
     }
 
     // 내부 서비스용 (서비스에서 사용)
-    public Product findProductById(String id) {
-        return productRepository.findById(id).orElseThrow();
+    public Product findProductById(Long id) {
+        return productRepository.findById(id).orElseThrow(() ->
+            new IllegalArgumentException("해당 ID의 상품이 존재하지 않습니다: " + id)
+        );
     }
 }

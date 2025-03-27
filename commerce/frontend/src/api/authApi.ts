@@ -1,5 +1,6 @@
 import { apiRequest } from './client';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
+import { useAuthStore } from '../store/authStore';
 
 // 인증 API 엔드포인트
 const AUTH_API = {
@@ -30,11 +31,8 @@ export const login = async (userId: string, password: string): Promise<LoginResp
     if (response.data.data) {
       const token = response.data.data;
 
-      // 로컬 스토리지에 토큰 저장
-      localStorage.setItem('token', token);
-
-      // API 클라이언트의 기본 헤더에 인증 토큰 설정
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      // Zustand 스토어에 토큰과 사용자 ID 저장
+      useAuthStore.getState().login(token, userId);
 
       return {
         token,
@@ -108,9 +106,14 @@ export const login = async (userId: string, password: string): Promise<LoginResp
  * 로그아웃 함수
  */
 export const logout = (): void => {
-  // 로컬 스토리지에서 토큰 제거
-  localStorage.removeItem('token');
+  // Zustand 스토어에서 로그아웃 액션 호출
+  useAuthStore.getState().logout();
+};
 
-  // API 클라이언트의 기본 헤더에서 인증 토큰 제거
-  delete axios.defaults.headers.common['Authorization'];
+/**
+ * 현재 인증 상태 확인 함수
+ */
+export const checkAuthStatus = (): boolean => {
+  const authState = useAuthStore.getState();
+  return authState.isAuthenticated && !!authState.token;
 };

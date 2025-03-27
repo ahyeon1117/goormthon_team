@@ -9,6 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProductResponse {
 
+    private Long id;
     private String title;
     private String link;
     private String image;

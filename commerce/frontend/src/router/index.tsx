@@ -6,7 +6,8 @@ import DetailPage from '../pages/DetailPage/DetailPage';
 import LoginPage from '../pages/LoginPage/LoginPage';
 import SignupPage from '../pages/SignupPage/SignupPage.tsx';
 import CartPage from '../pages/CartPage/CartPage';
-
+import OrderPage from '../pages/OrderPage/OrderPage';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 // 라우터 설정
 const router = createBrowserRouter([
@@ -36,7 +37,19 @@ const router = createBrowserRouter([
       },
       {
         path: '/cart',
-        element: <CartPage />,
+        element: (
+          <ProtectedRoute>
+            <CartPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/order',
+        element: (
+          <ProtectedRoute>
+            <OrderPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
