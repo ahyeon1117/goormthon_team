@@ -7,7 +7,8 @@ import LoginPage from '../pages/LoginPage/LoginPage';
 import SignupPage from '../pages/SignupPage/SignupPage.tsx';
 import CartPage from '../pages/CartPage/CartPage';
 import OrderPage from '../pages/OrderPage/OrderPage';
-import ProtectedRoute from '../components/ProtectedRoute';
+import LibraryPage from '../pages/LibraryPage/LibraryPage';
+import ProtectedRoute from './ProtectedRoute';
 
 // 라우터 설정
 const router = createBrowserRouter([
@@ -48,6 +49,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <OrderPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/library',
+        element: (
+          <ProtectedRoute>
+            <LibraryPage />
           </ProtectedRoute>
         ),
       },
