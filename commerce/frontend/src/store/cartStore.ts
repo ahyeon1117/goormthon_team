@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import axios from 'axios';
+import apiClient from '../api/client';
 import { CartItemDto, mapCartItemToBookItem } from '../types/apiTypes';
 import { BookItem } from '../types';
 
@@ -32,7 +32,7 @@ export const useCartStore = create<CartState>()(
       fetchCartItems: async () => {
         try {
           set({ isLoading: true, error: null });
-          const response = await axios.get('/api/cart');
+          const response = await apiClient.get('/api/v1/cart/view');
           const { cartItems, totalCount } = response.data.data;
           set({ cartItems, totalCount, isLoading: false });
         } catch (error) {
@@ -47,7 +47,7 @@ export const useCartStore = create<CartState>()(
       addToCart: async (productId: string) => {
         try {
           set({ isLoading: true, error: null });
-          const response = await axios.post('/api/cart', { productId });
+          const response = await apiClient.post('/api/v1/cart/add', { productId });
 
           if (response.data.code === 200) {
             await get().fetchCartItems(); // 장바구니 정보 갱신
@@ -67,7 +67,9 @@ export const useCartStore = create<CartState>()(
       removeFromCart: async (productId: string) => {
         try {
           set({ isLoading: true, error: null });
-          const response = await axios.delete(`/api/cart/${productId}`);
+          const response = await apiClient.delete('/api/v1/cart/remove', {
+            data: { productId }
+          });
 
           if (response.data.code === 200) {
             await get().fetchCartItems(); // 장바구니 정보 갱신
@@ -87,7 +89,7 @@ export const useCartStore = create<CartState>()(
       clearCart: async () => {
         try {
           set({ isLoading: true, error: null });
-          const response = await axios.delete('/api/cart');
+          const response = await apiClient.delete('/api/v1/cart/clear');
 
           if (response.data.code === 200) {
             set({ cartItems: [], totalCount: 0, isLoading: false });

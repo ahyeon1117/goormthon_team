@@ -22,7 +22,9 @@ export default function LibraryPage() {
     books: inventoryBooks,
     totalCount: inventoryCount,
     fetchInventoryItems,
-    isInventoryEmpty
+    fetchProductDetails,
+    isInventoryEmpty,
+    inventoryItems
   } = useInventory();
 
   // 페이지 로드 시 데이터 가져오기
@@ -35,6 +37,20 @@ export default function LibraryPage() {
     }
   // eslint-disable-next-line
   }, [isAuthenticated, fetchCartItems, fetchInventoryItems]);
+
+  // 인벤토리 아이템에 대한 상세 정보 가져오기
+  useEffect(() => {
+    if (inventoryItems.length > 0) {
+      // 각 인벤토리 아이템에 대한 상품 상세 정보 가져오기
+      const fetchDetails = async () => {
+        for (const item of inventoryItems) {
+          await fetchProductDetails(item.productId.toString());
+        }
+      };
+
+      fetchDetails();
+    }
+  }, [inventoryItems, fetchProductDetails]);
 
   return (
     <>

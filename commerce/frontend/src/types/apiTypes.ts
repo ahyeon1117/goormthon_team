@@ -123,7 +123,7 @@ export const mapInventoryItemToBookItem = (
   return {
     id: inventoryItem.productId.toString(),
     title: inventoryItem.productTitle,
-    imageUrl: productDetails?.image || '',
+    imageUrl: productDetails?.image || '/placeholder.jpg', // 기본 이미지 경로 제공
     author: productDetails?.author ? formatAuthor(productDetails.author) : '',
     publisher: productDetails?.publisher || '',
     publishDate: productDetails?.pubdate || '',

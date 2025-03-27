@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import axios from 'axios';
+import apiClient from '../api/client';
 import { InventoryItemDto, ProductResponse, mapInventoryItemToBookItem } from '../types/apiTypes';
 import { BookItem } from '../types';
 
@@ -33,7 +33,7 @@ export const useInventoryStore = create<InventoryState>()(
       fetchInventoryItems: async () => {
         try {
           set({ isLoading: true, error: null });
-          const response = await axios.get('/api/inventory');
+          const response = await apiClient.get('/api/v1/inventory/view');
           const { inventoryItems, totalCount } = response.data.data;
           set({ inventoryItems, totalCount, isLoading: false });
         } catch (error) {
@@ -52,7 +52,7 @@ export const useInventoryStore = create<InventoryState>()(
             return get().productDetails[productId];
           }
 
-          const response = await axios.get(`/api/products/${productId}`);
+          const response = await apiClient.get(`/api/v1/products/${productId}`);
           if (response.data.code === 200) {
             const productDetail = response.data.data;
             // 상품 상세 정보 캐시 업데이트
@@ -76,7 +76,7 @@ export const useInventoryStore = create<InventoryState>()(
       // 마지막 접근 시간 업데이트
       updateLastAccessed: async (productId: string) => {
         try {
-          const response = await axios.put(`/api/inventory/${productId}/access`);
+          const response = await apiClient.put(`/api/v1/inventory/${productId}/access`);
           if (response.data.code === 200) {
             // 인벤토리 정보 다시 불러오기
             await get().fetchInventoryItems();
