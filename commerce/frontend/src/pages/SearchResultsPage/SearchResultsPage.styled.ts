@@ -27,7 +27,7 @@ export const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 1200px;
-  margin: 10px auto 0px auto;
+  margin: 10px auto 0 auto;
   padding: 20px;
 
   .search-content-wrapper {
@@ -55,7 +55,7 @@ export const ResultHeaderStyled = styled.div`
     color: #666;
 
     strong.keyword {
-      color: #e896ff;
+      color: #E896FF;
       font-weight: bold;
     }
 

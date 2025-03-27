@@ -48,14 +48,14 @@ export const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #e896ff;
+    border-color: #E896FF;
   }
 `;
 
 export const Button = styled.button`
   width: 100%;
   padding: 0.75rem;
-  background-color: #e896ff;
+  background-color: #E896FF;
   color: white;
   border: none;
   border-radius: 4px;
@@ -66,7 +66,7 @@ export const Button = styled.button`
   margin-top: 1rem;
 
   &:hover {
-    background-color: #d886ef;
+    background-color: #e254ff;
   }
 `;
 

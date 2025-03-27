@@ -55,7 +55,7 @@ export const Input = styled.input`
 export const LoginButton = styled.button`
   width: 100%;
   padding: 0.75rem;
-  background-color: #e896ff;
+  background-color: #E896FF;
   color: white;
   border: none;
   border-radius: 4px;
@@ -66,7 +66,7 @@ export const LoginButton = styled.button`
   margin-top: 1rem;
 
   &:hover {
-    background-color: #d886ef;
+    background-color: #d84fff;
   }
 `;
 
@@ -76,7 +76,7 @@ export const SignupLink = styled.div`
   font-size: 0.9rem;
 
   a {
-    color: #e896ff;
+    color: #E896FF;
     text-decoration: none;
     font-weight: 500;
 
@@ -92,7 +92,7 @@ export const BackButton = styled.button`
   left: 2rem;
   background: none;
   border: none;
-  color: #e896ff;
+  color: #E896FF;
   font-size: 1rem;
   cursor: pointer;
   display: flex;
