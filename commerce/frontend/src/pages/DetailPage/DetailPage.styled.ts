@@ -43,7 +43,7 @@ export const ProductInfoSection = styled.div`
 
 export const BookTypeTag = styled.span`
   align-self: flex-start;
-  background-color: #e078ca;
+  background-color: #E896FF;
   color: white;
   padding: 4px 8px;
   border-radius: 1px;
@@ -206,7 +206,7 @@ export const TotalPriceLabel = styled.span`
 export const TotalPriceValue = styled.span`
   font-size: 24px;
   font-weight: bold;
-  color: #e078ca;
+  color: #E896FF;
 `;
 
 export const ButtonsSection = styled.div`
@@ -241,8 +241,8 @@ export const FavoredHeartIcon = styled.svg.attrs({
   xmlns: "http://www.w3.org/2000/svg"
 })`
   path {
-    fill: #EE0000;
-    stroke: #EE0000;
+    fill: #e896ff;
+    stroke: #e896ff;
   }
 `;
 
@@ -275,7 +275,7 @@ export const CartButton = styled.button`
 export const PurchaseButton = styled.button`
   flex: 1;
   padding: 15px;
-  background: #e078ca;
+  background: #E896FF;
   color: white;
   border: none;
   cursor: pointer;
@@ -283,7 +283,7 @@ export const PurchaseButton = styled.button`
   border-radius: 4px;
 
   &:hover {
-    background: #d066b9;
+    background: #d95cfb;
   }
 `;
 
@@ -357,3 +357,67 @@ export const BookInfoLabel = styled.td`
 export const BookInfoValue = styled.td`
   padding: 10px 0;
 `;
+
+// 리뷰 작성 폼 스타일
+export const ReviewForm = styled.div`
+  margin-bottom: 30px;
+`;
+
+export const ReviewTitle = styled.h3`
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+`;
+
+export const ReviewInput = styled.textarea`
+  width: 100%;
+  height: 120px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  resize: none;
+  outline: none;
+
+  &:focus {
+    border-color: #9a9a9a;
+  }
+`;
+
+export const ReviewButton = styled.button`
+  padding: 10px 15px;
+  background-color: #E896FF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #d95cfb;
+  }
+`;
+
+// 리뷰 목록 스타일
+export const ReviewList = styled.div`
+  margin-top: 30px;
+`;
+
+export const ReviewItem = styled.div`
+  padding: 15px;
+  border: 1px solid #f0f0f0;
+  border-radius: 5px;
+  margin-bottom: 10px;
+`;
+
+export const ReviewAuthor = styled.p`
+  font-weight: bold;
+  margin-bottom: 10px;
+`;
+
+export const ReviewText = styled.p`
+  font-size: 14px;
+  color: #555;
+`;
+

@@ -66,13 +66,13 @@ export const CheckAllIcon = styled(BsCheckCircleFill)`
     color: #E896FF;
 `;
 export const UncheckAllIcon = styled(BsCheckCircle)`
-    width: 24px;
-    height: 24px;
-    color: #D9D9D9;
+  width: 24px;
+  height: 24px;
+  color: #D9D9D9;
 
-    &:hover {
-        color: #E896FF;
-    }
+  &:hover {
+    color: #d95cfb;
+  }
 `;
 
 // 선택 품목 삭제 버튼
@@ -156,18 +156,18 @@ export const BaseAddressCheckbox = styled.div`
 
 // 기본 배송지 체크 아이콘
 export const CheckAddressIcon = styled(BsCheckCircleFill)`
-    width: 18px;
-    height: 18px;
-    color: #E896FF;
+  width: 18px;
+  height: 18px;
+  color: #e896ff;
 `;
 export const UncheckAddressIcon = styled(BsCheckCircle)`
-    width: 18px;
-    height: 18px;
-    color: #D9D9D9;
+  width: 18px;
+  height: 18px;
+  color: #D9D9D9;
 
-    &:hover {
-        color: #E896FF;
-    }
+  &:hover {
+    color: #d95cfb;
+  }
 `;
 
 // 배송지 변경 버튼
@@ -270,22 +270,22 @@ export const TotalPrice = styled.div`
 
 // 주문 버튼
 export const OrderButton = styled.button`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 42px;
-    background-color: #E896FF;
-    color: #FFF;
-    font-size: 18px;
-    border-radius: 5px;
-    border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 42px;
+  background-color: #E896FF;
+  color: #FFF;
+  font-size: 18px;
+  border-radius: 5px;
+  border: none;
 
-    &:hover {
-        background-color: #D485E8;
-    }
+  &:hover {
+    background-color: #d95cfb;
+  }
 
-    &:focus {
-        outline: none;
-    }
+  &:focus {
+    outline: none;
+  }
 `;
