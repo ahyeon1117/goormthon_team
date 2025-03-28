@@ -18,7 +18,7 @@ const CartPage: React.FC = () => {
     fetchCartItems,
     calculateTotalPrice,
     removeFromCart,
-    clearCart
+    removeMultipleFromCart
   } = useCart();
   // 전체 아이템 개수와 선택된 아이템 개수가 같을 때만 전체선택 체크
   const isAllChecked = checkedItems.length > 0 && checkedItems.length === cartBooks.length;
@@ -85,20 +85,18 @@ const CartPage: React.FC = () => {
 
     if (isConfirmed) {
       await removeFromCart(id);  // 특정 상품 삭제
-
       setCheckedItems(prev => prev.filter(checkedId => checkedId !== id));
     }
   }
 
   // 선택된 아이템 삭제 핸들러
   const handleDeleteChecked = async () => {
+    if (checkedItems.length === 0) return;
+    
     const isConfirmed = window.confirm('선택한 상품을 삭제하시겠습니까?');
 
     if (isConfirmed) {
-      await removeFromCart(checkedItems); // 선택된 아이템 삭제
-      // setCartItems(prev => prev.filter(item => !checkedItems.includes(item.cartId)));
-      // removeFromCart();
-      
+      await removeMultipleFromCart(checkedItems); // 선택된 아이템 삭제
       setCheckedItems([]); // 선택된 아이템을 모두 지웠으므로 체크 목록 초기화
     }
   }

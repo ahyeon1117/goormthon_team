@@ -16,7 +16,8 @@ export function useCart() {
     removeFromCart,
     clearCart,
     setLoading,
-    setError
+    setError,
+    removeMultipleFromCart,
   } = useCartStore();
 
   const [books, setBooks] = useState<BookItem[]>([]);
@@ -69,6 +70,7 @@ export function useCart() {
     clearCart,
     setLoading,
     setError,
+    removeMultipleFromCart,
 
     // 유틸리티
     isCartEmpty,

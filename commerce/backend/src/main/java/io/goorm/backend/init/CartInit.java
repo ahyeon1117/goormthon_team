@@ -49,8 +49,8 @@ public class CartInit {
 
                 cartRepository.save(cart);
 
-                // 21번, 22번 책 추가
-                List<Long> bookIds = Arrays.asList(21L, 22L);
+                // 21번-25번 책 추가
+                List<Long> bookIds = Arrays.asList(21L, 22L, 23L, 24L, 25L);
 
                 for (Long bookId : bookIds) {
                     Optional<Product> productOptional = productRepository.findById(bookId);

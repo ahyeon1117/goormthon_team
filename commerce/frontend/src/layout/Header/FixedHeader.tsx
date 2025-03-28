@@ -5,12 +5,14 @@ import { AiOutlineSearch, AiOutlineUser, AiOutlineShopping } from "react-icons/a
 import * as S from "./FixedHeader.styled";
 import { useAuthStore } from '../../store/authStore';
 import { logout as logoutApi } from '../../api/authApi';
+import { useCart } from '../../hooks';
 
 const FixedHeader: React.FC = () => {
   const [isFixed, setIsFixed] = useState(false); // 고정 헤더 표시 상태
   const location = useLocation();
   const navigate = useNavigate();
   const [searchKeyword, setSearchKeyword] = useState('');
+  const { totalCount } = useCart();
 
   // Zustand 스토어에서 인증 상태를 가져옵니다
   const { isAuthenticated } = useAuthStore();
@@ -112,7 +114,7 @@ const FixedHeader: React.FC = () => {
         <S.UserSection>
           <S.CartLink to="/cart" onClick={() => handleSamePageScroll("/cart")}>
             <AiOutlineShopping size={38} />
-            <S.CartCnt>6</S.CartCnt>
+            <S.CartCnt>{totalCount}</S.CartCnt>
           </S.CartLink>
           <S.UserButton onClick={handleUserIconClick}>
             <AiOutlineUser size={38} />

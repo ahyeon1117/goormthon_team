@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.goorm.backend.dto.req.ReqDeleteProductList;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,7 +46,7 @@ public class CartController {
     }
 
     /**
-     * 장바구니에서 상품을 삭제합니다.
+     * 장바구니에서 단일 상품을 삭제합니다.
      */
     @DeleteMapping("/remove")
     public ResponseEntity<ApiResponse<ResDeleteProductFromCart>> removeItem(
@@ -54,6 +55,20 @@ public class CartController {
         return ResponseEntity.ok(
             ApiResponse.success(
                 cartService.deleteProductFromCart(CartItemDto.of(requestMessage))
+            )
+        );
+    }
+
+    /**
+     * 장바구니에서 여러 상품을 삭제합니다.
+     */
+    @DeleteMapping("/remove-multiple")
+    public ResponseEntity<ApiResponse<ResDeleteProductFromCart>> removeItemList(
+        @Valid @RequestBody ReqDeleteProductList requestMessage
+    ) {
+        return ResponseEntity.ok(
+            ApiResponse.success(
+                cartService.deleteProductListFromCart(CartItemDto.listOf(requestMessage))
             )
         );
     }

@@ -102,6 +102,34 @@ public class CartService {
         }
     }
 
+    @Transactional
+    public ResDeleteProductFromCart deleteProductListFromCart(List<CartItemDto> items) {
+        String userId = jwtService.getUserId();
+        User user = userService.findById(userId);
+
+        // 사용자의 장바구니 조회
+        Cart cart = cartRepository.findByUser(user)
+            .orElseThrow(() -> new RuntimeException("사용자의 장바구니를 찾을 수 없습니다."));
+
+        // 각 상품마다 확인
+        for (CartItemDto item : items) {
+            Product product = productService.findProductById(item.getProductId());
+            
+            // 장바구니에 해당 상품이 있는지 확인
+            Optional<CartItem> cartItemOptional = cartItemRepository.findByCartAndProduct(cart, product);
+
+            if (cartItemOptional.isPresent()) {
+                CartItem cartItem = cartItemOptional.get();
+                cart.removeCartItem(cartItem); // 장바구니에서 해당 상품 제거
+                cartItemRepository.delete(cartItem); // DB에서도 삭제
+            } else {
+                // 장바구니에 상품이 없는 경우
+                return ResDeleteProductFromCart.itemNotExists();
+            }
+        }
+        return ResDeleteProductFromCart.success();
+    }
+
     // @Transactional
     // public List<CartItem> getCartItems(String userId) {
     //     User user = userService.findById(userId);

@@ -21,11 +21,13 @@ import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { logout as logoutApi } from '../../api/authApi';
+import { useCart } from '../../hooks';
 
 const MainPageHeader = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  const { totalCount } = useCart();
 
   // Zustand 스토어에서 인증 상태를 가져옵니다
   const { isAuthenticated } = useAuthStore();
@@ -99,7 +101,7 @@ const MainPageHeader = () => {
           <STUserSection>
             <CartLink to="/cart" onClick={() => handleSamePageScroll("/cart")}>
               <CartIcon />
-              <CartCnt>6</CartCnt>
+              <CartCnt>{totalCount}</CartCnt>
             </CartLink>
             {isAuthenticated ? (
               <LoginIcon onClick={handleLogout} style={{ cursor: 'pointer' }}></LoginIcon>

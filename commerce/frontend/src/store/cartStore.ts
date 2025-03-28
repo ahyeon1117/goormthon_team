@@ -18,6 +18,7 @@ interface CartState {
   clearCart: () => Promise<boolean>;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
+  removeMultipleFromCart: (productIdList: string[]) => Promise<boolean>;
 }
 
 export const useCartStore = create<CartState>()(
@@ -113,6 +114,29 @@ export const useCartStore = create<CartState>()(
       // 에러 상태 설정
       setError: (error: string | null) => {
         set({ error });
+      },
+
+      // 장바구니에서 여러 상품 제거
+      removeMultipleFromCart: async (productIdList: string[]) => {
+        try {
+          set({ isLoading: true, error: null });
+          const response = await apiClient.delete('/api/v1/cart/remove-multiple', {
+            data: { productIdList }
+          });
+
+          if (response.data.code === 200) {
+            await get().fetchCartItems(); // 장바구니 정보 갱신
+            return true;
+          }
+          return false;
+
+        } catch (error) {
+          set({
+            error: error instanceof Error ? error.message : '장바구니에서 여러 상품 삭제 중 오류가 발생했습니다.',
+            isLoading: false
+          });
+          return false;
+        }
       }
     }),
     {
@@ -132,3 +156,4 @@ export const getCartItemsAsBooks = (): BookItem[] => {
   const { cartItems } = useCartStore.getState();
   return cartItems.map(mapCartItemToBookItem);
 };
+
