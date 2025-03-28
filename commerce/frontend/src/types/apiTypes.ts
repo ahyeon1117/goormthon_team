@@ -5,6 +5,21 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+// 찜하기 API 관련 타입 정의
+export interface WishItemRequest {
+  productId: number;
+}
+
+export interface WishItemResponse {
+  id: number;
+  productId: number;
+  userId: number;
+  createdAt: string;
+}
+
+export interface GetWishItemsResponse {
+  items: WishItemResponse[];
+}
 
 // 회원가입 데이터 타입
 export interface SignupRequest {

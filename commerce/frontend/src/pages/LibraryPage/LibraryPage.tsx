@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth, useUser, useCart, useInventory } from '../../hooks';
+import { addWishItem, getWishItems, removeWishItem } from '../../api/wishApi';
 
 export default function LibraryPage() {
   // 인증 정보
@@ -27,6 +28,10 @@ export default function LibraryPage() {
     inventoryItems
   } = useInventory();
 
+  // 찜하기 정보
+  const [wishItems, setWishItems] = useState<number[]>([]);
+  const [loadingWishItems, setLoadingWishItems] = useState(false);
+
   // 페이지 로드 시 데이터 가져오기
   useEffect(() => {
     if (isAuthenticated) {
@@ -34,6 +39,7 @@ export default function LibraryPage() {
       loadUserInfo();
       fetchCartItems();
       fetchInventoryItems();
+      fetchWishItems();
     }
   // eslint-disable-next-line
   }, [isAuthenticated, fetchCartItems, fetchInventoryItems]);
@@ -51,6 +57,50 @@ export default function LibraryPage() {
       fetchDetails();
     }
   }, [inventoryItems, fetchProductDetails]);
+
+  // 찜 목록 가져오기
+  const fetchWishItems = async () => {
+    try {
+      setLoadingWishItems(true);
+      console.log('찜 목록을 가져오는 중...');
+      const items = await getWishItems();
+      const productIds = items.map(item => item.productId);
+      setWishItems(productIds);
+      console.log('찜 목록 조회 완료:', productIds);
+    } catch (error) {
+      console.error('찜 목록 가져오기 오류:', error);
+    } finally {
+      setLoadingWishItems(false);
+    }
+  };
+
+  // 상품이 찜 목록에 있는지 확인
+  const isInWishlist = (productId: number) => {
+    return wishItems.includes(productId);
+  };
+
+  // 찜하기 추가/삭제 토글
+  const toggleWish = async (productId: number) => {
+    try {
+      if (isInWishlist(productId)) {
+        console.log(`상품 ID: ${productId} 찜 목록에서 삭제 시도 중...`);
+        const success = await removeWishItem(productId);
+        if (success) {
+          setWishItems(wishItems.filter(id => id !== productId));
+          console.log(`상품 ID: ${productId} 찜 목록에서 삭제 완료`);
+        }
+      } else {
+        console.log(`상품 ID: ${productId} 찜 목록에 추가 시도 중...`);
+        const success = await addWishItem(productId);
+        if (success) {
+          setWishItems([...wishItems, productId]);
+          console.log(`상품 ID: ${productId} 찜 목록에 추가 완료`);
+        }
+      }
+    } catch (error) {
+      console.error('찜하기 토글 중 오류:', error);
+    }
+  };
 
   return (
     <>
@@ -162,7 +212,7 @@ export default function LibraryPage() {
 
           .book-grid {
             display: grid;
-            grid-template-columns: 80px 1fr;
+            grid-template-columns: 80px 1fr auto;
             gap: 15px;
             align-items: center;
           }
@@ -222,6 +272,36 @@ export default function LibraryPage() {
             color: #333;
             margin: 0;
           }
+
+          .wish-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: #ccc;
+            transition: color 0.2s;
+            margin-right: 10px;
+          }
+
+          .wish-button.active {
+            color: #ff5a5f;
+          }
+
+          .wish-button:hover {
+            color: #ff5a5f;
+          }
+
+          .wish-button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .wish-status {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #777;
+          }
         `}
       </style>
       <div className="library-container">
@@ -280,6 +360,18 @@ export default function LibraryPage() {
                               <p className="book-price">
                                 {book.price.toLocaleString()}원
                               </p>
+                            </div>
+                            <div className="wish-button-container">
+                              <button
+                                className={`wish-button ${isInWishlist(Number(book.id)) ? 'active' : ''}`}
+                                onClick={() => toggleWish(Number(book.id))}
+                                title={isInWishlist(Number(book.id)) ? "찜 해제하기" : "찜하기"}
+                              >
+                                {isInWishlist(Number(book.id)) ? '♥' : '♡'}
+                              </button>
+                              <div className="wish-status">
+                                {loadingWishItems ? '로딩 중...' : (isInWishlist(Number(book.id)) ? '찜 됨' : '찜하기')}
+                              </div>
                             </div>
                           </div>
                         </li>
