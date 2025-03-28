@@ -12,7 +12,7 @@ interface AuthState {
   // 액션
   setToken: (token: string) => void;
   setUser: (userId: string) => void;
-  login: (token: string, userId: string, nickname: string) => void;
+  login: (token: string, userId: string, nickname?: string) => void;
   logout: () => void;
 }
 
@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       // 로그인 (토큰 및 사용자 정보 설정)
-      login: (token: string, userId: string, nickname: string) => {
+      login: (token: string, userId: string, nickname?: string) => {
         // API 클라이언트의 기본 헤더에 인증 토큰 설정
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
@@ -50,7 +50,7 @@ export const useAuthStore = create<AuthState>()(
 
         // 사용자 스토어에도 정보 저장
         const userStore = useUserStore.getState();
-        userStore.setUserInfo(userId, nickname);
+        userStore.setUserInfo(userId, nickname || userId);
       },
 
       // 로그아웃
