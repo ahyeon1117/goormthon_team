@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import * as S from "./DetailPage.styled";
 import { getProductById } from "../../api/productApi";
 import { BookItem } from "../../types";
+import { useCart } from "../../hooks";
+import { addWishItem, getWishItems, removeWishItem } from "../../api/wishApi";
 
 // 상품 정보 인터페이스
 interface Product {
@@ -65,6 +67,17 @@ const DetailPage = () => {
   const [isWishlist, setIsWishlist] = useState(false);
   const [reviewText, setReviewText] = useState(""); // 리뷰 텍스트 상태
   const [reviews, setReviews] = useState<string[]>([]); // 리뷰 목록 상태
+  const [wishLoading, setWishLoading] = useState(false);
+  const [isInCart, setIsInCart] = useState(false);
+  const [cartLoading, setCartLoading] = useState(false);
+
+  // 장바구니 관련 훅 사용
+  const {
+    cartItems,
+    fetchCartItems,
+    addToCart,
+    removeFromCart
+  } = useCart();
 
   // 상품 정보 가져오기
   useEffect(() => {
@@ -103,6 +116,119 @@ const DetailPage = () => {
     fetchProduct();
   }, [id]);
 
+  // 컴포넌트 마운트 시 장바구니 데이터 로드
+  useEffect(() => {
+    const loadCartItems = async () => {
+      try {
+        console.log('장바구니 데이터 로드 중...');
+        await fetchCartItems();
+        console.log('장바구니 데이터 로드 완료');
+      } catch (error) {
+        console.error('장바구니 데이터 로드 실패:', error);
+      }
+    };
+
+    loadCartItems();
+  }, [fetchCartItems]);
+
+  // 상품과 장바구니 아이템이 변경될 때 장바구니 상태 확인
+  useEffect(() => {
+    const checkCartStatus = () => {
+      if (!product) return;
+
+      console.log('장바구니 상태 확인 중...', cartItems);
+      console.log('현재 상품 ID:', product.id);
+
+      // 현재 상품이 장바구니에 있는지 확인
+      const inCart = cartItems.some(item => {
+        const itemId = String(item.productId);
+        const productId = String(product.id);
+        console.log(`비교: 장바구니 아이템 ID(${itemId}) vs 현재 상품 ID(${productId}), 일치: ${itemId === productId}`);
+        return itemId === productId;
+      });
+
+      console.log(`상품 ID(${product.id})는 장바구니에 ${inCart ? '있습니다' : '없습니다'}`);
+      setIsInCart(inCart);
+    };
+
+    checkCartStatus();
+  }, [product, cartItems]);
+
+  // 장바구니 토글 함수
+  const toggleCart = async () => {
+    if (!product) return;
+
+    try {
+      setCartLoading(true);
+      console.log(`장바구니 토글 시작: isInCart = ${isInCart}, 상품 ID = ${product.id}`);
+
+      if (isInCart) {
+        // 장바구니에서 제거
+        console.log(`상품 ID(${product.id})를 장바구니에서 제거 중...`);
+        const success = await removeFromCart(product.id);
+
+        if (success) {
+          console.log(`상품 ID(${product.id})를 장바구니에서 제거 완료`);
+          // 장바구니 아이템 다시 불러오기 대신 상태 직접 업데이트
+          setIsInCart(false);
+        } else {
+          console.error('장바구니에서 제거 실패');
+        }
+      } else {
+        // 장바구니에 추가
+        console.log(`상품 ID(${product.id})를 장바구니에 추가 중...`);
+        const success = await addToCart(product.id);
+
+        if (success) {
+          console.log(`상품 ID(${product.id})를 장바구니에 추가 완료`);
+          // 장바구니 아이템 다시 불러오기 대신 상태 직접 업데이트
+          setIsInCart(true);
+        } else {
+          console.error('장바구니에 추가 실패');
+        }
+      }
+
+      // 장바구니 상태 갱신을 위해 데이터 다시 불러오기
+      await fetchCartItems();
+    } catch (error) {
+      console.error('장바구니 작업 중 오류 발생:', error);
+    } finally {
+      setCartLoading(false);
+    }
+  };
+
+  // 찜하기 목록 확인
+  useEffect(() => {
+    const checkWishStatus = async () => {
+      if (!product) return;
+
+      try {
+        setWishLoading(true);
+        console.log('찜 목록을 확인하는 중...');
+        const wishItems = await getWishItems();
+        console.log('받아온 찜 목록:', wishItems);
+        console.log('현재 상품 ID:', product.id);
+
+        // 현재 상품이 찜 목록에 있는지 확인
+        const isProductInWishlist = wishItems.some(item => {
+          const itemId = String(item.productId);
+          const productId = String(product.id);
+          console.log(`비교: 찜 아이템 ID(${itemId}) vs 현재 상품 ID(${productId}), 일치: ${itemId === productId}`);
+          return itemId === productId;
+        });
+
+        setIsWishlist(isProductInWishlist);
+        console.log(`상품 ID(${product.id})는 찜 목록에 ${isProductInWishlist ? '있습니다' : '없습니다'}`);
+      } catch (error) {
+        console.error('찜 목록 확인 중 오류 발생:', error);
+      } finally {
+        setWishLoading(false);
+      }
+    };
+
+    checkWishStatus();
+  }, [product]);
+
   // 수량 증가 함수
   const increaseQuantity = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
@@ -118,9 +244,44 @@ const DetailPage = () => {
     setActiveTab(tab);
   };
 
-  // 위시리스트 토글 함수
-  const toggleWishlist = () => {
-    setIsWishlist((prev) => !prev);
+  // 찜하기 토글 함수
+  const toggleWishlist = async () => {
+    if (!product) return;
+
+    try {
+      setWishLoading(true);
+      console.log(`찜하기 토글 시작: isWishlist = ${isWishlist}, 상품 ID = ${product.id}`);
+
+      if (isWishlist) {
+        // 찜 목록에서 제거
+        console.log(`상품 ID(${product.id})를 찜 목록에서 제거 중...`);
+        const success = await removeWishItem(Number(product.id));
+        if (success) {
+          setIsWishlist(false);
+          console.log(`상품 ID(${product.id})를 찜 목록에서 제거 완료`);
+        } else {
+          console.error('찜 목록에서 제거 실패');
+        }
+      } else {
+        // 찜 목록에 추가
+        console.log(`상품 ID(${product.id})를 찜 목록에 추가 중...`);
+        const success = await addWishItem(Number(product.id));
+        if (success) {
+          setIsWishlist(true);
+          console.log(`상품 ID(${product.id})를 찜 목록에 추가 완료`);
+        } else {
+          console.error('찜 목록에 추가 실패');
+        }
+      }
+
+      // 상태 갱신을 위해 찜 목록 다시 조회
+      const updatedWishItems = await getWishItems();
+      console.log('업데이트된 찜 목록:', updatedWishItems);
+    } catch (error) {
+      console.error('찜하기 작업 중 오류 발생:', error);
+    } finally {
+      setWishLoading(false);
+    }
   };
 
   // 리뷰 추가 함수
@@ -225,7 +386,11 @@ const DetailPage = () => {
           </S.QuantityAndPriceContainer>
 
           <S.ButtonsSection>
-            <S.WishlistButton onClick={toggleWishlist}>
+            <S.WishlistButton
+              onClick={toggleWishlist}
+              disabled={wishLoading}
+              style={{ opacity: wishLoading ? 0.5 : 1 }}
+            >
               {isWishlist ? (
                 <S.FavoredHeartIcon>
                   <path d="M14.5 25.5C14.5 25.5 1 14.5 1 8.5C1 4.5 4 1 8.5 1C11.5 1 14.5 3 14.5 5.5C14.5 3 17.5 1 20.5 1C25 1 28 4.5 28 8.5C28 14.5 14.5 25.5 14.5 25.5Z" />
@@ -236,7 +401,16 @@ const DetailPage = () => {
                 </S.UnfavoredHeartIcon>
               )}
             </S.WishlistButton>
-            <S.CartButton>장바구니</S.CartButton>
+            <S.CartButton
+              onClick={toggleCart}
+              disabled={cartLoading}
+              style={{
+                backgroundColor: isInCart ? '#f0f0f0' : '#e078ca',
+                color: isInCart ? '#333' : '#fff'
+              }}
+            >
+              {cartLoading ? '처리 중...' : (isInCart ? '장바구니 빼기' : '장바구니 담기')}
+            </S.CartButton>
             <S.PurchaseButton>바로구매</S.PurchaseButton>
           </S.ButtonsSection>
         </S.ProductDetails>
