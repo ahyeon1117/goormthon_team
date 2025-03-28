@@ -5,9 +5,10 @@ export const ProductSection = styled.section`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height:700px;
+    min-height: 700px;
     margin: 0 auto;
     box-sizing: border-box;
+    margin-bottom: 20px;
 `;
 
 export const ProductSectionTitle = styled.div`
@@ -143,6 +144,7 @@ export const ProductTitle = styled.div`
     font-weight: 700;
     color: #000000;
     margin-bottom: 3px;
+    max-width: 200px;
 
     &:hover {
       cursor: pointer;
@@ -155,10 +157,15 @@ export const AuthorPublisherWrapper = styled.div`
     align-items: center;
     gap: 6px;
     font-size: 14px;
+    max-width: 200px;
 `;
 
 export const ProductAuthor = styled.span`
     color: #707070;
+    max-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 `;
 
 export const Divider = styled.span`
@@ -167,4 +174,9 @@ export const Divider = styled.span`
 
 export const ProductPublisher = styled.span`
     color: #707070;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 `;

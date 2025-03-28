@@ -45,8 +45,13 @@ const BNProductList: React.FC<BNProductListProps> = ({ type, books }) => {
     <S.ProductSection className="product-section">
       <S.ProductSectionTitle>{type === "best" ? "베스트셀러" : "신상품"}</S.ProductSectionTitle>
       <S.StyledSlider className="product-list" {...settings}>
-        {books.map((book) => (
-          <BNProductItem key={book.id} book={book} type={type} />
+        {books.map((book, index) => (
+          <BNProductItem
+            key={book.id}
+            book={book}
+            type={type}
+            rank={index + 1}
+          />
         ))}
       </S.StyledSlider>
     </S.ProductSection>

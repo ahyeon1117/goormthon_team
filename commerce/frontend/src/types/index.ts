@@ -35,5 +35,4 @@ export interface BestNewBook {
   imageUrl: string;
   author: string;
   publisher: string;
-  rank: number;
 }

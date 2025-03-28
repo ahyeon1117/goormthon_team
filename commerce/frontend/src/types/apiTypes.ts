@@ -134,3 +134,18 @@ export const mapInventoryItemToBookItem = (
     isChecked: false,
   };
 };
+
+/**
+ * 백엔드에서 받은 도서 데이터를 BestNewBook 타입으로 변환하는 함수
+ */
+export const mapProductResToBestNewBook = (product: ProductResponse, index: number): import('./index').BestNewBook => {
+  const shortTitle = product.title.split('(')[0].trim();
+  
+  return {
+    id: product.id || `book-${index}`,
+    title: shortTitle,
+    imageUrl: product.image,
+    author: formatAuthor(product.author),
+    publisher: product.publisher
+  };
+};

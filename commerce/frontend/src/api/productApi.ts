@@ -1,12 +1,13 @@
 import { apiRequest } from './client';
-import { ProductResponse, mapProductApiToBookItem } from '../types/apiTypes';
-import { BookItem } from '../types';
+import { ProductResponse, mapProductApiToBookItem, mapProductResToBestNewBook } from '../types/apiTypes';
+import { BookItem, BestNewBook } from '../types';
 
 // 상품 API 엔드포인트
 const PRODUCT_API = {
   GET_ALL: '/api/v1/products',
   GET_BY_ID: (id: string) => `/api/v1/products/${id}`,
   SEARCH: '/api/v1/products/search',
+  GET_NEW: '/api/v1/products/new',
 };
 
 /**
@@ -70,6 +71,28 @@ export const searchProducts = async (keyword: string): Promise<BookItem[]> => {
     return [];
   } catch (error) {
     console.error('상품 검색 API 호출 중 오류 발생:', error);
+    return [];
+  }
+};
+
+/**
+ * 신상품 목록을 가져오는 함수
+ */
+export const getNewProducts = async (): Promise<BestNewBook[]> => {
+  try {
+    const response = await apiRequest.get<ProductResponse[]>(PRODUCT_API.GET_NEW);
+
+    if (response.data.code === 200 && response.data.data) {
+      return response.data.data.map((product: ProductResponse, index: number) =>
+        mapProductResToBestNewBook(product, index)
+      );
+    }
+
+    console.error('신상품 목록 조회 중 오류 발생 :', response.data.msg);
+    return [];
+
+  } catch (error) {
+    console.error('신상품 목록 조회 중 오류 발생 :', error);
     return [];
   }
 };

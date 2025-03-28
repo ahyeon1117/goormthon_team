@@ -50,4 +50,12 @@ public class ProductController {
             ApiResponse.success(productService.searchProducts(keyword))
         );
     }
+
+    @GetMapping("/new")
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getNewProducts() {
+        return ResponseEntity.ok(
+            ApiResponse.success(productService.getNewProducts())
+        );
+    }
+
 }

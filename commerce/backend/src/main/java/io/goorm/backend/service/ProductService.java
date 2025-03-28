@@ -89,4 +89,17 @@ public class ProductService {
             new IllegalArgumentException("해당 ID의 상품이 존재하지 않습니다: " + id)
         );
     }
+
+    public List<ProductResponse> getNewProducts() {
+        List<Product> newProducts = productRepository.findTop15ByOrderByPubdateDesc();
+
+        return newProducts
+            .stream()
+            .map(product -> {
+                ProductResponse res = new ProductResponse();
+                BeanUtils.copyProperties(product, res);
+                return res;
+            })
+            .collect(Collectors.toList());
+    }
 }

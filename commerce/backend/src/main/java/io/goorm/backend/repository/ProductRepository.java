@@ -11,4 +11,6 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
         String author,
         String publisher
     );
+
+    List<Product> findTop15ByOrderByPubdateDesc();
 }

@@ -1,219 +1,53 @@
+import { useEffect, useState } from "react";
 import BNProductList from "./ProductList/BNProductList"
 import Banner from "./Banner/Banner"
+import { getNewProducts } from "../../../../api/productApi";
 import { BestNewBook } from "../../../../types";
+import styled from "styled-components";
 
-// 베스트 임시 데이터
-const bestBooks: BestNewBook[] = [
-  {
-    id: "1",
-    title: "반항하는 인간 1",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 1
-  },
-  {
-    id: "2",
-    title: "반항하는 인간 2",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 2
-  },
-  {
-    id: "3",
-    title: "반항하는 인간 3",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 3
-  },
-  {
-    id: "4",
-    title: "반항하는 인간 4",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 4
-  },
-  {
-    id: "5",
-    title: "반항하는 인간 5",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 5
-  },
-  {
-    id: "6",
-    title: "반항하는 인간 6",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 6
-  },
-  {
-    id: "7",
-    title: "반항하는 인간 7",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 7
-  },
-  {
-    id: "8",
-    title: "반항하는 인간 8",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 8
-  },
-  {
-    id: "9",
-    title: "반항하는 인간 9",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 9
-  },
-  {
-    id: "10",
-    title: "반항하는 인간 10",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 10
-  },
-]
-
-// 신상품 임시 데이터 (더 많은 개수로 테스트)
-const newBooks: BestNewBook[] = [
-  {
-    id: "1",
-    title: "반항하는 인간 1",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 1
-  },
-  {
-    id: "2",
-    title: "반항하는 인간 2",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 2
-  },
-  {
-    id: "3",
-    title: "반항하는 인간 3",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 3
-  },
-  {
-    id: "4",
-    title: "반항하는 인간 4",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 4
-  },
-  {
-    id: "5",
-    title: "반항하는 인간 5",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 5
-  },
-  {
-    id: "6",
-    title: "반항하는 인간 6",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 6
-  },
-  {
-    id: "7",
-    title: "반항하는 인간 7",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 7
-  },
-  {
-    id: "8",
-    title: "반항하는 인간 8",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 8
-  },
-  {
-    id: "9",
-    title: "반항하는 인간 9",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 9
-  },
-  {
-    id: "10",
-    title: "반항하는 인간 10",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 10
-  },
-  {
-    id: "11",
-    title: "반항하는 인간 11",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 11
-  },
-  {
-    id: "12",
-    title: "반항하는 인간 12",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 12
-  },
-  {
-    id: "13",
-    title: "반항하는 인간 13",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 13
-  },
-  {
-    id: "14",
-    title: "반항하는 인간 14",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 14
-  },
-  {
-    id: "15",
-    title: "반항하는 인간 15",
-    author: "알베르카뮈",
-    publisher: "민음사",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    rank: 15
-  },
-]
+const LoadingStyle = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 30px;
+  font-weight: 700;
+`;
 
 const BestNew: React.FC<{ type: "best" | "new" }> = ({ type }) => {
+  const [newBooks, setNewBooks] = useState<BestNewBook[]>([]);
+  const [bestBooks, setBestBooks] = useState<BestNewBook[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // 신상품 불러오기, 베스트는 임시로 신상품 데이터를 사용
+    const fetchNewProducts = async () => {
+      try {
+        // 신상품 데이터
+        const newProducts = await getNewProducts();
+        setNewBooks(newProducts);
+        
+        // 임시 베스트 데이터
+        const bestProducts = [...newProducts].reverse().slice(0, 10);
+        setBestBooks(bestProducts);
+
+      } catch (error) {
+        console.error("도서 데이터 로딩 중 오류:", error);
+      } finally {
+        setIsLoading(false); // 로딩 종료
+      }
+    }
+
+    fetchNewProducts();
+  }, []);
+
   return (
     <>
-      <BNProductList type={type} books={type === "best" ? bestBooks : newBooks} />
+      {isLoading && <LoadingStyle>로딩 중...</LoadingStyle>}
+      <BNProductList
+        type={type}
+        books={type === "best" ? bestBooks : newBooks}
+      />
       <Banner type={type} />
     </>
   )

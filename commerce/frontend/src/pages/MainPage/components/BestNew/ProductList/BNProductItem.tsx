@@ -5,12 +5,13 @@ import { Link } from "react-router-dom";
 interface BNProductItemProps {
   book: BestNewBook;
   type: "best" | "new";
+  rank: number;
 }
 
-const BNProductItem: React.FC<BNProductItemProps> = ({ book, type }) => {
+const BNProductItem: React.FC<BNProductItemProps> = ({ book, type, rank }) => {
   return (
     <S.ProductItem key={book.id}>
-      {type === "best" && <S.Rank $rank={book.rank}>{book.rank}</S.Rank>}
+      {type === "best" && <S.Rank $rank={rank}>{rank}</S.Rank>}
 
       {/* 도서 이미지 박스 */}
       <S.ProductImageBox>
