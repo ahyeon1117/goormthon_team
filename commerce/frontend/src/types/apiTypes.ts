@@ -1,7 +1,8 @@
 // API 응답 타입 정의
 export interface ApiResponse<T> {
   code: number;
-  msg: string;
+  msg?: string;
+  message?: string;
   data: T;
 }
 
@@ -13,12 +14,17 @@ export interface WishItemRequest {
 export interface WishItemResponse {
   id: number;
   productId: number;
-  userId: number;
-  createdAt: string;
+  title: string;
+  image: string;
+  author: string;
+  discount: number;
+  publisher: string;
+  createdAt: string | null;
 }
 
-export interface GetWishItemsResponse {
-  items: WishItemResponse[];
+export interface ApiWishResponse {
+  wishItems: WishItemResponse[];
+  totalCount: number;
 }
 
 // 회원가입 데이터 타입
@@ -155,7 +161,7 @@ export const mapInventoryItemToBookItem = (
  */
 export const mapProductResToBestNewBook = (product: ProductResponse, index: number): import('./index').BestNewBook => {
   const shortTitle = product.title.split('(')[0].trim();
-  
+
   return {
     id: product.id || `book-${index}`,
     title: shortTitle,

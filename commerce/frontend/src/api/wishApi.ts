@@ -1,5 +1,5 @@
 import { apiRequest } from './client';
-import { WishItemRequest, WishItemResponse, GetWishItemsResponse } from '../types/apiTypes';
+import { WishItemRequest, WishItemResponse, ApiWishResponse } from '../types/apiTypes';
 
 // 찜하기 API 엔드포인트
 const WISH_API = {
@@ -34,13 +34,25 @@ export const addWishItem = async (productId: number): Promise<boolean> => {
  */
 export const getWishItems = async (): Promise<WishItemResponse[]> => {
   try {
-    const response = await apiRequest.get<GetWishItemsResponse>(WISH_API.VIEW);
+    console.log('찜 목록 조회 API 호출 중...');
+    const response = await apiRequest.get(WISH_API.VIEW);
+    console.log('찜 목록 API 응답:', JSON.stringify(response.data, null, 2));
 
     if (response.data.code === 200 && response.data.data) {
-      return response.data.data.items || [];
+      // 백엔드 응답 구조에 맞게 데이터 추출
+      const data = response.data.data as ApiWishResponse;
+
+      if (Array.isArray(data.wishItems)) {
+        console.log(`찜 목록 ${data.wishItems.length}개 항목 조회 성공`);
+        return data.wishItems;
+      } else {
+        console.error('wishItems가 배열이 아닙니다:', data.wishItems);
+        return [];
+      }
     }
 
-    console.error('찜 목록 조회 실패:', response.data.msg);
+    const errorMsg = response.data.msg || response.data.message || '알 수 없는 오류';
+    console.error('찜 목록 조회 실패:', errorMsg);
     return [];
   } catch (error) {
     console.error('찜 목록 조회 API 호출 중 오류 발생:', error);
@@ -54,7 +66,7 @@ export const getWishItems = async (): Promise<WishItemResponse[]> => {
 export const removeWishItem = async (productId: number): Promise<boolean> => {
   try {
     const requestData: WishItemRequest = { productId };
-    const response = await apiRequest.delete<WishItemResponse>(WISH_API.REMOVE, {
+    const response = await apiRequest.delete(WISH_API.REMOVE, {
       data: requestData
     });
 
