@@ -3,85 +3,33 @@ import { useLocation, useNavigate } from "react-router-dom";
 import OrderSteps from "../OrderPage/components/Common/OrderSteps/OrderSteps";
 import CartItemList from "./components/CartItemList/CartItemList";
 import * as S from './CartPage.styled';
-
-interface CartItemType {
-  cartId: number;
-  productId: number;
-  title: string;
-  imageUrl: string;
-  price: number;
-}
-
-// 임시 데이터
-const cartItemsData: CartItemType[] = [
-  {
-    cartId: 1,
-    productId: 1,
-    title: "반항하는 인간1 반항하는 인간1 반항하는 인간1 반항하는 인간1 반항하는 인간1 반항하는 인간1",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    price: 10000,
-  },
-  {
-    cartId: 2,
-    productId: 2,
-    title: "반항하는 인간2",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    price: 10000,
-  },
-  {
-    cartId: 3,
-    productId: 3,
-    title: "반항하는 인간3",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    price: 20000,
-  },
-  {
-    cartId: 4,
-    productId: 4,
-    title: "반항하는 인간4",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    price: 20000,
-  },
-  {
-    cartId: 5,
-    productId: 5,
-    title: "반항하는 인간5",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    price: 30000,
-  },
-  {
-    cartId: 6,
-    productId: 6,
-    title: "반항하는 인간6",
-    imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-    price: 30000,
-  },
-]
+import { useAuth, useCart } from '../../hooks';
 
 const CartPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSidebarFixed, setIsSidebarFixed] = useState(false); // 사이드바 고정 여부
-  const [cartItems, setCartItems] = useState<CartItemType[]>([]);
-  const [checkedItems, setCheckedItems] = useState<number[]>([]); // 체크된 아이템의 carId 저장
-  const isAllChecked = checkedItems.length > 0 && checkedItems.length === cartItems.length; // 전체 아이템 개수와 선택된 아이템 개수가 같을 때만 전체선택 체크
-  const totalPrice = () => {
-    return cartItems
-      .filter(item => checkedItems.includes(item.cartId))
-      .reduce((sum, item) => sum + item.price, 0);
-  }
+  const [checkedItems, setCheckedItems] = useState<string[]>([]); // 체크된 아이템의 carId 저장
+  const [isFirstLoad, setIsFirstLoad] = useState(true); // 첫 렌더링 여부 (상품이 삭제된 후에도 체크상태 유지를 위해 필요)
+  const { isAuthenticated } = useAuth();
+  const {
+    books: cartBooks,
+    totalCount,
+    fetchCartItems,
+    calculateTotalPrice,
+    removeFromCart,
+    clearCart
+  } = useCart();
+  // 전체 아이템 개수와 선택된 아이템 개수가 같을 때만 전체선택 체크
+  const isAllChecked = checkedItems.length > 0 && checkedItems.length === cartBooks.length;
 
-  // 다른 페이지 -> 카트 페이지로 이동 시 스크롤 처리
+  // 다른 페이지에서 카트 페이지로 들어온 경우, 스크롤 최상단 처리
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
+  // 사이드바 고정 처리
   useEffect(() => {
-    // 장바구니 데이터 초기화
-    setCartItems(cartItemsData);
-    setCheckedItems(cartItemsData.map(item => item.cartId));
-
-    // 사이드바 고정 핸들러
     const handleScroll = () => {
       setIsSidebarFixed(window.scrollY > 170);
     };
@@ -92,40 +40,65 @@ const CartPage: React.FC = () => {
     }
   }, []);
 
+  // 렌더링 시 최신 장바구니 데이터 가져오기
+  useEffect(() => {
+    if (isAuthenticated) {  
+      fetchCartItems();
+    }
+  }, [isAuthenticated, fetchCartItems]);
+  
+  // 장바구니 데이터 업데이트 시 checkedItems도 업데이트
+  useEffect(() => {
+    if (isFirstLoad) { // 첫 렌더링 시 전체선택 되도록
+      setCheckedItems(cartBooks.map(item => item.id));
+      setIsFirstLoad(false);
+    } else { // 이후 렌더링 시애는 체크상태 유지
+      setCheckedItems(prev =>
+        cartBooks
+        .map(item => item.id)
+        .filter(id => prev.includes(id))
+      );
+    }
+  }, [cartBooks, isFirstLoad]);
+
   // 전체 선택 핸들러
   const handleAllCheck = () => {
     if (isAllChecked) {
       setCheckedItems([]);
     } else {
-      setCheckedItems(cartItems.map(item => item.cartId));
+      setCheckedItems(cartBooks.map(item => item.id));
     }
   }
 
   // 개별 선택 핸들러
-  const handleItemCheck = (cartId: number) => {
-    if (checkedItems.includes(cartId)) { // 이미 체크되어 있으면 해제
-      setCheckedItems(prev => prev.filter(id => id !== cartId));
+  const handleItemCheck = (id: string) => {
+    if (checkedItems.includes(id)) { // 이미 체크되어 있으면 해제
+      setCheckedItems(prev => prev.filter(checkedId => checkedId !== id));
     } else { // 체크되어 있지 않으면 체크
-      setCheckedItems(prev => [...prev, cartId]);
+      setCheckedItems(prev => [...prev, id]);
     }
   }
 
   // 개별 삭제 핸들러
-  const handleDeleteItem = (cartId: number) => {
+  const handleDeleteItem = async (id: string) => {
     const isConfirmed = window.confirm('해당 상품을 삭제하시겠습니까?');
 
     if (isConfirmed) {
-      setCartItems(prev => prev.filter(item => item.cartId !== cartId));
-      setCheckedItems(prev => prev.filter(id => id !== cartId));
+      await removeFromCart(id);  // 특정 상품 삭제
+
+      setCheckedItems(prev => prev.filter(checkedId => checkedId !== id));
     }
   }
 
   // 선택된 아이템 삭제 핸들러
-  const handleDeleteChecked = () => {
+  const handleDeleteChecked = async () => {
     const isConfirmed = window.confirm('선택한 상품을 삭제하시겠습니까?');
 
     if (isConfirmed) {
-      setCartItems(prev => prev.filter(item => !checkedItems.includes(item.cartId)));
+      await removeFromCart(checkedItems); // 선택된 아이템 삭제
+      // setCartItems(prev => prev.filter(item => !checkedItems.includes(item.cartId)));
+      // removeFromCart();
+      
       setCheckedItems([]); // 선택된 아이템을 모두 지웠으므로 체크 목록 초기화
     }
   }
@@ -139,7 +112,7 @@ const CartPage: React.FC = () => {
     <S.CartContainer>
       {/* 1. 장바구니 헤더 */}
       <S.CartHeader>
-        <div>장바구니</div>
+        <div>장바구니 ({totalCount})</div>
         <OrderSteps step={'cart'} />
       </S.CartHeader>
       {/* 2. 장바구니 메인 */}
@@ -160,7 +133,7 @@ const CartPage: React.FC = () => {
 
           {/* 장바구니 품목 리스트 - 데이터 전달 */}
           <CartItemList
-            cartItems={cartItems}
+            cartBooks={cartBooks}
             checkedItems={checkedItems}
             onItemCheck={handleItemCheck}
             onDelete={handleDeleteItem}
@@ -178,7 +151,7 @@ const CartPage: React.FC = () => {
             <S.OrderSummaryInfo>
               <S.SummaryRow>
                 <span>상품금액</span>
-                <span>{totalPrice().toLocaleString()} 원</span>
+                <span>{calculateTotalPrice().toLocaleString()} 원</span>
               </S.SummaryRow>
               <S.SummaryRow>
                 <span>할인금액</span>
@@ -189,7 +162,7 @@ const CartPage: React.FC = () => {
             {/* 총 주문 금액 */}
             <S.TotalPrice>
               <span>총 주문 금액</span>
-              <span>{totalPrice().toLocaleString()} 원</span>
+              <span>{calculateTotalPrice().toLocaleString()} 원</span>
             </S.TotalPrice>
 
             {/* 주문하기 버튼 */}

@@ -1,30 +1,23 @@
+import { BookItem } from "../../../../types";
 import CartItem from "./CartItem";
 import * as S from "./CartItemList.styled";
 
-interface CartItemType {
-  cartId: number;
-  productId: number;
-  title: string;
-  imageUrl: string;
-  price: number;
-}
-
 interface Props {
-  cartItems: CartItemType[];
-  checkedItems: number[];
-  onItemCheck: (cartId: number) => void;
-  onDelete: (cartId: number) => void;
+  cartBooks: BookItem[];
+  checkedItems: string[];
+  onItemCheck: (bookId: string) => void;
+  onDelete: (bookId: string) => void;
 }
 
-const CartItemList: React.FC<Props> = ({ cartItems, checkedItems, onItemCheck, onDelete }) => {
+const CartItemList: React.FC<Props> = ({ cartBooks, checkedItems, onItemCheck, onDelete }) => {
 
   return (
     <S.CartItemList>
-      {cartItems.map((item) => (
+      {cartBooks.map((book) => (
         <CartItem
-          key={item.cartId}
-          cartItem={item}
-          isChecked={checkedItems.includes(item.cartId)}
+          key={book.id}
+          cartItem={book}
+          isChecked={checkedItems.includes(book.id)}
           onItemCheck={onItemCheck}
           onDelete={onDelete}
         />

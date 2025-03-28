@@ -1,19 +1,11 @@
 import * as S from "./CartItemList.styled";
-
-// 임시 데이터
-interface CartItemType {
-    cartId: number;
-    productId: number;
-    title: string;
-    imageUrl: string;
-    price: number;
-}
+import { BookItem } from "../../../../types";
 
 interface Props {
-    cartItem: CartItemType;
+    cartItem: BookItem;
     isChecked: boolean;
-    onItemCheck: (cartId: number) => void;
-    onDelete: (cartId: number) => void;
+    onItemCheck: (id: string) => void;
+    onDelete: (id: string) => void;
 }
 
 const CartItem: React.FC<Props> = ({ cartItem, isChecked, onItemCheck, onDelete }) => {
@@ -22,7 +14,7 @@ const CartItem: React.FC<Props> = ({ cartItem, isChecked, onItemCheck, onDelete 
         <S.CartItem>
             <S.ProductInfoWrapper>
                 {/* 체크박스 */}
-                <div onClick={() => onItemCheck(cartItem.cartId)}>
+                <div onClick={() => onItemCheck(cartItem.id)}>
                     {isChecked ? <S.CheckedIcon /> : <S.UncheckedIcon />}
                 </div>
                 {/* 상품 이미지 */}
@@ -40,7 +32,7 @@ const CartItem: React.FC<Props> = ({ cartItem, isChecked, onItemCheck, onDelete 
             <S.ProductPrice>{cartItem.price.toLocaleString()}원</S.ProductPrice>
             {/* 상품 삭제 버튼 */}
             <S.DeleteButtonWrapper>
-                <S.DeleteIcon onClick={() => onDelete(cartItem.cartId)}/>
+                <S.DeleteIcon onClick={() => onDelete(cartItem.id)}/>
             </S.DeleteButtonWrapper>
 
         </S.CartItem>
