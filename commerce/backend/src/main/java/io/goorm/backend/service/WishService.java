@@ -28,7 +28,8 @@ public class WishService {
         String userId = jwtService.getUserId();
         User user = userService.findById(userId);
 
-        List<Wish> wishes = wishRepository.findByUser(user);
+        // JOIN FETCH를 사용하는 메서드로 변경
+        List<Wish> wishes = wishRepository.findByUserWithProduct(user);
 
         return ResGetWishItems.of(wishes);
     }
