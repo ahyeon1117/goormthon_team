@@ -22,9 +22,11 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { logout as logoutApi } from '../../api/authApi';
 import { useCart } from '../../hooks';
+import UserProfileModal from '../../pages/Modal/UserProfileModal.tsx'; // 모달 컴포넌트 임포트
 
 const MainPageHeader = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [showModal, setShowModal] = useState(false); // 모달 상태
   const navigate = useNavigate();
   const location = useLocation();
   const { totalCount } = useCart();
@@ -37,6 +39,15 @@ const MainPageHeader = () => {
     // authApi의 logout 함수 호출
     logoutApi();
     navigate('/');
+  };
+
+  // 로그인 되어 있으면 모달 띄우기
+  const handleLoginClick = () => {
+    if (isAuthenticated) {
+      setShowModal(true); // 로그인 되어 있으면 모달 띄우기
+    } else {
+      navigate('/login'); // 로그인 안되어 있으면 로그인 페이지로 이동
+    }
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -103,11 +114,8 @@ const MainPageHeader = () => {
               <CartIcon />
               <CartCnt>{totalCount}</CartCnt>
             </CartLink>
-            {isAuthenticated ? (
-              <LoginIcon onClick={handleLogout} style={{ cursor: 'pointer' }}></LoginIcon>
-            ) : (
-              <LoginIcon onClick={() => navigate('/login')} style={{ cursor: 'pointer' }}></LoginIcon>
-            )}
+            <LoginIcon onClick={handleLoginClick} style={{ cursor: 'pointer' }}></LoginIcon>
+            <UserProfileModal showModal={showModal} onClose={() => setShowModal(false)} />
           </STUserSection>
         </STMainHeader>
 
