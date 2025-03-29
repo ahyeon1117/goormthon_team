@@ -22,9 +22,10 @@ import {
 interface ProductItemProps {
   book: BookItem;
   onToggleFavorite: (bookId: string) => void;
-  onToggleCheck?: (bookId: string) => void;
+  onToggleCheck: (bookId: string) => void;
   onProductClick?: (bookId: string) => void;
   onAddToCart?: (bookId: string, isChecked: boolean) => void;
+  onPurchase?: (bookId: string, isChecked: boolean) => void;
 }
 
 const ProductItem: React.FC<ProductItemProps> = ({
@@ -32,7 +33,8 @@ const ProductItem: React.FC<ProductItemProps> = ({
   onToggleFavorite,
   onToggleCheck,
   onProductClick,
-  onAddToCart
+  onAddToCart,
+  onPurchase
 }) => {
   const formatPrice = (price: number) => {
     return price.toLocaleString('ko-KR') + '원';
@@ -49,9 +51,15 @@ const ProductItem: React.FC<ProductItemProps> = ({
     }
   };
 
-  const handleBuyNow = () => {
-    // 바로구매 로직 구현
-    console.log('바로구매:', book.id);
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
+    if (onPurchase) {
+      // 체크 상태를 전달하여 어떤 동작을 할지 결정
+      onPurchase(book.id, book.isChecked || false);
+    } else {
+      // 기존 바로구매 로직 (fallback)
+      console.log('바로구매:', book.id);
+    }
   };
 
   const handleCheckToggle = (e: React.MouseEvent) => {

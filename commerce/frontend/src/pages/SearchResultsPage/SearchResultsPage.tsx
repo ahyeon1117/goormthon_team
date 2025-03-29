@@ -953,6 +953,74 @@ const SearchResultsPage: React.FC = () => {
     }
   }, [loading, books.length, updateWishStatusInBooks]);
 
+  // 바로구매 처리 함수 (ProductItem용)
+  const handleProductPurchase = (bookId: string, isChecked: boolean) => {
+    try {
+      console.log(`바로구매 요청: 상품 ID(${bookId}), 체크 상태(${isChecked})`);
+
+      // 체크된 상품이 있는 경우
+      if (isChecked) {
+        const checkedBooks = books.filter(book => book.isChecked);
+
+        if (checkedBooks.length === 0) {
+          alert("선택된 상품이 없습니다.");
+          return;
+        }
+
+        console.log(`체크된 ${checkedBooks.length}개 상품 바로구매 진행`);
+
+        // 주문 정보 생성
+        const orderItems = checkedBooks.map(book => ({
+          productId: Number(book.id),
+          title: book.title,
+          discount: book.price,
+          image: book.imageUrl,
+          author: book.author,
+          publisher: book.publisher
+        }));
+
+        // 주문 페이지로 이동
+        navigate('/order', {
+          state: {
+            items: orderItems,
+            isDirectPurchase: true
+          }
+        });
+      } else {
+        // 체크되지 않은 경우 클릭한 상품만 주문
+        const book = books.find(book => book.id === bookId);
+
+        if (!book) {
+          console.error('주문할 상품을 찾을 수 없습니다.');
+          return;
+        }
+
+        console.log(`상품 ID(${bookId}) 단일 상품 바로구매 진행`);
+
+        // 주문 정보 생성
+        const orderItem = {
+          productId: Number(book.id),
+          title: book.title,
+          discount: book.price,
+          image: book.imageUrl,
+          author: book.author,
+          publisher: book.publisher
+        };
+
+        // 주문 페이지로 이동
+        navigate('/order', {
+          state: {
+            items: [orderItem],
+            isDirectPurchase: true
+          }
+        });
+      }
+    } catch (error) {
+      console.error('바로구매 처리 중 오류 발생:', error);
+      alert('바로구매 처리 중 오류가 발생했습니다.');
+    }
+  };
+
   return (
     <PageContainer ref={pageRef}>
       <div className="search-content-wrapper" style={{ display: "flex" }}>
@@ -1019,6 +1087,7 @@ const SearchResultsPage: React.FC = () => {
                 onToggleCheck={handleToggleCheck}
                 onProductClick={handleProductClick}
                 onAddToCart={handleProductAddToCart}
+                onPurchase={handleProductPurchase}
               />
               <Pagination
                 currentPage={currentPage}
