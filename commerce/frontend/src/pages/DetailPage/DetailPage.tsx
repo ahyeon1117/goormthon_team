@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import * as S from "./DetailPage.styled";
 import { getProductById } from "../../api/productApi";
@@ -6,62 +6,27 @@ import { BookItem } from "../../types";
 import { useCart } from "../../hooks";
 import { addWishItem, getWishItems, removeWishItem } from "../../api/wishApi";
 
-// 상품 정보 인터페이스
-interface Product {
-  id: string; // 상품 고유 ID
-  title: string;
-  author: string;
-  translator?: string;
-  publisher: string;
-  publishDate: string;
-  rating: number;
-  reviewCount: number;
-  price: number;
-  imageUrl: string;
-  isbn?: string; // ISBN은 별도 필드로 저장
-  description?: string;
-}
-
-// BookItem을 Product로 변환하는 함수
-const mapBookItemToProduct = (bookItem: BookItem): Product => {
-  return {
-    id: bookItem.id, // 고유 ID
-    title: bookItem.title,
-    author: bookItem.author,
-    publisher: bookItem.publisher,
-    publishDate: bookItem.publishDate,
-    rating: bookItem.rating,
-    reviewCount: bookItem.reviewCount,
-    price: bookItem.price,
-    imageUrl: bookItem.imageUrl,
-    isbn: bookItem.isbn,
-    description: bookItem.description,
-  };
-};
-
 // 임시 상품 데이터
-const mockProduct: Product = {
+const mockProduct: BookItem = {
   id: "1", // 고유 ID
   title: "자바스크립트 디자인 패턴",
   author: "에디 오스마니",
-  translator: "윤병식",
   publisher: "한빛미디어",
   publishDate: "2024년 08월 01일",
   rating: 9.06,
   reviewCount: 15,
   price: 25200,
-  imageUrl:
-    "https://shopping-phinf.pstatic.net/main_4933517/49335174628.20240725071120.jpg",
+  imageUrl: "https://shopping-phinf.pstatic.net/main_4933517/49335174628.20240725071120.jpg",
   isbn: "1234567890",
-  description:
-    "이 책은 자바스크립트 언어로 구현한 23가지 디자인 패턴을 소개합니다. 객체 지향 디자인 패턴을 자바스크립트 환경에 맞게 응용하는 방법을 설명하고, 각 패턴의 실제 사용 사례와 함께 코드 예제를 제공합니다.",
+  description: "이 책은 자바스크립트 언어로 구현한 23가지 디자인 패턴을 소개합니다. 객체 지향 디자인 패턴을 자바스크립트 환경에 맞게 응용하는 방법을 설명하고, 각 패턴의 실제 사용 사례와 함께 코드 예제를 제공합니다.",
+  isFavored: false,
+  isChecked: false
 };
 
 // 상품 상세 페이지 컴포넌트
 const DetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [quantity, setQuantity] = useState(1);
+  const [product, setProduct] = useState<BookItem | null>(null);
   const [activeTab, setActiveTab] = useState("info");
   const [loading, setLoading] = useState(true);
   const [isWishlist, setIsWishlist] = useState(false);
@@ -87,16 +52,12 @@ const DetailPage = () => {
 
       try {
         if (id) {
-          // API에서 상품 정보 가져오기 시도 (ID로 조회)
           const bookItem = await getProductById(id);
 
           if (bookItem) {
-            // 실제 데이터가 있으면 변환해서 사용
-            const productData = mapBookItemToProduct(bookItem);
-            console.log("도서 데이터 불러오기 성공:", productData.title);
-            setProduct(productData);
+            console.log("도서 데이터 불러오기 성공:", bookItem.title);
+            setProduct(bookItem);
           } else {
-            // API 요청 실패 시 임시 데이터 사용 (개발 중에만 사용)
             console.warn("API 요청 실패, 임시 데이터 사용");
             setProduct(mockProduct);
           }
@@ -106,7 +67,6 @@ const DetailPage = () => {
         }
       } catch (error) {
         console.error("도서 데이터 로딩 중 오류:", error);
-        // 오류 발생 시 임시 데이터 사용 (개발 중에만 사용)
         setProduct(mockProduct);
       } finally {
         setLoading(false);
@@ -163,25 +123,21 @@ const DetailPage = () => {
       console.log(`장바구니 토글 시작: isInCart = ${isInCart}, 상품 ID = ${product.id}`);
 
       if (isInCart) {
-        // 장바구니에서 제거
         console.log(`상품 ID(${product.id})를 장바구니에서 제거 중...`);
         const success = await removeFromCart(product.id);
 
         if (success) {
           console.log(`상품 ID(${product.id})를 장바구니에서 제거 완료`);
-          // 장바구니 아이템 다시 불러오기 대신 상태 직접 업데이트
           setIsInCart(false);
         } else {
           console.error('장바구니에서 제거 실패');
         }
       } else {
-        // 장바구니에 추가
         console.log(`상품 ID(${product.id})를 장바구니에 추가 중...`);
         const success = await addToCart(product.id);
 
         if (success) {
           console.log(`상품 ID(${product.id})를 장바구니에 추가 완료`);
-          // 장바구니 아이템 다시 불러오기 대신 상태 직접 업데이트
           setIsInCart(true);
         } else {
           console.error('장바구니에 추가 실패');
@@ -197,6 +153,12 @@ const DetailPage = () => {
     }
   };
 
+  // 바로구매 함수
+  const handlePurchase = () => {
+    if (!product) return;
+
+  };
+
   // 찜하기 목록 확인
   useEffect(() => {
     const checkWishStatus = async () => {
@@ -209,7 +171,6 @@ const DetailPage = () => {
         console.log('받아온 찜 목록:', wishItems);
         console.log('현재 상품 ID:', product.id);
 
-        // 현재 상품이 찜 목록에 있는지 확인
         const isProductInWishlist = wishItems.some(item => {
           const itemId = String(item.productId);
           const productId = String(product.id);
@@ -228,16 +189,6 @@ const DetailPage = () => {
 
     checkWishStatus();
   }, [product]);
-
-  // 수량 증가 함수
-  const increaseQuantity = () => {
-    setQuantity((prevQuantity) => prevQuantity + 1);
-  };
-
-  // 수량 감소 함수
-  const decreaseQuantity = () => {
-    setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
-  };
 
   // 탭 변경 함수
   const handleTabChange = (tab: string) => {
@@ -302,9 +253,6 @@ const DetailPage = () => {
     return <S.DetailPageWrapper>상품을 찾을 수 없습니다.</S.DetailPageWrapper>;
   }
 
-  // 총 가격 계산
-  const totalPrice = product.price * quantity;
-
   return (
     <S.DetailPageWrapper>
       <S.DetailContainer>
@@ -314,11 +262,7 @@ const DetailPage = () => {
             <S.BookTypeTag>소득공제</S.BookTypeTag>
             <S.ProductTitle>{product.title}</S.ProductTitle>
             <S.ProductAuthor>
-              {product.author} <span style={{ color: "#666" }}>저자</span>{" "}
-              {product.translator && `| ${product.translator} `}
-              <span style={{ color: "#666" }}>
-                {product.translator && "역자"}
-              </span>
+              {product.author}
             </S.ProductAuthor>
             <S.ProductPublisher>
               {product.publisher} | {product.publishDate}
@@ -333,57 +277,6 @@ const DetailPage = () => {
           <S.PriceSection>
             <S.Price>{product.price.toLocaleString()}원</S.Price>
           </S.PriceSection>
-
-          <S.ShippingInfoSection>
-            <S.SectionTitle>배송정보</S.SectionTitle>
-            <S.ShippingInfoRow>
-              <span>배송비</span>
-              <span>무료</span>
-            </S.ShippingInfoRow>
-            <S.ShippingInfoRow>
-              <span>배송지</span>
-              <span>
-                서울특별시 종로구 이화동 123{" "}
-                <span
-                  style={{
-                    color: "#E896FF",
-                    cursor: "pointer",
-                    marginLeft: "10px",
-                  }}
-                >
-                  지역변경 ▾
-                </span>
-              </span>
-            </S.ShippingInfoRow>
-          </S.ShippingInfoSection>
-
-          <S.QuantityAndPriceContainer>
-            <S.QuantityControl>
-              <div>
-                <S.QuantityButton onClick={decreaseQuantity}>
-                  -
-                </S.QuantityButton>
-                <S.QuantityInput
-                  type="number"
-                  value={quantity}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setQuantity(parseInt(e.target.value) || 1)
-                  }
-                  min="1"
-                />
-                <S.QuantityButton onClick={increaseQuantity}>
-                  +
-                </S.QuantityButton>
-              </div>
-            </S.QuantityControl>
-
-            <S.TotalPriceSection>
-              <S.TotalPriceLabel>총 상품 금액</S.TotalPriceLabel>
-              <S.TotalPriceValue>
-                {totalPrice.toLocaleString()}원
-              </S.TotalPriceValue>
-            </S.TotalPriceSection>
-          </S.QuantityAndPriceContainer>
 
           <S.ButtonsSection>
             <S.WishlistButton
@@ -411,7 +304,7 @@ const DetailPage = () => {
             >
               {cartLoading ? '처리 중...' : (isInCart ? '장바구니 빼기' : '장바구니 담기')}
             </S.CartButton>
-            <S.PurchaseButton>바로구매</S.PurchaseButton>
+            <S.PurchaseButton onClick={handlePurchase}>바로구매</S.PurchaseButton>
           </S.ButtonsSection>
         </S.ProductDetails>
       </S.DetailContainer>
@@ -428,12 +321,6 @@ const DetailPage = () => {
           onClick={() => handleTabChange("review")}
         >
           리뷰 ({product.reviewCount})
-        </S.TabButton>
-        <S.TabButton
-          $active={activeTab === "shipping"}
-          onClick={() => handleTabChange("shipping")}
-        >
-          배송/반품
         </S.TabButton>
       </S.TabsSection>
 
@@ -509,15 +396,6 @@ const DetailPage = () => {
               <p>아직 등록된 리뷰가 없습니다.</p>
             )}
           </S.ReviewList>
-        </S.TabContent>
-      )}
-
-      {activeTab === "shipping" && (
-        <S.TabContent>
-          <h3>배송 및 반품 정보</h3>
-          <p>배송비: 무료</p>
-          <p>배송방법: 택배</p>
-          <p>반품/교환 안내: 상품 수령 후 7일 이내 가능</p>
         </S.TabContent>
       )}
     </S.DetailPageWrapper>

@@ -32,13 +32,15 @@ export const ProductDetails = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   position: relative;
 `;
 
 export const ProductInfoSection = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  padding-top: 25px;
+  padding-bottom: 25px;
 `;
 
 export const BookTypeTag = styled.span`
@@ -59,7 +61,7 @@ export const ProductTitle = styled.h1`
 `;
 
 export const ProductAuthor = styled.p`
-  font-size: 16px;
+  font-size: 15px;
   color: #333;
   margin-top: 10px;
   margin-bottom: 0;
@@ -94,167 +96,25 @@ export const ProductRating = styled.div`
 `;
 
 export const PriceSection = styled.div`
-  margin-top: 0;
-  margin-bottom: 20px;
+  padding-top: 25px;
+  padding-bottom: 25px;
   border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
 `;
 
 export const Price = styled.p`
-  margin: 20px 0;
+  margin: 0px 0px;
   font-size: 24px;
   font-weight: bold;
   color: #000;
 `;
 
-export const ShippingInfoSection = styled.div`
-  margin-bottom: 10px;
-`;
-
-export const SectionTitle = styled.h3`
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 0;
-  margin-bottom: 15px;
-  color: #333;
-`;
-
-export const ShippingInfoRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  margin-right: 20px;
-
-  span:last-child {
-    display: flex;
-    align-items: center;
-  }
-`;
-
-export const QuantityAndPriceContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 0;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 20px;
-
-  @media (max-width: 576px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-
-  &:focus, &:focus-visible {
-    outline: none;
-  }
-`;
-
-export const QuantityControl = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin: 0 20px;
-
-  > div {
-    display: flex;
-    align-items: center;
-  }
-
-  &:focus,
-  &:focus-visible,
-  &:active {
-    outline: none;
-    box-shadow: none;
-  }
-`;
-
-export const QuantityButton = styled.button.attrs<{ tabIndex: number }>({
-  tabIndex: -1,  // number 타입으로 명시
-})`
-  width: 30px;
-  height: 30px;
-  background: #f4f4f4;
-  border: 1px solid #ddd;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 18px;
-
-  &:hover {
-    background: #D9D9D9;
-    border: 1px solid #D9D9D9;
-    
-  }
-
-  &:focus,
-  &:focus-visible,
-  &:active {
-    outline: none;
-    box-shadow: none;
-    border: 1px solid transparent; /* 포커스 시 테두리 제거 */
-  }
-  
-`;
-
-export const QuantityInput = styled.input`
-  width: 40px;
-  height: 30px;
-  border: 1px solid #ddd;
-  text-align: center;
-  margin: 0 5px;
-
-  // 화살표 숨기기
-  &::-webkit-inner-spin-button,
-  &::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  -moz-appearance: textfield;
-
-  &:focus, &:focus-visible {
-    outline: none;
-  }
-`;
-
-export const TotalPriceSection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin: 0 20px;
-  
-`;
-
-export const TotalPriceLabel = styled.span`
-  font-size: 16px;
-  font-weight: bold;
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-export const TotalPriceValue = styled.span`
-  font-size: 24px;
-  font-weight: bold;
-  color: #E896FF;
-
-  &:focus {
-    outline: none;
-  }
-`;
-
 export const ButtonsSection = styled.div`
   display: flex;
   gap: 10px;
-  padding: 10px 0;
-  margin-bottom: 0;
-
-  &:focus {
-    outline: none;
-  }
+  padding: 10px 0px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  border-top: 1px solid #eee;
 `;
 
 export const WishlistButton = styled.button`
@@ -491,4 +351,3 @@ export const ReviewText = styled.p`
   font-size: 14px;
   color: #555;
 `;
-
