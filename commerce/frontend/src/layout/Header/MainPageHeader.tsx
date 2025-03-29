@@ -7,14 +7,16 @@ import {
   SearchIcon,
   LoginIcon,
   CartIcon,
+  BookIcon,
   STMain,
   STTopBarBox,
   SearchForm,
   SearchInput,
   SearchButton,
   STUserSection,
-  CartLink,
-  CartCnt
+  UserLink,
+  CartCnt,
+  STLogoSearchContainer
 } from './MainPageHeader.styled';
 
 import { useState } from 'react';
@@ -86,6 +88,9 @@ const MainPageHeader = () => {
             )}
             <STMallInner onClick={() => navigate('/signup')} style={{ cursor: 'pointer' }}>회원가입</STMallInner>
             <STMallInner onClick={() => navigate('/cart')} style={{ cursor: 'pointer' }}>장바구니</STMallInner>
+            {isAuthenticated && (
+              <STMallInner onClick={() => navigate('/mybook')} style={{ cursor: 'pointer' }}>내 서재</STMallInner>
+            )}
             <STMallInner>주문조회</STMallInner>
             <STMallInner>고객센터</STMallInner>
           </STTopBarBox>
@@ -93,29 +98,41 @@ const MainPageHeader = () => {
 
         {/* MainHeader 컴포넌트 */}
         <STMainHeader>
-          <Link to="/" onClick={() => handleSamePageScroll("/")}>
-            <Logo style={{ cursor: 'pointer' }} />
-          </Link>
-          <STSearchBox>
-            <SearchForm onSubmit={handleSearch}>
-              <SearchInput
-                type="text"
-                value={searchKeyword}
-                onChange={(e) => setSearchKeyword(e.target.value)}
-                placeholder="검색어를 입력하세요"
-              />
-              <SearchButton type="submit">
-                <SearchIcon />
-              </SearchButton>
-            </SearchForm>
-          </STSearchBox>
+          <STLogoSearchContainer>
+            <Link to="/" onClick={() => handleSamePageScroll("/")}>
+              <Logo style={{ cursor: 'pointer' }} />
+            </Link>
+            <STSearchBox>
+              <SearchForm onSubmit={handleSearch}>
+                <SearchInput
+                  type="text"
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
+                  placeholder="검색어를 입력하세요"
+                />
+                <SearchButton type="submit">
+                  <SearchIcon />
+                </SearchButton>
+              </SearchForm>
+            </STSearchBox>
+          </STLogoSearchContainer>
+
           <STUserSection>
-            <CartLink to="/cart" onClick={() => handleSamePageScroll("/cart")}>
+            {isAuthenticated && (
+              <UserLink to="/mybook" onClick={() => handleSamePageScroll("/mybook")}>
+                <BookIcon />
+              </UserLink>
+            )}
+            <UserLink to="/cart" onClick={() => handleSamePageScroll("/cart")}>
               <CartIcon />
               {isAuthenticated && <CartCnt>{totalCount}</CartCnt>}
-            </CartLink>
-            <LoginIcon onClick={handleLoginClick} style={{ cursor: 'pointer' }}></LoginIcon>
-            <UserProfileModal showModal={showModal} onClose={() => setShowModal(false)} />
+            </UserLink>
+            <div onClick={handleLoginClick} style={{ cursor: 'pointer' }}>
+              <LoginIcon />
+            </div>
+            {showModal && isAuthenticated && (
+              <UserProfileModal showModal={showModal} onClose={() => setShowModal(false)} />
+            )}
           </STUserSection>
         </STMainHeader>
 

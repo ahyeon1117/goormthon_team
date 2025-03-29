@@ -104,7 +104,7 @@ export const SearchButton = styled(ButtonStyle)`
   right: 6px;
 `;
 
-export const CartLink = styled(Link)`
+export const UserLink = styled(Link)`
   position: relative;
   color: black;
 
@@ -129,6 +129,3 @@ export const CartCnt = styled.span`
   color: white;
   font-weight: bold;
 `;
-
-/* 유저 버튼 */
-export const UserButton = styled(ButtonStyle)``;

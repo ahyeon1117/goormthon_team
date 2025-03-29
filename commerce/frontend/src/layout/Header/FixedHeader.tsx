@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.png"; // 로고 이미지
-import { AiOutlineSearch, AiOutlineUser, AiOutlineShopping } from "react-icons/ai"; // 아이콘
+import { AiOutlineSearch, AiOutlineUser, AiOutlineShopping, AiOutlineBook } from "react-icons/ai"; // 아이콘
 import * as S from "./FixedHeader.styled";
 import { useAuthStore } from '../../store/authStore';
-import { logout as logoutApi } from '../../api/authApi';
 import { useCart } from '../../hooks';
+import UserProfileModal from '../../pages/Modal/UserProfileModal.tsx'; // 모달 컴포넌트 임포트
 
 const FixedHeader: React.FC = () => {
   const [isFixed, setIsFixed] = useState(false); // 고정 헤더 표시 상태
+  const [showModal, setShowModal] = useState(false); // 모달 상태
   const location = useLocation();
   const navigate = useNavigate();
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -17,24 +18,22 @@ const FixedHeader: React.FC = () => {
   // Zustand 스토어에서 인증 상태를 가져옵니다
   const { isAuthenticated } = useAuthStore();
 
-  // 로그아웃 처리 함수
-  const handleLogout = () => {
-    // authApi의 logout 함수 호출
-    logoutApi();
-    navigate('/');
+  // 로그인 되어 있으면 모달 띄우기
+  const handleLoginClick = () => {
+    if (isAuthenticated) {
+      setShowModal(true); // 로그인 되어 있으면 모달 띄우기
+    } else {
+      navigate('/login'); // 로그인 안되어 있으면 로그인 페이지로 이동
+    }
   };
 
-  // 사용자 아이콘 클릭 처리 함수
-  const handleUserIconClick = () => {
-    if (isAuthenticated) {
-      // 로그인 상태: 프로필 페이지로 이동하거나 드롭다운 메뉴 표시
-      // 여기서는 간단히 로그아웃 처리
-      if (confirm('로그아웃 하시겠습니까?')) {
-        handleLogout();
-      }
-    } else {
-      // 비로그인 상태: 로그인 페이지로 이동
-      navigate('/login');
+  // 현재 페이지로 이동 시 스크롤 처리 (메인->메인, 카트->카트 페이지로 이동 시 스크롤 처리)
+  const handleSamePageScroll = (destinationPath: string) => {
+    // 현재 경로와 이동하려는 경로가 같을 때만 직접 스크롤
+    // 이유: 현재 페이지로 다시 이동하는 경우에는, 현재 페이지의 useEffect가 실행되지 않아 스크롤이 처리되지 않기 때문
+    if (location.pathname === destinationPath) {
+      console.log("현재 페이지로 이동 시 스크롤 처리");
+      window.scrollTo(0, 0);
     }
   };
 
@@ -50,17 +49,6 @@ const FixedHeader: React.FC = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-
-  // 현재 페이지로 이동 시 스크롤 처리 (메인->메인, 카트->카트 페이지로 이동 시 스크롤 처리)
-  const handleSamePageScroll = (destinationPath: string) => {
-    // 현재 경로와 이동하려는 경로가 같을 때만 직접 스크롤
-    // 이유: 현재 페이지로 다시 이동하는 경우에는, 현재 페이지의 useEffect가 실행되지 않아 스크롤이 처리되지 않기 때문
-    if (location.pathname === destinationPath) {
-      console.log("현재 페이지로 이동 시 스크롤 처리");
-      window.scrollTo(0, 0);
-    }
-  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,14 +100,21 @@ const FixedHeader: React.FC = () => {
 
         {/* 섹션: 사용자 메뉴 (장바구니, 유저 버튼) */}
         <S.UserSection>
-          <S.CartLink to="/cart" onClick={() => handleSamePageScroll("/cart")}>
+          {isAuthenticated && (
+            <S.UserLink to="/mybook" onClick={() => handleSamePageScroll("/mybook")}>
+              <AiOutlineBook size={36} />
+            </S.UserLink>
+          )}
+          <S.UserLink to="/cart" onClick={() => handleSamePageScroll("/cart")}>
             <AiOutlineShopping size={38} />
             {isAuthenticated && <S.CartCnt>{totalCount}</S.CartCnt>}
-          </S.CartLink>
-          <S.UserButton onClick={handleUserIconClick}>
+          </S.UserLink>
+          <div onClick={handleLoginClick} style={{ cursor: 'pointer' }}>
             <AiOutlineUser size={38} />
-            {isAuthenticated && <span style={{ fontSize: '12px', marginLeft: '4px' }}>로그아웃</span>}
-          </S.UserButton>
+          </div>
+          {showModal && isAuthenticated && (
+            <UserProfileModal showModal={showModal} onClose={() => setShowModal(false)} />
+          )}
         </S.UserSection>
 
       </S.FixedHeaderContainer>

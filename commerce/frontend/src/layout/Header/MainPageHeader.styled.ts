@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { AiOutlineSearch, AiOutlineUser, AiOutlineShopping} from 'react-icons/ai';
+import { AiOutlineSearch, AiOutlineUser, AiOutlineShopping, AiOutlineBook } from 'react-icons/ai';
 import logo from '../../assets/images/logo.png';
 import { Link } from 'react-router-dom';
 
@@ -52,6 +52,13 @@ export const STMainHeader = styled.div`
   align-items: center;
 `;
 
+export const STLogoSearchContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 900px;
+`;
+
 export const Logo = styled.div`
   width: 226px !important;
   height: 122px !important;
@@ -69,7 +76,7 @@ export const STSearchBox = styled.div`
   border: 2px solid #D9D9D9;
   border-radius: 30px;
   margin-top: 40px;
-  margin-right: 160px;
+  margin-left: 20px;
 `;
 
 export const SearchForm = styled.form`
@@ -110,18 +117,25 @@ export const SearchIcon = styled(AiOutlineSearch)`
 
 export const LoginIcon = styled(AiOutlineUser)`
   width: 40px;
-  height: 39px;
+  height: 40px;
 `;
 
 export const CartIcon = styled(AiOutlineShopping)`
   width: 40px;
-  height: 39px;
+  height: 40px;
 `;
 
-export const CartLink = styled(Link)`
+export const BookIcon = styled(AiOutlineBook)`
+  width: 40px;
+  height: 38px;
+  color: #333;
+`;
+
+export const UserLink = styled(Link)`
   position: relative;
-  margin-right: 55px;
   color: black;
+  display: flex;
+  align-items: center;
 
   &:hover {
     color: black;
@@ -149,4 +163,5 @@ export const CartCnt = styled.span`
 export const STUserSection = styled.section`
   display: flex;
   margin-top: 40px;
+  gap: 30px;
 `;
