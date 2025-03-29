@@ -6,6 +6,25 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+// 리뷰 응답 데이터 타입
+export interface ReviewResponseDto {
+  id: number;
+  title: string;
+  message: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+  productId: number;
+}
+
+// 리뷰 생성 요청 데이터 타입
+export interface ReviewRequestDto {
+  userId: string;
+  productId: number;
+  title: string;
+  message: string;
+}
+
 // 찜하기 API 관련 타입 정의
 export interface WishItemRequest {
   productId: number;
