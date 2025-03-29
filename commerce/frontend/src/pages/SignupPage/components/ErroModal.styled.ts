@@ -27,7 +27,7 @@ export const ModalMessage = styled.p`
 `;
 
 export const ModalButton = styled.button`
-  background-color: #ff4d4d;
+  background-color: #e896ff;
   color: white;
   border: none;
   padding: 10px;
@@ -36,6 +36,6 @@ export const ModalButton = styled.button`
   font-size: 16px;
 
   &:hover {
-    background-color: #e63946;
+    background-color: #d95cfb;
   }
 `;

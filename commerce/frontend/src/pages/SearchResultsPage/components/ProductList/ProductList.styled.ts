@@ -8,7 +8,7 @@ export const ProductListContainer = styled.div`
 
 export const ProductItemContainer = styled.div`
   display: flex;
-  padding: 20px 0px;
+  padding: 20px 0;
   border-bottom: 1px solid #eee;
   position: relative;
 
@@ -45,7 +45,7 @@ export const Checkbox = styled.div<CheckboxProps>`
     display: ${props => props['data-checked'] ? 'block' : 'none'};
     width: 4px;
     height: 8px;
-    border: solid white;
+    border: solid #e896ff;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
     margin-bottom: 2px;
@@ -220,8 +220,8 @@ export const FavoredHeartIcon = styled.svg.attrs({
   xmlns: "http://www.w3.org/2000/svg"
 })`
   path {
-    fill: #EE0000;
-    stroke: #EE0000;
+    fill: #e896ff;
+    stroke: #e896ff;
   }
 `;
 
@@ -265,6 +265,6 @@ export const BuyNowButton = styled.button`
   height: 36px;
 
   &:hover {
-    background: #d87ee9;
+    background: #d95cfb;
   }
 `;
