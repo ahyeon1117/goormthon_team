@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import * as S from "./DetailPage.styled";
 import { getProductById } from "../../api/productApi";
@@ -361,12 +361,6 @@ const DetailPage = () => {
                   <S.BookInfoLabel>저자</S.BookInfoLabel>
                   <S.BookInfoValue>{product.author}</S.BookInfoValue>
                 </S.BookInfoRow>
-                {product.translator && (
-                  <S.BookInfoRow>
-                    <S.BookInfoLabel>역자</S.BookInfoLabel>
-                    <S.BookInfoValue>{product.translator}</S.BookInfoValue>
-                  </S.BookInfoRow>
-                )}
                 <S.BookInfoRow>
                   <S.BookInfoLabel>출판사</S.BookInfoLabel>
                   <S.BookInfoValue>{product.publisher}</S.BookInfoValue>
