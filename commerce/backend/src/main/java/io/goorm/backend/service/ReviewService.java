@@ -1,8 +1,8 @@
 package io.goorm.backend.service;
 
 import io.goorm.backend.dto.req.ReviewRequestDto;
-import io.goorm.backend.dto.res.ProductResponse;
 import io.goorm.backend.dto.res.ReviewResponseDto;
+import io.goorm.backend.dto.res.ProductResponse;
 import io.goorm.backend.entity.Product;
 import io.goorm.backend.entity.Review;
 import io.goorm.backend.entity.User;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReviewService {
@@ -49,9 +50,24 @@ public class ReviewService {
         return reviewRepository.findByUser(user);
     }
 
-    // 특정 상품의 리뷰 조회
-    public List<Review> getReviewsByProduct(ProductResponse product) {
+    // 내부 서비스용 - 특정 상품(엔티티)에 대한 리뷰 엔티티 목록 조회
+    public List<Review> getReviewsByProduct(Product product) {
         return reviewRepository.findByProduct(product);
+    }
+
+    // 외부 API용 - 상품 응답(DTO)에 대한 리뷰 DTO 목록 조회 및 변환
+    public List<ReviewResponseDto> getReviewsByProductResponse(ProductResponse productResponse) {
+        // ProductResponse의 ID로 실제 Product 엔티티 조회
+        Product product = productRepository.findById(productResponse.getId())
+            .orElseThrow(() -> new RuntimeException("Product not found"));
+        // 해당 상품의 리뷰 엔티티 목록 조회
+        List<Review> reviews = getReviewsByProduct(product);
+        // 엔티티를 DTO로 변환
+        List<ReviewResponseDto> reviewResponseDtos = reviews.stream()
+                .map(ReviewResponseDto::new)
+                .collect(Collectors.toList());
+        // DTO 목록 반환
+        return reviewResponseDtos;
     }
 
     // 리뷰 저장 (중복 가능하도록 변경)

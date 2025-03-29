@@ -3,14 +3,11 @@ package io.goorm.backend.controller;
 import io.goorm.backend.dto.req.ReviewRequestDto;
 import io.goorm.backend.dto.res.ProductResponse;
 import io.goorm.backend.dto.res.ReviewResponseDto;
-import io.goorm.backend.entity.Review;
 import io.goorm.backend.entity.User;
-import io.goorm.backend.entity.Product;
 import io.goorm.backend.service.ReviewService;
 import io.goorm.backend.service.UserService;
 import io.goorm.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,15 +41,10 @@ public class ReviewController {
     // 특정 상품의 리뷰 조회 API
     @GetMapping("/product/{productId}")
     public ResponseEntity<List<ReviewResponseDto>> getReviewsByProduct(@PathVariable Long productId) {
-        // 상품 정보 조회
+        // 상품 정보 조회 (외부 API용 메서드 사용)
         ProductResponse product = productService.getProductById(productId);
-
-        // Product 객체를 사용해 리뷰 조회
-        List<ReviewResponseDto> reviews = reviewService.getReviewsByProduct(product)
-            .stream()
-            .map(ReviewResponseDto::new)
-            .collect(Collectors.toList());
-
+        // 서비스에서 이미 DTO로 변환된 결과를 바로 사용
+        List<ReviewResponseDto> reviews = reviewService.getReviewsByProductResponse(product);
         // 리뷰 리스트 반환
         return ResponseEntity.ok(reviews);
     }
