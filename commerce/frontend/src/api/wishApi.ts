@@ -36,7 +36,6 @@ export const getWishItems = async (): Promise<WishItemResponse[]> => {
   try {
     console.log('찜 목록 조회 API 호출 중...');
     const response = await apiRequest.get(WISH_API.VIEW);
-    console.log('찜 목록 API 응답:', JSON.stringify(response.data, null, 2));
 
     if (response.data.code === 200 && response.data.data) {
       // 백엔드 응답 구조에 맞게 데이터 추출
