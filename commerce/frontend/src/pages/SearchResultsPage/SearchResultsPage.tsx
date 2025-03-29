@@ -324,6 +324,9 @@ const SearchResultsPage: React.FC = () => {
 
   // 스크롤 위치 저장 및 복원 로직
   useEffect(() => {
+    // 페이지 이동 여부를 확인하는 플래그
+    const hasNavigatedAway = sessionStorage.getItem('hasNavigatedAway') === 'true';
+
     const handleBeforeUnload = () => {
       // 페이지를 떠날 때 현재 스크롤 위치 저장
       if (pageRef.current) {
@@ -338,6 +341,9 @@ const SearchResultsPage: React.FC = () => {
           searchParams: location.search,
           checkedBookIds // 체크된 상품 ID 목록 저장
         }));
+
+        // 페이지를 떠날 때 네비게이션 플래그 설정
+        sessionStorage.setItem('hasNavigatedAway', 'true');
       }
     };
 
@@ -346,7 +352,7 @@ const SearchResultsPage: React.FC = () => {
       const savedPosition = sessionStorage.getItem('searchResultsScrollPosition');
       const savedState = sessionStorage.getItem('searchResultsPageState');
 
-      if (savedPosition && savedState) {
+      if (savedPosition && savedState && hasNavigatedAway) {
         const parsedState = JSON.parse(savedState);
 
         // URL 파라미터가 동일한 경우에만 스크롤 위치 복원
@@ -363,11 +369,15 @@ const SearchResultsPage: React.FC = () => {
               behavior: 'auto'
             });
           }, 100);
+
+          // 스크롤 복원 후 네비게이션 플래그 재설정
+          sessionStorage.setItem('hasNavigatedAway', 'false');
         } else {
           // URL이 변경된 경우 저장된 상태 삭제
           // (검색 결과 페이지에서 다른 검색어로 검색하거나 필터를 변경하는 등 URL 파라미터가 바뀐 경우)
           sessionStorage.removeItem('searchResultsScrollPosition');
           sessionStorage.removeItem('searchResultsPageState');
+          sessionStorage.setItem('hasNavigatedAway', 'false');
         }
       }
     };
@@ -438,6 +448,9 @@ const SearchResultsPage: React.FC = () => {
       searchParams: location.search,
       checkedBookIds
     }));
+
+    // 상품 상세 페이지로 이동 시 네비게이션 플래그 설정
+    sessionStorage.setItem('hasNavigatedAway', 'true');
 
     // 상세 페이지로 이동
     navigate(`/detail/${bookId}`);
