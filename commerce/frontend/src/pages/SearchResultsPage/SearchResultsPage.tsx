@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import FilterSidebar from "./components/FilterSidebar/FilterSidebar.tsx";
 import ProductList from "./components/ProductList/ProductList.tsx";
 import SortingBar from "./components/SortingBar/SortingBar.tsx";
@@ -7,7 +7,7 @@ import SearchOptions from "./components/SearchOptions/SearchOptions.tsx";
 import { PageContainer, ResultHeaderStyled, NoResultsStyled } from "./SearchResultsPage.styled";
 import { BookItem, SortOption } from "../../types";
 import { getAllProducts, searchProducts } from "../../api/productApi";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // 정렬 옵션
 const sortOptions: SortOption[] = [
@@ -40,6 +40,8 @@ const SearchResultsPage: React.FC = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchKeyword = searchParams.get("keyword") || "";
+  const navigate = useNavigate();
+  const pageRef = useRef<HTMLDivElement>(null);
 
   const [totalResults, setTotalResults] = useState<number>(0);
   const [displayedBooks, setDisplayedBooks] = useState<BookItem[]>([]);
@@ -318,11 +320,91 @@ const SearchResultsPage: React.FC = () => {
     setCurrentPage(1); // 페이지당 아이템 수 변경 시 첫 페이지로 초기화
   };
 
+  // 스크롤 위치 저장 및 복원 로직
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      // 페이지를 떠날 때 현재 스크롤 위치 저장
+      if (pageRef.current) {
+        sessionStorage.setItem('searchResultsScrollPosition', window.scrollY.toString());
+        sessionStorage.setItem('searchResultsPageState', JSON.stringify({
+          currentPage,
+          selectedSort,
+          itemsPerPage,
+          searchParams: location.search
+        }));
+      }
+    };
+
+    // 페이지 로드 시 저장된 스크롤 위치 복원
+    const restoreScrollPosition = () => {
+      const savedPosition = sessionStorage.getItem('searchResultsScrollPosition');
+      const savedState = sessionStorage.getItem('searchResultsPageState');
+
+      if (savedPosition && savedState) {
+        const parsedState = JSON.parse(savedState);
+
+        // URL 파라미터가 동일한 경우에만 스크롤 위치 복원
+        if (parsedState.searchParams === location.search) {
+          // 상태 복원
+          if (parsedState.currentPage) setCurrentPage(parsedState.currentPage);
+          if (parsedState.selectedSort) setSelectedSort(parsedState.selectedSort);
+          if (parsedState.itemsPerPage) setItemsPerPage(parsedState.itemsPerPage);
+
+          // 약간의 지연 후 스크롤 위치 복원 (컨텐츠가 로드된 후)
+          setTimeout(() => {
+            window.scrollTo({
+              top: parseInt(savedPosition),
+              behavior: 'auto'
+            });
+          }, 100);
+        } else {
+          // URL이 변경된 경우 저장된 상태 삭제
+          // (검색 결과 페이지에서 다른 검색어로 검색하거나 필터를 변경하는 등 URL 파라미터가 바뀐 경우)
+          sessionStorage.removeItem('searchResultsScrollPosition');
+          sessionStorage.removeItem('searchResultsPageState');
+        }
+      }
+    };
+
+    // 컴포넌트 마운트 시 스크롤 위치 복원
+    restoreScrollPosition();
+
+    // 페이지 이탈 시 스크롤 위치 저장
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [location.search, currentPage, selectedSort, itemsPerPage]);
+
+  // 상품 클릭 시 현재 스크롤 위치 저장 핸들러
+  const handleProductClick = (bookId: string) => {
+    // 현재 스크롤 위치 저장
+    sessionStorage.setItem('searchResultsScrollPosition', window.scrollY.toString());
+    sessionStorage.setItem('searchResultsPageState', JSON.stringify({
+      currentPage,
+      selectedSort,
+      itemsPerPage,
+      searchParams: location.search
+    }));
+
+    // 상세 페이지로 이동
+    navigate(`/detail/${bookId}`);
+  };
+
   // 페이지 변경 핸들러
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-    // 페이지 상단으로 스크롤
+    // 페이지 상단으로 스크롤 (페이지 변경 시에는 맨 위로)
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // 페이지 변경 시 현재 상태 저장
+    sessionStorage.setItem('searchResultsPageState', JSON.stringify({
+      currentPage: pageNumber,
+      selectedSort,
+      itemsPerPage,
+      searchParams: location.search
+    }));
   };
 
   // 결과 내 재검색 처리 함수
@@ -532,7 +614,7 @@ const SearchResultsPage: React.FC = () => {
   };
 
   return (
-    <PageContainer>
+    <PageContainer ref={pageRef}>
       <div className="search-content-wrapper" style={{ display: "flex" }}>
         <FilterSidebar
           onWithinSearch={handleWithinSearch}
@@ -593,6 +675,7 @@ const SearchResultsPage: React.FC = () => {
                 books={displayedBooks}
                 onToggleFavorite={handleToggleFavorite}
                 onToggleCheck={handleToggleCheck}
+                onProductClick={handleProductClick}
               />
               <Pagination
                 currentPage={currentPage}

@@ -23,12 +23,14 @@ interface ProductItemProps {
   book: BookItem;
   onToggleFavorite: (bookId: string) => void;
   onToggleCheck?: (bookId: string) => void;
+  onProductClick?: (bookId: string) => void;
 }
 
 const ProductItem: React.FC<ProductItemProps> = ({
   book,
   onToggleFavorite,
-  onToggleCheck
+  onToggleCheck,
+  onProductClick
 }) => {
   const formatPrice = (price: number) => {
     return price.toLocaleString('ko-KR') + '원';
@@ -50,6 +52,13 @@ const ProductItem: React.FC<ProductItemProps> = ({
     }
   };
 
+  const handleProductClick = (e: React.MouseEvent) => {
+    if (onProductClick) {
+      e.preventDefault();
+      onProductClick(book.id);
+    }
+  };
+
   return (
     <ProductItemContainer>
       <CheckboxContainer onClick={handleCheckToggle}>
@@ -57,7 +66,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
       </CheckboxContainer>
 
       <ProductImage>
-        <Link to={`/detail/${book.id}`}>
+        <Link to={`/detail/${book.id}`} onClick={handleProductClick}>
           <img src={book.imageUrl || '/placeholder.jpg'} alt={book.title} />
           <div className="product-image-overlay">
             <button className="product-preview-button">미리보기</button>
@@ -66,7 +75,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
       </ProductImage>
 
       <ProductInfo>
-        <Link to={`/detail/${book.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+        <Link to={`/detail/${book.id}`} style={{ textDecoration: 'none', color: 'inherit' }} onClick={handleProductClick}>
           <ProductTitle>{book.title}</ProductTitle>
         </Link>
         <ProductAuthor>
