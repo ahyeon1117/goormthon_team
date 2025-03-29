@@ -22,6 +22,13 @@ export interface WishItemResponse {
   createdAt: string | null;
 }
 
+// 찜하기 작업 결과 타입 정의
+export interface WishResult {
+  id: string;
+  success: boolean;
+  error: Error | null;
+}
+
 export interface ApiWishResponse {
   wishItems: WishItemResponse[];
   totalCount: number;

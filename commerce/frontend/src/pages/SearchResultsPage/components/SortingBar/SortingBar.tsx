@@ -12,6 +12,7 @@ interface SortingBarProps {
   onAddToWishlist?: () => void;
   onAddToCart?: () => void;
   cartLoading?: boolean;
+  wishLoading?: boolean;
 }
 
 const SortingBar: React.FC<SortingBarProps> = ({
@@ -23,13 +24,16 @@ const SortingBar: React.FC<SortingBarProps> = ({
   onItemsPerPageChange,
   onAddToWishlist,
   onAddToCart,
-  cartLoading = false
+  cartLoading = false,
+  wishLoading = false
 }) => {
   return (
     <SortingBarStyled>
       <button
         className="product-wishlist-button"
         onClick={onAddToWishlist}
+        disabled={wishLoading}
+        style={{ opacity: wishLoading ? 0.7 : 1 }}
       >
         <HeartIcon>
           <path d="M14.5 25.5C14.5 25.5 1 14.5 1 8.5C1 4.5 4 1 8.5 1C11.5 1 14.5 3 14.5 5.5C14.5 3 17.5 1 20.5 1C25 1 28 4.5 28 8.5C28 14.5 14.5 25.5 14.5 25.5Z" />

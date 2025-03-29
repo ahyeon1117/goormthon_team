@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import FilterSidebar from "./components/FilterSidebar/FilterSidebar.tsx";
 import ProductList from "./components/ProductList/ProductList.tsx";
 import SortingBar from "./components/SortingBar/SortingBar.tsx";
@@ -9,6 +9,8 @@ import { BookItem, SortOption } from "../../types";
 import { getAllProducts, searchProducts } from "../../api/productApi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../../hooks";
+import { addWishItem, getWishItems, removeWishItem } from "../../api/wishApi";
+import { WishItemResponse, WishResult } from "../../types/apiTypes";
 
 // 정렬 옵션
 const sortOptions: SortOption[] = [
@@ -44,6 +46,7 @@ const SearchResultsPage: React.FC = () => {
   const navigate = useNavigate();
   const pageRef = useRef<HTMLDivElement>(null);
   const [cartLoading, setCartLoading] = useState(false);
+  const [wishLoading, setWishLoading] = useState(false);
   const { addToCart, fetchCartItems, cartItems } = useCart();
   const [totalResults, setTotalResults] = useState<number>(0);
   const [displayedBooks, setDisplayedBooks] = useState<BookItem[]>([]);
@@ -629,20 +632,88 @@ const SearchResultsPage: React.FC = () => {
     window.history.replaceState(null, "", newUrl);
   };
 
-  // --------------------------------------------------------------------
+  // 찜하기 관련 상태 업데이트 로직을 통합하는 헬퍼 함수
+  const updateBooksWithWishStatus = (bookList: BookItem[], wishItems: WishItemResponse[]) => {
+    return bookList.map(book => ({
+      ...book,
+      isFavored: wishItems.some(item => String(item.productId) === String(book.id))
+    }));
+  };
 
-  const handleToggleFavorite = (bookId: string) => {
-    // 모든 도서 목록에서 해당 도서의 찜 상태 업데이트
-    const updatedBooks = books.map((book) =>
-      book.id === bookId ? { ...book, isFavored: !book.isFavored } : book
-    );
-    setBooks(updatedBooks);
+  // 찜하기 상태 업데이트를 관리하는 통합 함수
+  const updateWishStatusInBooks = useCallback(async () => {
+    try {
+      setWishLoading(true);
 
-    // 원본 도서 목록에서도 상태 업데이트
-    const updatedOriginalBooks = originalBooks.map((book) =>
-      book.id === bookId ? { ...book, isFavored: !book.isFavored } : book
-    );
-    setOriginalBooks(updatedOriginalBooks);
+      // 서버에서 최신 찜 목록 데이터 조회
+      const wishItems = await getWishItems();
+      console.log('찜 목록 데이터 로드 완료:', wishItems);
+
+      if (books.length > 0) {
+        // 도서 목록 및 원본 도서 목록에 찜 상태 반영
+        setBooks(prev => updateBooksWithWishStatus(prev, wishItems));
+        setOriginalBooks(prev => updateBooksWithWishStatus(prev, wishItems));
+      }
+
+      return wishItems;
+    } catch (error) {
+      console.error('찜 상태 업데이트 오류:', error);
+      // 상세 에러 정보 로깅
+      if (error instanceof Error) {
+        console.error('에러 메시지:', error.message);
+        console.error('에러 스택:', error.stack);
+      }
+      throw error; // 에러를 다시 던져서 호출한 쪽에서 처리할 수 있게 함
+    } finally {
+      setWishLoading(false);
+    }
+  }, [books.length, setBooks, setOriginalBooks, setWishLoading]);
+
+  const handleToggleFavorite = async (bookId: string) => {
+    try {
+      setWishLoading(true);
+      console.log(`찜하기 토글: 도서 ID(${bookId})`);
+
+      // 현재 도서의 찜 상태 확인
+      const book = books.find(book => book.id === bookId);
+      if (!book) {
+        console.error('찜하기 토글: 도서를 찾을 수 없음');
+        return;
+      }
+
+      const isCurrentlyFavored = book.isFavored;
+      let success = false;
+
+      if (isCurrentlyFavored) {
+        // 찜 목록에서 제거
+        console.log(`도서 ID(${bookId})를 찜 목록에서 제거 중...`);
+        success = await removeWishItem(Number(bookId));
+        if (success) {
+          console.log(`도서 ID(${bookId})를 찜 목록에서 제거 완료`);
+        } else {
+          console.error('찜 목록에서 제거 실패');
+          throw new Error('찜 목록에서 제거에 실패했습니다.');
+        }
+      } else {
+        // 찜 목록에 추가
+        console.log(`도서 ID(${bookId})를 찜 목록에 추가 중...`);
+        success = await addWishItem(Number(bookId));
+        if (success) {
+          console.log(`도서 ID(${bookId})를 찜 목록에 추가 완료`);
+        } else {
+          console.error('찜 목록에 추가 실패');
+          throw new Error('찜 목록에 추가에 실패했습니다.');
+        }
+      }
+
+      // 서버에서 최신 찜 목록을 다시 가져와서 UI 상태 동기화
+      await updateWishStatusInBooks();
+    } catch (error) {
+      console.error('찜하기 토글 중 오류 발생:', error);
+      alert('찜하기 처리 중 오류가 발생했습니다.');
+    } finally {
+      setWishLoading(false);
+    }
   };
 
   const handleToggleCheck = (bookId: string) => {
@@ -674,7 +745,7 @@ const SearchResultsPage: React.FC = () => {
   };
 
   // 선택된 책들을 찜하기 목록에 추가하는 함수
-  const handleAddSelectedToWishlist = () => {
+  const handleAddSelectedToWishlist = async () => {
     const selectedBooks = books.filter((book) => book.isChecked);
 
     if (selectedBooks.length === 0) {
@@ -682,11 +753,92 @@ const SearchResultsPage: React.FC = () => {
       return;
     }
 
-    console.log("찜하기 목록에 추가할 책들:", selectedBooks);
-    // 여기에 찜하기 API 호출 로직 구현
-    alert(`${selectedBooks.length}개의 상품을 찜하기 목록에 추가했습니다.`);
+    try {
+      setWishLoading(true);
+      console.log("찜하기 목록에 추가할 책들:", selectedBooks);
 
-    // 선택 상태 유지 (초기화 코드 제거)
+      // 현재 찜 목록 가져오기
+      const currentWishItems = await getWishItems();
+
+      // 이미 찜한 상품 필터링
+      const notInWishList = selectedBooks.filter(book => {
+        const isInWishList = currentWishItems.some(item => {
+          const itemId = String(item.productId);
+          const bookId = String(book.id);
+          return itemId === bookId;
+        });
+        return !isInWishList;
+      });
+
+      // 모든 상품이 이미 찜하기에 있는 경우
+      if (notInWishList.length === 0) {
+        alert("선택한 상품이 모두 이미 찜하기 목록에 있습니다.");
+        setWishLoading(false);
+        return;
+      }
+
+      // 찜하기에 없는 상품만 추가
+      console.log(`${notInWishList.length}개 상품을 찜하기 목록에 추가합니다.`);
+
+      // 병렬 처리를 위한 Promise.all 사용 시 세부 에러 처리 개선
+      const results = await Promise.allSettled(
+        notInWishList.map(async (book) => {
+          try {
+            const success = await addWishItem(Number(book.id));
+            return { id: book.id, success, error: null } as WishResult;
+          } catch (error) {
+            return { id: book.id, success: false, error } as WishResult;
+          }
+        })
+      );
+
+      // 성공 및 실패 건수 계산
+      const successResults = results.filter(r => r.status === 'fulfilled' && (r.value as WishResult).success);
+      const failResults = results.filter(r => r.status === 'rejected' || !((r.status === 'fulfilled' && (r.value as WishResult).success)));
+
+      const successCount = successResults.length;
+      const failCount = failResults.length;
+      const alreadyInWishCount = selectedBooks.length - notInWishList.length;
+
+      // 실패한 상품 ID 로깅
+      if (failCount > 0) {
+        console.error('찜하기 추가 실패한 상품:', failResults.map(r => {
+          if (r.status === 'rejected') {
+            return { id: 'unknown', reason: r.reason };
+          } else {
+            return { id: (r.value as WishResult).id, error: (r.value as WishResult).error };
+          }
+        }));
+      }
+
+      // 결과 메시지 생성 및 표시
+      let message = '';
+
+      if (successCount > 0) {
+        message += `${successCount}개 상품이 찜하기 목록에 추가되었습니다. `;
+      }
+
+      if (failCount > 0) {
+        message += `${failCount}개 상품은 추가되지 않았습니다. `;
+      }
+
+      if (alreadyInWishCount > 0) {
+        message += `${alreadyInWishCount}개 상품은 이미 찜하기 목록에 있습니다.`;
+      }
+
+      alert(message.trim());
+
+      // 서버에서 최신 찜 목록을 다시 가져와서 UI 상태 동기화
+      await updateWishStatusInBooks();
+    } catch (error) {
+      console.error('찜하기 추가 중 오류 발생:', error);
+      if (error instanceof Error) {
+        console.error('에러 상세:', error.message);
+      }
+      alert('찜하기 추가 중 오류가 발생했습니다.');
+    } finally {
+      setWishLoading(false);
+    }
   };
 
   // 상품 개별 또는 선택된 상품 장바구니 추가 핸들러 (ProductItem용)
@@ -791,6 +943,16 @@ const SearchResultsPage: React.FC = () => {
     await handleProductAddToCart('dummy', true);
   };
 
+  // 중복된 useEffect 통합
+  useEffect(() => {
+    // 도서 데이터가 로드되었을 때만 찜 목록 상태 업데이트
+    if (!loading && books.length > 0) {
+      updateWishStatusInBooks().catch(error => {
+        console.error('찜 목록 데이터 로드 실패:', error);
+      });
+    }
+  }, [loading, books.length, updateWishStatusInBooks]);
+
   return (
     <PageContainer ref={pageRef}>
       <div className="search-content-wrapper" style={{ display: "flex" }}>
@@ -817,6 +979,7 @@ const SearchResultsPage: React.FC = () => {
               onAddToWishlist={handleAddSelectedToWishlist}
               onAddToCart={handleAddSelectedToCart}
               cartLoading={cartLoading}
+              wishLoading={wishLoading}
             />
           </ResultHeaderStyled>
 
