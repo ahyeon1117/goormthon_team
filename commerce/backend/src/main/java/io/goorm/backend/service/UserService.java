@@ -1,5 +1,6 @@
 package io.goorm.backend.service;
 
+import io.goorm.backend.dto.security.UpdateNicknameDto;
 import io.goorm.backend.dto.res.UserInfoResponse;
 import io.goorm.backend.dto.security.AuthenticationToken;
 import io.goorm.backend.entity.User;
@@ -59,5 +60,14 @@ public class UserService implements UserDetailsService {
             throw new NotFoundUserException();
         }
         return findById(userId);
+    }
+
+    //닉네임 변경
+    @Transactional
+    public UserInfoResponse updateNickname(UpdateNicknameDto updateNicknameDto) {
+        User user = getCurrentUser();
+        user.setNickname(updateNicknameDto.getNickname());  // 닉네임 업데이트
+        userRepository.save(user);  // 변경사항 저장
+        return UserInfoResponse.of(user);  // 변경된 사용자 정보 반환
     }
 }

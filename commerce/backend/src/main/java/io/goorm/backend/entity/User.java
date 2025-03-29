@@ -28,6 +28,14 @@ public class User {
     @Column(name = "nick_name", nullable = false, length = 100)
     private String nickname;
 
+    //닉네임 변경
+    public void setNickname(String newNickname) {
+        if (newNickname == null || newNickname.trim().isEmpty()) {
+            throw new IllegalArgumentException("닉네임은 빈 값이 될 수 없습니다.");
+        }
+        this.nickname = newNickname;
+    }
+
     @Column(nullable = false)
     private Authority role;
 

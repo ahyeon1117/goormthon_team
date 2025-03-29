@@ -2,13 +2,12 @@ package io.goorm.backend.controller;
 
 import io.goorm.backend.dto.res.ApiResponse;
 import io.goorm.backend.dto.res.UserInfoResponse;
+import io.goorm.backend.dto.security.UpdateNicknameDto;
 import io.goorm.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,5 +27,13 @@ public class UserController {
         return ResponseEntity.ok(
             ApiResponse.success(userService.getUserInfo())
         );
+    }
+
+    //닉네임 변경
+    @PutMapping("/me/change")
+    public ResponseEntity<ApiResponse<UserInfoResponse>> updateNickname(
+        @RequestBody UpdateNicknameDto updateNicknameDto) {
+        UserInfoResponse updatedUserInfo = userService.updateNickname(updateNicknameDto);
+        return ResponseEntity.ok(ApiResponse.success(updatedUserInfo));
     }
 }
