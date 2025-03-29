@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import * as S from "./DetailPage.styled";
 import { getProductById } from "../../api/productApi";
 import { BookItem } from "../../types";
@@ -26,6 +26,7 @@ const mockProduct: BookItem = {
 // 상품 상세 페이지 컴포넌트
 const DetailPage = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [product, setProduct] = useState<BookItem | null>(null);
   const [activeTab, setActiveTab] = useState("info");
   const [loading, setLoading] = useState(true);
@@ -157,6 +158,21 @@ const DetailPage = () => {
   const handlePurchase = () => {
     if (!product) return;
 
+    console.log(`상품 ID(${product.id}) 바로구매 시작`);
+
+    navigate('/order', {
+      state: {
+        items: [{
+          productId: Number(product.id),
+          title: product.title,
+          discount: product.price,
+          image: product.imageUrl,
+          author: product.author,
+          publisher: product.publisher
+        }],
+        isDirectPurchase: true
+      }
+    });
   };
 
   // 찜하기 목록 확인
