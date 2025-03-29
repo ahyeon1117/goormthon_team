@@ -9,6 +9,7 @@ export const DetailPageWrapper = styled.div`
 export const DetailContainer = styled.div`
   display: flex;
   gap: 60px;
+  margin-top: 30px;
   margin-bottom: 100px;
 
   @media (max-width: 768px) {
@@ -213,7 +214,7 @@ export const TabsSection = styled.div`
   display: flex;
   border-bottom: 1px solid #ddd;
   margin-bottom: 30px;
-  
+
   &:focus {
     outline: none;
   }
@@ -239,7 +240,7 @@ export const TabButton = styled.button<{ $active: boolean }>`
   &:focus {
     outline: none;
   }
-  
+
 `;
 
 export const TabContent = styled.div`

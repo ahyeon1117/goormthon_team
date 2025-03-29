@@ -27,7 +27,7 @@ export const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 1200px;
-  margin: 10px auto 0 auto;
+  margin: 30px auto 0 auto;
   padding: 20px;
 
   .search-content-wrapper {
