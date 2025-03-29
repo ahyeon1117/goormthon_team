@@ -6,23 +6,6 @@ import { BookItem } from "../../types";
 import { useCart } from "../../hooks";
 import { addWishItem, getWishItems, removeWishItem } from "../../api/wishApi";
 
-// 임시 상품 데이터
-const mockProduct: BookItem = {
-  id: "1", // 고유 ID
-  title: "자바스크립트 디자인 패턴",
-  author: "에디 오스마니",
-  publisher: "한빛미디어",
-  publishDate: "2024년 08월 01일",
-  rating: 9.06,
-  reviewCount: 15,
-  price: 25200,
-  imageUrl: "https://shopping-phinf.pstatic.net/main_4933517/49335174628.20240725071120.jpg",
-  isbn: "1234567890",
-  description: "이 책은 자바스크립트 언어로 구현한 23가지 디자인 패턴을 소개합니다. 객체 지향 디자인 패턴을 자바스크립트 환경에 맞게 응용하는 방법을 설명하고, 각 패턴의 실제 사용 사례와 함께 코드 예제를 제공합니다.",
-  isFavored: false,
-  isChecked: false
-};
-
 // 상품 상세 페이지 컴포넌트
 const DetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -36,6 +19,7 @@ const DetailPage = () => {
   const [wishLoading, setWishLoading] = useState(false);
   const [isInCart, setIsInCart] = useState(false);
   const [cartLoading, setCartLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // 장바구니 관련 훅 사용
   const {
@@ -49,6 +33,7 @@ const DetailPage = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
+      setError(null);
       console.log(`상세 페이지 - 상품 ID(${id}) 도서 정보 요청 중...`);
 
       try {
@@ -59,16 +44,19 @@ const DetailPage = () => {
             console.log("도서 데이터 불러오기 성공:", bookItem.title);
             setProduct(bookItem);
           } else {
-            console.warn("API 요청 실패, 임시 데이터 사용");
-            setProduct(mockProduct);
+            console.error("도서 데이터를 찾을 수 없습니다.");
+            setError("도서 데이터를 찾을 수 없습니다.");
+            setProduct(null);
           }
         } else {
           console.error("도서 ID가 제공되지 않았습니다.");
+          setError("도서 ID가 제공되지 않았습니다.");
           setProduct(null);
         }
       } catch (error) {
         console.error("도서 데이터 로딩 중 오류:", error);
-        setProduct(mockProduct);
+        setError("도서 데이터를 불러오는 중 오류가 발생했습니다.");
+        setProduct(null);
       } finally {
         setLoading(false);
       }
@@ -262,6 +250,11 @@ const DetailPage = () => {
   // 로딩 중일 때 표시
   if (loading) {
     return <S.DetailPageWrapper>로딩 중...</S.DetailPageWrapper>;
+  }
+
+  // 오류가 발생했을 때 표시
+  if (error) {
+    return <S.DetailPageWrapper>{error}</S.DetailPageWrapper>;
   }
 
   // 상품이 없을 때 표시
