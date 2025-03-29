@@ -35,7 +35,7 @@ public class Review {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Long rating;
 
     @Column
@@ -62,13 +62,13 @@ public class Review {
     ) {
         this.user = user;
         this.product = product;
-        this.rating = rating;
+        this.rating = null;
         this.title = title;
         this.message = message;
     }
 
     public void update(Long rating, String title, String message) {
-        this.rating = rating;
+        this.rating = null;
         this.title = title;
         this.message = message;
     }
