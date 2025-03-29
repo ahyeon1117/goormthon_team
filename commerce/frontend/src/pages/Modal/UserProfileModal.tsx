@@ -44,6 +44,10 @@ const CloseButton = styled.button`
   &:hover {
     background: #2E1E33;
   }
+  &:focus {
+    outline: none;
+  }
+
 `;
 
 const ActionButton = styled.button`
@@ -59,6 +63,10 @@ const ActionButton = styled.button`
   &:hover {
     background: #D95CFBFF;
   }
+  &:focus {
+    outline: none;
+  }
+
 `;
 
 const MemberInfoModal: React.FC<MemberInfoModalProps> = ({ showModal, onClose }) => {
@@ -88,7 +96,7 @@ const MemberInfoModal: React.FC<MemberInfoModalProps> = ({ showModal, onClose })
 
   // 회원정보 수정 페이지로 이동 함수
   const handleEditInfo = () => {
-    navigate('/edit-profile'); // '/edit-profile' 페이지로 이동 (라우팅 경로에 맞게 수정)
+    navigate('/edit'); // '/edit-profile' 페이지로 이동 (라우팅 경로에 맞게 수정)
     onClose(); // 모달 닫기
   };
 
