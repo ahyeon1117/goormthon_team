@@ -145,6 +145,10 @@ export const QuantityAndPriceContainer = styled.div`
     align-items: flex-start;
     gap: 15px;
   }
+
+  &:focus, &:focus-visible {
+    outline: none;
+  }
 `;
 
 export const QuantityControl = styled.div`
@@ -157,9 +161,18 @@ export const QuantityControl = styled.div`
     display: flex;
     align-items: center;
   }
+
+  &:focus,
+  &:focus-visible,
+  &:active {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
-export const QuantityButton = styled.button`
+export const QuantityButton = styled.button.attrs<{ tabIndex: number }>({
+  tabIndex: -1,  // number 타입으로 명시
+})`
   width: 30px;
   height: 30px;
   background: #f4f4f4;
@@ -173,6 +186,15 @@ export const QuantityButton = styled.button`
   &:hover {
     background: #e9e9e9;
   }
+
+  &:focus,
+  &:focus-visible,
+  &:active {
+    outline: none;
+    box-shadow: none;
+    border: 1px solid transparent; /* 포커스 시 테두리 제거 */
+  }
+  
 `;
 
 export const QuantityInput = styled.input`
@@ -189,6 +211,10 @@ export const QuantityInput = styled.input`
     margin: 0;
   }
   -moz-appearance: textfield;
+
+  &:focus, &:focus-visible {
+    outline: none;
+  }
 `;
 
 export const TotalPriceSection = styled.div`
@@ -196,17 +222,26 @@ export const TotalPriceSection = styled.div`
   align-items: center;
   gap: 15px;
   margin: 0px 20px;
+  
 `;
 
 export const TotalPriceLabel = styled.span`
   font-size: 16px;
   font-weight: bold;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const TotalPriceValue = styled.span`
   font-size: 24px;
   font-weight: bold;
   color: #E896FF;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const ButtonsSection = styled.div`
@@ -214,6 +249,10 @@ export const ButtonsSection = styled.div`
   gap: 10px;
   padding: 10px 0px;
   margin-bottom: 0px;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const WishlistButton = styled.button`
@@ -231,6 +270,10 @@ export const WishlistButton = styled.button`
   &:hover {
     background: #f9f9f9;
   }
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const FavoredHeartIcon = styled.svg.attrs({
@@ -244,6 +287,10 @@ export const FavoredHeartIcon = styled.svg.attrs({
     fill: #e896ff;
     stroke: #e896ff;
   }
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const UnfavoredHeartIcon = styled.svg.attrs({
@@ -255,6 +302,10 @@ export const UnfavoredHeartIcon = styled.svg.attrs({
 })`
   path {
     stroke: #CCCCCC;
+  }
+
+  &:focus {
+    outline: none;
   }
 `;
 
@@ -269,6 +320,10 @@ export const CartButton = styled.button`
 
   &:hover {
     background: #f9f9f9;
+  }
+  &:focus,
+  &:focus-visible {
+    outline: none; /* 기본 파란색 테두리 제거 */
   }
 `;
 
@@ -285,12 +340,19 @@ export const PurchaseButton = styled.button`
   &:hover {
     background: #d95cfb;
   }
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const TabsSection = styled.div`
   display: flex;
   border-bottom: 1px solid #ddd;
   margin-bottom: 30px;
+  
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const TabButton = styled.button<{ $active: boolean }>`
@@ -313,6 +375,7 @@ export const TabButton = styled.button<{ $active: boolean }>`
   &:focus {
     outline: none;
   }
+  
 `;
 
 export const TabContent = styled.div`
@@ -396,6 +459,10 @@ export const ReviewButton = styled.button`
 
   &:hover {
     background-color: #d95cfb;
+  }
+
+  &:focus, &:focus-visible {
+    outline: none;
   }
 `;
 

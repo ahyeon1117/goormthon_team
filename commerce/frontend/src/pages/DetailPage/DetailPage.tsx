@@ -63,6 +63,8 @@ const DetailPage = () => {
   const [activeTab, setActiveTab] = useState("info");
   const [loading, setLoading] = useState(true);
   const [isWishlist, setIsWishlist] = useState(false);
+  const [reviewText, setReviewText] = useState(""); // 리뷰 텍스트 상태
+  const [reviews, setReviews] = useState<string[]>([]); // 리뷰 목록 상태
 
   // 상품 정보 가져오기
   useEffect(() => {
@@ -121,6 +123,14 @@ const DetailPage = () => {
     setIsWishlist((prev) => !prev);
   };
 
+  // 리뷰 추가 함수
+  const handleAddReview = () => {
+    if (reviewText.trim()) {
+      setReviews((prevReviews) => [...prevReviews, reviewText]);
+      setReviewText(""); // 리뷰 작성 후 텍스트 초기화
+    }
+  };
+
   // 로딩 중일 때 표시
   if (loading) {
     return <S.DetailPageWrapper>로딩 중...</S.DetailPageWrapper>;
@@ -175,7 +185,7 @@ const DetailPage = () => {
                 서울특별시 종로구 이화동 123{" "}
                 <span
                   style={{
-                    color: "#e078ca",
+                    color: "#E896FF",
                     cursor: "pointer",
                     marginLeft: "10px",
                   }}
@@ -298,10 +308,33 @@ const DetailPage = () => {
         </S.TabContent>
       )}
 
+
       {activeTab === "review" && (
         <S.TabContent>
-          <h3>사용자 리뷰 ({product.reviewCount})</h3>
-          <p>아직 등록된 리뷰가 없습니다.</p>
+          <S.ReviewForm>
+            <S.ReviewTitle>리뷰 작성</S.ReviewTitle>
+            <S.ReviewInput
+              value={reviewText}
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                setReviewText(e.target.value)
+              }
+              placeholder="리뷰를 작성해주세요."
+            />
+            <S.ReviewButton onClick={handleAddReview}>리뷰 추가</S.ReviewButton>
+          </S.ReviewForm>
+
+          <S.ReviewList>
+            {reviews.length > 0 ? (
+              reviews.map((review, index) => (
+                <S.ReviewItem key={index}>
+                  <S.ReviewAuthor>작성자</S.ReviewAuthor>
+                  <S.ReviewText>{review}</S.ReviewText>
+                </S.ReviewItem>
+              ))
+            ) : (
+              <p>아직 등록된 리뷰가 없습니다.</p>
+            )}
+          </S.ReviewList>
         </S.TabContent>
       )}
 
