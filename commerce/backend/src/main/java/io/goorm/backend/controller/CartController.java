@@ -68,7 +68,7 @@ public class CartController {
     ) {
         return ResponseEntity.ok(
             ApiResponse.success(
-                cartService.deleteProductListFromCart(CartItemDto.listOf(requestMessage))
+                cartService.deleteProductListFromCart(requestMessage.toCartItemDtoList())
             )
         );
     }
