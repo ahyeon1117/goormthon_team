@@ -48,7 +48,7 @@ export const BookTypeTag = styled.span`
   padding: 4px 8px;
   border-radius: 1px;
   font-size: 12px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 `;
 
 export const ProductTitle = styled.h1`
@@ -62,21 +62,21 @@ export const ProductAuthor = styled.p`
   font-size: 16px;
   color: #333;
   margin-top: 10px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 `;
 
 export const ProductPublisher = styled.p`
   font-size: 14px;
   color: #666;
   margin-top: 10px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 `;
 
 export const ProductRating = styled.div`
   display: flex;
   align-items: center;
   margin-top: 10px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 
   .stars {
     color: #FFD700;
@@ -94,14 +94,14 @@ export const ProductRating = styled.div`
 `;
 
 export const PriceSection = styled.div`
-  margin-top: 0px;
+  margin-top: 0;
   margin-bottom: 20px;
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
 `;
 
 export const Price = styled.p`
-  margin: 20px 0px;
+  margin: 20px 0;
   font-size: 24px;
   font-weight: bold;
   color: #000;
@@ -114,7 +114,7 @@ export const ShippingInfoSection = styled.div`
 export const SectionTitle = styled.h3`
   font-size: 16px;
   font-weight: bold;
-  margin-top: 0px;
+  margin-top: 0;
   margin-bottom: 15px;
   color: #333;
 `;
@@ -155,7 +155,7 @@ export const QuantityControl = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
-  margin: 0px 20px;
+  margin: 0 20px;
 
   > div {
     display: flex;
@@ -184,7 +184,9 @@ export const QuantityButton = styled.button.attrs<{ tabIndex: number }>({
   font-size: 18px;
 
   &:hover {
-    background: #e9e9e9;
+    background: #D9D9D9;
+    border: 1px solid #D9D9D9;
+    
   }
 
   &:focus,
@@ -221,7 +223,7 @@ export const TotalPriceSection = styled.div`
   display: flex;
   align-items: center;
   gap: 15px;
-  margin: 0px 20px;
+  margin: 0 20px;
   
 `;
 
@@ -247,8 +249,8 @@ export const TotalPriceValue = styled.span`
 export const ButtonsSection = styled.div`
   display: flex;
   gap: 10px;
-  padding: 10px 0px;
-  margin-bottom: 0px;
+  padding: 10px 0;
+  margin-bottom: 0;
 
   &:focus {
     outline: none;
@@ -268,7 +270,8 @@ export const WishlistButton = styled.button`
   border-radius: 4px;
 
   &:hover {
-    background: #f9f9f9;
+    background: #D9D9D9;
+    border: 1px solid #D9D9D9;
   }
 
   &:focus {
@@ -319,7 +322,8 @@ export const CartButton = styled.button`
   border-radius: 4px;
 
   &:hover {
-    background: #f9f9f9;
+    background: #D9D9D9;
+    border: 1px solid #D9D9D9;
   }
   &:focus,
   &:focus-visible {
