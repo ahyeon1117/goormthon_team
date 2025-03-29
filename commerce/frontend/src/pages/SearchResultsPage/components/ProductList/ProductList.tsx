@@ -8,9 +8,10 @@ interface ProductListProps {
   onToggleFavorite: (bookId: string) => void;
   onToggleCheck: (bookId: string) => void;
   onProductClick?: (bookId: string) => void;
+  onAddToCart?: (bookId: string, isChecked: boolean) => void;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ books, onToggleFavorite, onToggleCheck, onProductClick }) => {
+const ProductList: React.FC<ProductListProps> = ({ books, onToggleFavorite, onToggleCheck, onProductClick, onAddToCart }) => {
   return (
     <ProductListContainer>
       {books.map(book => (
@@ -20,6 +21,7 @@ const ProductList: React.FC<ProductListProps> = ({ books, onToggleFavorite, onTo
           onToggleFavorite={onToggleFavorite}
           onToggleCheck={onToggleCheck}
           onProductClick={onProductClick}
+          onAddToCart={onAddToCart}
         />
       ))}
     </ProductListContainer>

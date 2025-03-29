@@ -8,6 +8,7 @@ import { PageContainer, ResultHeaderStyled, NoResultsStyled } from "./SearchResu
 import { BookItem, SortOption } from "../../types";
 import { getAllProducts, searchProducts } from "../../api/productApi";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useCart } from "../../hooks";
 
 // 정렬 옵션
 const sortOptions: SortOption[] = [
@@ -42,7 +43,8 @@ const SearchResultsPage: React.FC = () => {
   const searchKeyword = searchParams.get("keyword") || "";
   const navigate = useNavigate();
   const pageRef = useRef<HTMLDivElement>(null);
-
+  const [cartLoading, setCartLoading] = useState(false);
+  const { addToCart, fetchCartItems, cartItems } = useCart();
   const [totalResults, setTotalResults] = useState<number>(0);
   const [displayedBooks, setDisplayedBooks] = useState<BookItem[]>([]);
   const [withinSearchTerms, setWithinSearchTerms] = useState<string[]>([]);
@@ -325,12 +327,16 @@ const SearchResultsPage: React.FC = () => {
     const handleBeforeUnload = () => {
       // 페이지를 떠날 때 현재 스크롤 위치 저장
       if (pageRef.current) {
+        // 체크된 상품 ID 목록 생성
+        const checkedBookIds = books.filter(book => book.isChecked).map(book => book.id);
+
         sessionStorage.setItem('searchResultsScrollPosition', window.scrollY.toString());
         sessionStorage.setItem('searchResultsPageState', JSON.stringify({
           currentPage,
           selectedSort,
           itemsPerPage,
-          searchParams: location.search
+          searchParams: location.search,
+          checkedBookIds // 체크된 상품 ID 목록 저장
         }));
       }
     };
@@ -375,17 +381,62 @@ const SearchResultsPage: React.FC = () => {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [location.search, currentPage, selectedSort, itemsPerPage]);
+  }, [location.search, currentPage, selectedSort, itemsPerPage, books]);
+
+  // 체크박스 상태 복원 로직
+  useEffect(() => {
+    // 도서 데이터가 로드되고 로딩이 완료된 후에만 실행
+    if (!loading && books.length > 0) {
+      const savedState = sessionStorage.getItem('searchResultsPageState');
+
+      if (savedState) {
+        const parsedState = JSON.parse(savedState);
+
+        // URL 파라미터가 동일한 경우에만 체크박스 상태 복원
+        if (parsedState.searchParams === location.search && parsedState.checkedBookIds) {
+          console.log('체크박스 상태 복원:', parsedState.checkedBookIds);
+
+          // 체크된 상품 ID 목록이 있는 경우에만 업데이트 진행
+          if (parsedState.checkedBookIds.length > 0) {
+            // 체크박스 상태 복원
+            const updatedBooks = books.map(book => ({
+              ...book,
+              isChecked: parsedState.checkedBookIds.includes(book.id)
+            }));
+
+            setBooks(updatedBooks);
+
+            // 원본 도서 목록에도 체크 상태 적용
+            const updatedOriginalBooks = originalBooks.map(book => ({
+              ...book,
+              isChecked: parsedState.checkedBookIds.includes(book.id)
+            }));
+
+            setOriginalBooks(updatedOriginalBooks);
+
+            // 복원 완료 후 저장된 체크박스 상태 정보 제거하여 다시 실행되지 않도록 함
+            const newState = { ...parsedState };
+            delete newState.checkedBookIds;
+            sessionStorage.setItem('searchResultsPageState', JSON.stringify(newState));
+          }
+        }
+      }
+    }
+    // eslint-disable-next-line
+  }, [loading, books.length, originalBooks.length, location.search]);
 
   // 상품 클릭 시 현재 스크롤 위치 저장 핸들러
   const handleProductClick = (bookId: string) => {
     // 현재 스크롤 위치 저장
+    const checkedBookIds = books.filter(book => book.isChecked).map(book => book.id);
+
     sessionStorage.setItem('searchResultsScrollPosition', window.scrollY.toString());
     sessionStorage.setItem('searchResultsPageState', JSON.stringify({
       currentPage,
       selectedSort,
       itemsPerPage,
-      searchParams: location.search
+      searchParams: location.search,
+      checkedBookIds
     }));
 
     // 상세 페이지로 이동
@@ -398,12 +449,16 @@ const SearchResultsPage: React.FC = () => {
     // 페이지 상단으로 스크롤 (페이지 변경 시에는 맨 위로)
     window.scrollTo({ top: 0, behavior: "smooth" });
 
+    // 체크된 상품 ID 목록 생성
+    const checkedBookIds = books.filter(book => book.isChecked).map(book => book.id);
+
     // 페이지 변경 시 현재 상태 저장
     sessionStorage.setItem('searchResultsPageState', JSON.stringify({
       currentPage: pageNumber,
       selectedSort,
       itemsPerPage,
-      searchParams: location.search
+      searchParams: location.search,
+      checkedBookIds
     }));
   };
 
@@ -564,19 +619,45 @@ const SearchResultsPage: React.FC = () => {
   // --------------------------------------------------------------------
 
   const handleToggleFavorite = (bookId: string) => {
-    setBooks(
-      books.map((book) =>
-        book.id === bookId ? { ...book, isFavored: !book.isFavored } : book
-      )
+    // 모든 도서 목록에서 해당 도서의 찜 상태 업데이트
+    const updatedBooks = books.map((book) =>
+      book.id === bookId ? { ...book, isFavored: !book.isFavored } : book
     );
+    setBooks(updatedBooks);
+
+    // 원본 도서 목록에서도 상태 업데이트
+    const updatedOriginalBooks = originalBooks.map((book) =>
+      book.id === bookId ? { ...book, isFavored: !book.isFavored } : book
+    );
+    setOriginalBooks(updatedOriginalBooks);
   };
 
   const handleToggleCheck = (bookId: string) => {
-    setBooks(
-      books.map((book) =>
-        book.id === bookId ? { ...book, isChecked: !book.isChecked } : book
-      )
+    // 현재 표시되는 도서 목록에서 체크 상태 업데이트
+    const updatedDisplayedBooks = displayedBooks.map((book) =>
+      book.id === bookId ? { ...book, isChecked: !book.isChecked } : book
     );
+    setDisplayedBooks(updatedDisplayedBooks);
+
+    // 전체 도서 목록에서도 체크 상태 업데이트
+    const updatedBooks = books.map((book) =>
+      book.id === bookId ? { ...book, isChecked: !book.isChecked } : book
+    );
+    setBooks(updatedBooks);
+
+    // 원본 도서 목록에서도 체크 상태 업데이트
+    const updatedOriginalBooks = originalBooks.map((book) =>
+      book.id === bookId ? { ...book, isChecked: !book.isChecked } : book
+    );
+    setOriginalBooks(updatedOriginalBooks);
+
+    // 디버깅 로그 추가
+    console.log(`도서 ID ${bookId} 체크 상태 토글`);
+
+    // 체크된 상품 수 계산 및 콘솔 로그 출력
+    const checkedCount = updatedBooks.filter(book => book.isChecked).length;
+    console.log(`현재 체크된 상품 수: ${checkedCount}개 / 전체 ${books.length}개`);
+    console.log(`현재 화면에 표시된 상품 중 체크된 수: ${updatedDisplayedBooks.filter(book => book.isChecked).length}개 / ${displayedBooks.length}개`);
   };
 
   // 선택된 책들을 찜하기 목록에 추가하는 함수
@@ -592,25 +673,109 @@ const SearchResultsPage: React.FC = () => {
     // 여기에 찜하기 API 호출 로직 구현
     alert(`${selectedBooks.length}개의 상품을 찜하기 목록에 추가했습니다.`);
 
-    // 선택 상태 초기화
-    setBooks(books.map((book) => ({ ...book, isChecked: false })));
+    // 선택 상태 유지 (초기화 코드 제거)
   };
 
-  // 선택된 책들을 장바구니에 추가하는 함수
-  const handleAddSelectedToCart = () => {
-    const selectedBooks = books.filter((book) => book.isChecked);
+  // 상품 개별 또는 선택된 상품 장바구니 추가 핸들러 (ProductItem용)
+  const handleProductAddToCart = async (bookId: string, isChecked: boolean) => {
+    try {
+      setCartLoading(true);
 
-    if (selectedBooks.length === 0) {
-      alert("선택된 상품이 없습니다.");
-      return;
+      if (isChecked) {
+        // 체크된 상품이 있는 경우 모든 체크된 상품 장바구니에 추가 (상단 정렬바 로직과 동일하게 작동)
+        const checkedBooks = books.filter(book => book.isChecked);
+        console.log(`체크된 ${checkedBooks.length}개 상품을 장바구니에 추가합니다.`);
+
+        if (checkedBooks.length === 0) {
+          alert("선택된 상품이 없습니다.");
+          setCartLoading(false);
+          return;
+        }
+
+        // 체크된 상품 중 이미 장바구니에 있는 상품 필터링
+        const notInCartBooks = checkedBooks.filter(book => {
+          const isInCart = cartItems.some(item => {
+            const itemId = String(item.productId);
+            const productId = String(book.id);
+            return itemId === productId;
+          });
+          return !isInCart;
+        });
+
+        // 모든 상품이 이미 장바구니에 있는 경우
+        if (notInCartBooks.length === 0) {
+          alert("선택한 상품이 모두 이미 장바구니에 있습니다.");
+          setCartLoading(false);
+          return;
+        }
+
+        // 장바구니에 없는 상품만 추가
+        console.log(`${notInCartBooks.length}개 상품을 장바구니에 추가합니다.`);
+        const results = await Promise.all(
+          notInCartBooks.map(async (book) => {
+            const success = await addToCart(book.id);
+            return { id: book.id, success };
+          })
+        );
+
+        // 성공 및 실패 건수 계산
+        const successCount = results.filter(r => r.success).length;
+        const failCount = results.length - successCount;
+        const alreadyInCartCount = checkedBooks.length - notInCartBooks.length;
+
+        if (alreadyInCartCount > 0) {
+          if (failCount > 0) {
+            alert(`${successCount}개 상품이 장바구니에 담겼습니다. ${failCount}개 상품은 담기지 않았습니다. ${alreadyInCartCount}개 상품은 이미 장바구니에 있습니다.`);
+          } else {
+            alert(`${successCount}개 상품이 장바구니에 담겼습니다. ${alreadyInCartCount}개 상품은 이미 장바구니에 있습니다.`);
+          }
+        } else {
+          if (failCount > 0) {
+            alert(`${successCount}개 상품이 장바구니에 담겼습니다. ${failCount}개 상품은 담기지 않았습니다.`);
+          } else {
+            alert(`${successCount}개의 상품을 장바구니에 담았습니다.`);
+          }
+        }
+
+        // 체크박스 상태 유지 (초기화 코드 제거)
+      } else {
+        // 체크되지 않은 경우 클릭한 상품만 장바구니에 추가 (이미 있는지 확인)
+        console.log(`상품 ID(${bookId})를 장바구니에 추가합니다.`);
+
+        // 해당 상품이 이미 장바구니에 있는지 확인
+        const isAlreadyInCart = cartItems.some(item => {
+          const itemId = String(item.productId);
+          const productId = String(bookId);
+          return itemId === productId;
+        });
+
+        if (isAlreadyInCart) {
+          alert('이미 장바구니에 담긴 상품입니다.');
+        } else {
+          const success = await addToCart(bookId);
+
+          if (success) {
+            alert('상품이 장바구니에 담겼습니다.');
+          } else {
+            alert('장바구니 추가에 실패했습니다.');
+          }
+        }
+      }
+
+      // 장바구니 상태 갱신
+      await fetchCartItems();
+    } catch (error) {
+      console.error('장바구니 추가 중 오류 발생:', error);
+      alert('장바구니 추가 중 오류가 발생했습니다.');
+    } finally {
+      setCartLoading(false);
     }
+  };
 
-    console.log("장바구니에 추가할 책들:", selectedBooks);
-    // 여기에 장바구니 추가 API 호출 로직 구현
-    alert(`${selectedBooks.length}개의 상품을 장바구니에 담았습니다.`);
-
-    // 선택 상태 초기화
-    setBooks(books.map((book) => ({ ...book, isChecked: false })));
+  // 선택된 책들을 장바구니에 추가하는 함수 (SortingBar용)
+  const handleAddSelectedToCart = async () => {
+    // 체크 상태인 상품만을 장바구니에 추가하는 함수 호출 (가짜 bookId 전달)
+    await handleProductAddToCart('dummy', true);
   };
 
   return (
@@ -638,6 +803,7 @@ const SearchResultsPage: React.FC = () => {
               onItemsPerPageChange={handleItemsPerPageChange}
               onAddToWishlist={handleAddSelectedToWishlist}
               onAddToCart={handleAddSelectedToCart}
+              cartLoading={cartLoading}
             />
           </ResultHeaderStyled>
 
@@ -676,6 +842,7 @@ const SearchResultsPage: React.FC = () => {
                 onToggleFavorite={handleToggleFavorite}
                 onToggleCheck={handleToggleCheck}
                 onProductClick={handleProductClick}
+                onAddToCart={handleProductAddToCart}
               />
               <Pagination
                 currentPage={currentPage}

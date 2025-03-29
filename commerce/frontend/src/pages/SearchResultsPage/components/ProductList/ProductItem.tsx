@@ -24,21 +24,29 @@ interface ProductItemProps {
   onToggleFavorite: (bookId: string) => void;
   onToggleCheck?: (bookId: string) => void;
   onProductClick?: (bookId: string) => void;
+  onAddToCart?: (bookId: string, isChecked: boolean) => void;
 }
 
 const ProductItem: React.FC<ProductItemProps> = ({
   book,
   onToggleFavorite,
   onToggleCheck,
-  onProductClick
+  onProductClick,
+  onAddToCart
 }) => {
   const formatPrice = (price: number) => {
     return price.toLocaleString('ko-KR') + '원';
   };
 
-  const handleAddToCart = () => {
-    // 장바구니 추가 로직 구현
-    console.log('장바구니에 추가:', book.id);
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
+    if (onAddToCart) {
+      // 체크 상태를 전달하여 어떤 동작을 할지 결정
+      onAddToCart(book.id, book.isChecked || false);
+    } else {
+      // 기존 장바구니 추가 로직 (fallback)
+      console.log('장바구니에 추가:', book.id);
+    }
   };
 
   const handleBuyNow = () => {
@@ -46,7 +54,8 @@ const ProductItem: React.FC<ProductItemProps> = ({
     console.log('바로구매:', book.id);
   };
 
-  const handleCheckToggle = () => {
+  const handleCheckToggle = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
     if (onToggleCheck) {
       onToggleCheck(book.id);
     }
@@ -62,7 +71,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
   return (
     <ProductItemContainer>
       <CheckboxContainer onClick={handleCheckToggle}>
-        <Checkbox data-checked={book.isChecked} />
+        <Checkbox data-checked={book.isChecked || false} />
       </CheckboxContainer>
 
       <ProductImage>
@@ -92,7 +101,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
 
         <ButtonsContainer>
           <FavoriteButton
-            data-favored={book.isFavored}
+            data-favored={book.isFavored || false}
             onClick={() => onToggleFavorite(book.id)}
             aria-label="찜하기"
           >

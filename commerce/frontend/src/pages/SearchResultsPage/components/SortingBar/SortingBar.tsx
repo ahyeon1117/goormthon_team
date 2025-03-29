@@ -11,6 +11,7 @@ interface SortingBarProps {
   onItemsPerPageChange: (count: string) => void;
   onAddToWishlist?: () => void;
   onAddToCart?: () => void;
+  cartLoading?: boolean;
 }
 
 const SortingBar: React.FC<SortingBarProps> = ({
@@ -21,7 +22,8 @@ const SortingBar: React.FC<SortingBarProps> = ({
   selectedItemsPerPage,
   onItemsPerPageChange,
   onAddToWishlist,
-  onAddToCart
+  onAddToCart,
+  cartLoading = false
 }) => {
   return (
     <SortingBarStyled>
@@ -36,6 +38,8 @@ const SortingBar: React.FC<SortingBarProps> = ({
       <button
         className="product-cart-add-button"
         onClick={onAddToCart}
+        disabled={cartLoading}
+        style={{ opacity: cartLoading ? 0.7 : 1 }}
       >
         <CartIcon />
         장바구니 담기
