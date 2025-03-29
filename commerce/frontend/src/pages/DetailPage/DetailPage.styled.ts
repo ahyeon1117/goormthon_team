@@ -103,7 +103,7 @@ export const PriceSection = styled.div`
 `;
 
 export const Price = styled.p`
-  margin: 0px 0px;
+  margin: 0 0;
   font-size: 24px;
   font-weight: bold;
   color: #000;
@@ -112,7 +112,7 @@ export const Price = styled.p`
 export const ButtonsSection = styled.div`
   display: flex;
   gap: 10px;
-  padding: 10px 0px;
+  padding: 10px 0;
   padding-top: 25px;
   padding-bottom: 25px;
   border-top: 1px solid #eee;
@@ -291,23 +291,23 @@ export const ReviewForm = styled.div`
   margin-bottom: 30px;
 `;
 
-export const ReviewTitle = styled.h3`
+export const ReviewTitleA = styled.h3`
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 15px;
   color: #333;
 `;
 
-export const ReviewInput = styled.textarea`
+export const ReviewInput = styled.input<{ as?: "textarea" }>`
   width: 100%;
-  height: 120px;
   padding: 10px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-bottom: 10px;
-  resize: none;
   outline: none;
+  resize: ${(props) => (props.as === "textarea" ? "none" : "initial")};
+  height: ${(props) => (props.as === "textarea" ? "120px" : "auto")};
 
   &:focus {
     border-color: #9a9a9a;
@@ -339,16 +339,25 @@ export const ReviewList = styled.div`
 export const ReviewItem = styled.div`
   padding: 15px;
   border: 1px solid #f0f0f0;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  border-radius: 10px;
+  margin-bottom: 5px;
 `;
 
 export const ReviewAuthor = styled.p`
   font-weight: bold;
-  margin-bottom: 10px;
+  font-size: 20px;
+  margin-bottom: 5px;
+  color: #E896FF; /* 글씨 색깔 추가 */
 `;
 
 export const ReviewText = styled.p`
   font-size: 14px;
   color: #555;
+`;
+
+export const ReviewTitleB = styled.h4`
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
 `;

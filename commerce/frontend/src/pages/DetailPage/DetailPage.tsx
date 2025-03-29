@@ -1,25 +1,33 @@
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import * as S from "./DetailPage.styled";
 import { getProductById } from "../../api/productApi";
 import { BookItem } from "../../types";
 import { useCart } from "../../hooks";
 import { addWishItem, getWishItems, removeWishItem } from "../../api/wishApi";
+//리뷰
+import { useReviewStore } from "../../store/reviewStore";
+import { ReviewRequestDto, ReviewResponseDto } from '../../types/apiTypes.ts'; // 타입 import
+import { getCurrentUserInfo, UserInfoResponse} from '../../api/userApi'; // 필요한 API import
 
 // 상품 상세 페이지 컴포넌트
 const DetailPage = () => {
   const { id } = useParams<{ id: string }>();
+  console.log('현재 페이지의 productId:', id);
   const navigate = useNavigate();
   const [product, setProduct] = useState<BookItem | null>(null);
   const [activeTab, setActiveTab] = useState("info");
   const [loading, setLoading] = useState(true);
   const [isWishlist, setIsWishlist] = useState(false);
-  const [reviewText, setReviewText] = useState(""); // 리뷰 텍스트 상태
-  const [reviews, setReviews] = useState<string[]>([]); // 리뷰 목록 상태
   const [wishLoading, setWishLoading] = useState(false);
   const [isInCart, setIsInCart] = useState(false);
   const [cartLoading, setCartLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [reviewTitle, setReviewTitle] = useState(''); //리뷰
+  const [reviewText, setReviewText] = useState(''); //리뷰
+  const [userInfo, setUserInfo] = useState<UserInfoResponse | null>(null); // 유저 정보 상태 추가
+  // Zustand에서 상태와 함수 가져오기
+  const { reviews, createReview, fetchReviewsByProduct } = useReviewStore();
 
   // 장바구니 관련 훅 사용
   const {
@@ -238,14 +246,54 @@ const DetailPage = () => {
       setWishLoading(false);
     }
   };
+//=============================리뷰============================================================
+  // 사용자 정보 가져오기
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const data = await getCurrentUserInfo();  // 사용자 정보 가져오는 API 호출
+      setUserInfo(data);  // 사용자 정보를 상태에 저장
+    };
 
-  // 리뷰 추가 함수
-  const handleAddReview = () => {
-    if (reviewText.trim()) {
-      setReviews((prevReviews) => [...prevReviews, reviewText]);
-      setReviewText(""); // 리뷰 작성 후 텍스트 초기화
+    fetchUserInfo();
+  }, []);
+
+  // 제품의 리뷰를 API에서 가져오기
+  useEffect(() => {
+    if (id) {
+      fetchReviewsByProduct(Number(id)); // ✅ useReviewStore의 상태 관리 함수 사용
+    }
+  }, [fetchReviewsByProduct, id]);
+
+  const handleAddReview = async () => {
+    if (!reviewTitle || !reviewText) {
+      alert('제목과 내용을 모두 작성해주세요.');
+      return;
+    }
+
+    if (!userInfo) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    const newReview: ReviewRequestDto = {
+      userId: userInfo.userId,  // 로그인한 사용자 ID
+      productId: Number(id), // NaN 방지
+      title: reviewTitle,
+      message: reviewText,
+    };
+
+    try {
+      await createReview(newReview);  // 리뷰 생성 요청
+      setReviewTitle('');
+      setReviewText('');
+
+      // 🎯 리뷰 작성 후 리스트 최신화
+      fetchReviewsByProduct(Number(id));
+    } catch (error) {
+      console.error('리뷰 추가 실패:', error);
     }
   };
+
 
   // 로딩 중일 때 표시
   if (loading) {
@@ -329,7 +377,8 @@ const DetailPage = () => {
           $active={activeTab === "review"}
           onClick={() => handleTabChange("review")}
         >
-          리뷰 ({product.reviewCount})
+          리뷰
+          {/*({product.reviewCount})*/}
         </S.TabButton>
       </S.TabsSection>
 
@@ -376,23 +425,42 @@ const DetailPage = () => {
       {activeTab === "review" && (
         <S.TabContent>
           <S.ReviewForm>
-            <S.ReviewTitle>리뷰 작성</S.ReviewTitle>
+            <S.ReviewTitleA>리뷰 작성</S.ReviewTitleA>
+
+            {userInfo && (
+              <S.ReviewAuthor>{userInfo.userId}</S.ReviewAuthor>)}
+
+            {/* 제목 입력란 */}
             <S.ReviewInput
+              type="text"
+              value={reviewTitle}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setReviewTitle(e.target.value)
+              }
+              placeholder="리뷰 제목을 입력하세요."
+            />
+
+            {/* 내용 입력란 */}
+            <S.ReviewInput
+              as="textarea"
               value={reviewText}
               onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                 setReviewText(e.target.value)
               }
               placeholder="리뷰를 작성해주세요."
             />
+
             <S.ReviewButton onClick={handleAddReview}>리뷰 추가</S.ReviewButton>
           </S.ReviewForm>
 
+          {/* 리뷰 목록 */}
           <S.ReviewList>
             {reviews.length > 0 ? (
-              reviews.map((review, index) => (
+              reviews.map((review: ReviewResponseDto, index: number) => (
                 <S.ReviewItem key={index}>
-                  <S.ReviewAuthor>작성자</S.ReviewAuthor>
-                  <S.ReviewText>{review}</S.ReviewText>
+                  <S.ReviewAuthor>{review.userId}</S.ReviewAuthor>
+                  <S.ReviewTitleB>{review.title}</S.ReviewTitleB>
+                  <S.ReviewText>{review.message}</S.ReviewText>
                 </S.ReviewItem>
               ))
             ) : (
