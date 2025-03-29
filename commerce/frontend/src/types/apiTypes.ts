@@ -6,6 +6,11 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+//닉네임 수정
+export interface UpdateNicknameRequest {
+  nickname: string;
+}
+
 // 리뷰 응답 데이터 타입
 export interface ReviewResponseDto {
   id: number;

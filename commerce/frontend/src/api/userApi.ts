@@ -1,11 +1,13 @@
 import { apiRequest } from './client';
 import { useUserStore } from '../store/userStore';
 import { useAuthStore } from '../store/authStore';
-
+import { UpdateNicknameRequest } from '../types/apiTypes.ts';
 // 사용자 API 엔드포인트
 const USER_API = {
   CURRENT_USER: '/api/v1/users/me',
+  CHANGE_NICKNAME: '/api/v1/users/me/change'
 };
+
 
 // 사용자 권한 타입
 export enum Authority {
@@ -82,4 +84,11 @@ export const isLoggedIn = (): boolean => {
 export const logout = (): void => {
   const authStore = useAuthStore.getState();
   authStore.logout();
+};
+
+// 닉네임 변경
+export const updateNickname = async (nickname: string): Promise<UserInfoResponse> => {
+  const requestBody: UpdateNicknameRequest = { nickname };
+  const response = await apiRequest.put<UserInfoResponse>(USER_API.CHANGE_NICKNAME, requestBody);
+  return response.data.data;
 };
