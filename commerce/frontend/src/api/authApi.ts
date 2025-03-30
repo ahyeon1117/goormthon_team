@@ -1,21 +1,14 @@
 import { apiRequest } from './client';
 import { AxiosError } from 'axios';
 import { useAuthStore } from '../store/authStore';
+import { LoginResponse } from '../types/apiTypes';
 
 // 인증 API 엔드포인트
 const AUTH_API = {
   LOGIN: '/api/v1/auth/login',
-  SIGNUP: '/api/v1/auth/signup',
+  SIGNUP: '/api/v1/auth/join',
   LOGOUT: '/api/v1/auth/logout',
 };
-
-// 로그인 응답 타입
-interface LoginResponse {
-  token: string;
-  error?: string;
-  success: boolean;
-  message?: string;
-}
 
 /**
  * 로그인 함수
@@ -27,8 +20,8 @@ export const login = async (userId: string, password: string): Promise<LoginResp
       password
     });
 
-    // 토큰이 포함된 응답인 경우 (성공)
-    if (response.data.data) {
+    // 백엔드 API 응답 구조 처리 (ApiResponse<String> 형식)
+    if (response.data && response.data.data) {
       const token = response.data.data;
 
       // Zustand 스토어에 토큰과 사용자 ID 저장
@@ -53,7 +46,7 @@ export const login = async (userId: string, password: string): Promise<LoginResp
       return {
         token: '',
         success: false,
-        message: response.data.msg || "로그인 중 오류가 발생했습니다"
+        message: response.data.message || response.data.msg || "로그인 중 오류가 발생했습니다"
       };
     }
 

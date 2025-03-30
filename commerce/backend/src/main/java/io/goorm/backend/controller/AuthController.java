@@ -1,9 +1,9 @@
 package io.goorm.backend.controller;
 
 import io.goorm.backend.dto.res.ApiResponse;
+import io.goorm.backend.dto.res.UserResponseDto;
 import io.goorm.backend.dto.security.SignInDto;
 import io.goorm.backend.dto.security.SignUpDto;
-import io.goorm.backend.entity.User;
 import io.goorm.backend.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class AuthController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<ApiResponse<User>> signUp(
+    public ResponseEntity<ApiResponse<UserResponseDto>> signUp(
         @RequestBody SignUpDto signUpDto
     ) {
         return ResponseEntity.ok(

@@ -75,4 +75,19 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
+    // User Entity 대신 userId를 받아서 리뷰를 조회하는 메서드
+    public List<ReviewResponseDto> getReviewsByUserId(String userId) {
+        // userId로 User 엔티티 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        // 해당 유저의 리뷰 목록 조회
+        List<Review> reviews = reviewRepository.findByUser(user);
+
+        // 리뷰 엔티티를 DTO로 변환하여 반환
+        return reviews.stream()
+                .map(ReviewResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
 }

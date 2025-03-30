@@ -1,7 +1,8 @@
 package io.goorm.backend.service;
 
+import io.goorm.backend.dto.res.UserResponseDto;
 import io.goorm.backend.dto.security.JwtUserInfoDto;
-import io.goorm.backend.dto.security.UserInfo;
+import io.goorm.backend.dto.security.SignUpServiceDto;
 import io.goorm.backend.entity.User;
 import io.goorm.backend.repository.UserRepository;
 import java.util.NoSuchElementException;
@@ -40,17 +41,18 @@ public class AuthService {
     }
 
     @Transactional
-    public User signUp(UserInfo userInfo) {
-        String encryptedPassword = passwordEncoder.encode(
-            userInfo.getPassword()
-        );
-        User savedUser = userRepository.save(userInfo.toEntity(encryptedPassword));
+    public UserResponseDto signUp(SignUpServiceDto dto) {
+        String encryptedPassword = passwordEncoder.encode(dto.getPassword());
 
-        // 유저 생성 후 인벤토리도 함께 생성
+        // Entity 생성 및 저장
+        User savedUser = userRepository.save(dto.toEntity(encryptedPassword));
+
+        // 유저 생성 후 인벤토리 함께 생성
         inventoryService.createInventoryForUser(savedUser);
-        // 유저 생성 후 장바구니도 함께 생성
+        // 유저 생성 후 장바구니 함께 생성
         cartService.createCartForUser(savedUser);
 
-        return savedUser;
+        // Entity -> DTO 변환 후 반환
+        return UserResponseDto.fromEntity(savedUser);
     }
 }

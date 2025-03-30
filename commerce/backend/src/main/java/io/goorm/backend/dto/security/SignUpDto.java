@@ -2,6 +2,7 @@ package io.goorm.backend.dto.security;
 
 //import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 //import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import io.goorm.backend.entity.Authority;
 import lombok.Data;
 
 @Data
@@ -12,12 +13,12 @@ public class SignUpDto {
     private String password;
     private String nickname;
 
-    public UserInfo toService() {
-        return UserInfo.builder()
-            .userId(userId)
+    public SignUpServiceDto toService() {
+        return SignUpServiceDto.builder()
+            .id(userId)
             .password(password)
             .nickname(nickname)
-            .role("USER")
+            .role(Authority.USER)
             .build();
     }
 }

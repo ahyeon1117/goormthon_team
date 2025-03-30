@@ -4,23 +4,19 @@ import io.goorm.backend.dto.res.ApiResponse;
 import io.goorm.backend.dto.req.ReviewRequestDto;
 import io.goorm.backend.dto.res.ProductResponse;
 import io.goorm.backend.dto.res.ReviewResponseDto;
-import io.goorm.backend.entity.User;
 import io.goorm.backend.service.ReviewService;
-import io.goorm.backend.service.UserService;
 import io.goorm.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/reviews")
 @RequiredArgsConstructor
 
 public class ReviewController {
     private final ReviewService reviewService;
-    private final UserService userService;
     private final ProductService productService;
 
     // 리뷰 생성 API
@@ -33,9 +29,7 @@ public class ReviewController {
     // 특정 사용자의 리뷰 조회 API
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse<List<ReviewResponseDto>>> getReviewsByCurrentUser(@PathVariable String userId) {
-        User user = userService.getCurrentUser();
-        List<ReviewResponseDto> reviews = reviewService.getReviewsByUser(user)
-            .stream().map(ReviewResponseDto::new).collect(Collectors.toList());
+        List<ReviewResponseDto> reviews = reviewService.getReviewsByUserId(userId);
         return ResponseEntity.ok(ApiResponse.success(reviews));
     }
 

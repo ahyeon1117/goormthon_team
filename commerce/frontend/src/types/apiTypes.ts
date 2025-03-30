@@ -6,6 +6,14 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+// 로그인 응답 타입
+export interface LoginResponse {
+  token: string;
+  error?: string;
+  success: boolean;
+  message?: string;
+}
+
 //닉네임 수정
 export interface UpdateNicknameRequest {
   nickname: string;
