@@ -111,6 +111,11 @@ const CartPage: React.FC = () => {
 
   // 주문하기 버튼 클릭 핸들러
   const handleOrderClick = () => {
+    if(checkedItems.length === 0) {
+      alert('상품을 선택해주세요.');
+      return;
+    }
+    
     navigate('/order', {
       state: {
         items: cartBooks.filter(item => checkedItems.includes(item.id)),
@@ -150,6 +155,12 @@ const CartPage: React.FC = () => {
             onItemCheck={handleItemCheck}
             onDelete={handleDeleteItem}
           />
+          {cartBooks.length === 0 && (
+            <S.WarnWrapper>
+              <S.WarnIcon />
+              <div>장바구니에 담긴 상품이 없습니다.</div>
+            </S.WarnWrapper>
+          )}
         </S.CartItemsSection>
 
         {/* 2-2. 주문 정보 사이드바 컴포넌트 */}
