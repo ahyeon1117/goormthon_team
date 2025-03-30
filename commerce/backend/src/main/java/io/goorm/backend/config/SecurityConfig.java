@@ -63,7 +63,9 @@ public class SecurityConfig {
         OrRequestMatcher publicUrlMatcher = new OrRequestMatcher(
             new AntPathRequestMatcher("/waiting/**"),
             new AntPathRequestMatcher("/api/v1/auth/**"),
-            new AntPathRequestMatcher("/api/v1/products/**", "GET") // GET 메서드만 허용
+            new AntPathRequestMatcher("/api/v1/products/**", "GET"), // GET 메서드만 허용
+            new AntPathRequestMatcher("/swagger-ui/**"),
+            new AntPathRequestMatcher("/v3/api-docs/**")
         );
 
         http
@@ -78,6 +80,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/products/**")
                         .permitAll() // GET 메서드만 허용
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
+                        .permitAll() // Swagger UI 접근 허용
                         .anyRequest()
                         .authenticated() // 그 외 모든 요청 인증 처리
             )
