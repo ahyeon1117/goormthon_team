@@ -1,68 +1,144 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import styled from "styled-components";
-
-// Mock 데이터
-const mockBooks = [
-  {
-    id: 1,
-    title: "챗GPT 시대 살아남기",
-    author: "박종천",
-    coverImage: "https://via.placeholder.com/150x200",
-    purchaseDate: "2023-10-15",
-    category: "IT/컴퓨터"
-  },
-  {
-    id: 2,
-    title: "개짜판 : 스프링 프레임워크 첫걸음",
-    author: "커뮤니티 마이삭개 팀원 스파이크",
-    coverImage: "https://via.placeholder.com/150x200",
-    purchaseDate: "2023-11-20",
-    category: "IT/컴퓨터"
-  },
-  {
-    id: 3,
-    title: "인공지능과 함께하는 코딩",
-    author: "이진영",
-    coverImage: "https://via.placeholder.com/150x200",
-    purchaseDate: "2024-01-05",
-    category: "IT/컴퓨터"
-  },
-  {
-    id: 4,
-    title: "나는 일고 쓰고 번역한다",
-    author: "손용석",
-    coverImage: "https://via.placeholder.com/150x200",
-    purchaseDate: "2024-02-10",
-    category: "인문/에세이"
-  },
-  {
-    id: 5,
-    title: "사랑을 안다는 것",
-    author: "데이비드 브룩스, 이정서",
-    coverImage: "https://via.placeholder.com/150x200",
-    purchaseDate: "2024-03-01",
-    category: "인문/에세이"
-  }
-];
-
-// 카테고리 목록
-const categories = ["전체", "IT/컴퓨터", "인문/에세이", "소설", "경제/경영"];
+import { useLocation, useSearchParams } from "react-router-dom";
+import { formatAuthor } from "../../types/apiTypes";
+import { mockBooks } from "./components/mockData";
+import Pagination from "./components/Pagination/Pagination";
+import SortingBar from "./components/SortingBar/SortingBar";
+import {
+  MyBookContainer,
+  PageHeader,
+  PageTitle,
+  BookCount,
+  FilterContainer,
+  SearchBox,
+  BookList,
+  BookItem,
+  BookCoverWrapper,
+  BookCover,
+  BookInfo,
+  BookTitle,
+  BookAuthor,
+  PurchaseDate,
+  EmptyState,
+  PaginationContainer
+} from "./MyBookPage.styled";
 
 const MyBookPage: React.FC = () => {
   const location = useLocation();
-  const [selectedCategory, setSelectedCategory] = useState<string>("전체");
-  const [sortOption, setSortOption] = useState<string>("최근 구매순");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // URL에서 초기값 가져오기
+  const initialKeyword = searchParams.get("keyword") || "";
+  const initialSort = searchParams.get("sort") || "최근 구매순";
+  const initialItemsPerPage = Number(searchParams.get("perPage") || "10");
+  const initialPage = Number(searchParams.get("page") || "1");
+
+  const [sortOption, setSortOption] = useState<string>(initialSort);
+  const [searchKeyword, setSearchKeyword] = useState<string>(initialKeyword);
+  const [filteredBooks, setFilteredBooks] = useState(mockBooks);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(initialItemsPerPage);
+  const [currentPage, setCurrentPage] = useState<number>(initialPage);
+
+  // 정렬 옵션 정의
+  const sortOptions = [
+    { value: "최근 구매순", label: "최근 구매순" },
+    { value: "제목 가나다순", label: "제목 가나다순" },
+    { value: "저자 가나다순", label: "저자 가나다순" },
+  ];
+
+  // 페이지당 아이템 수 옵션 정의
+  const itemsPerPageOptions = [
+    { value: 10, label: "10개씩 보기" },
+    { value: 20, label: "20개씩 보기" },
+    { value: 40, label: "40개씩 보기" },
+  ];
 
   // 다른 페이지 -> 마이북 페이지로 이동 시 스크롤 처리
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  // 카테고리별 필터링
-  const filteredBooks = selectedCategory === "전체"
-    ? mockBooks
-    : mockBooks.filter(book => book.category === selectedCategory);
+  // URL 검색 파라미터가 변경되면 검색 및 정렬 적용
+  useEffect(() => {
+    const keyword = searchParams.get("keyword") || "";
+    const sort = searchParams.get("sort") || "최근 구매순";
+    const perPage = Number(searchParams.get("perPage") || "10");
+    const page = Number(searchParams.get("page") || "1");
+
+    setSearchKeyword(keyword);
+    setSortOption(sort);
+    setItemsPerPage(perPage);
+    setCurrentPage(page);
+
+    const filtered = filterBooksByKeyword(keyword);
+    setFilteredBooks(filtered);
+  }, [searchParams]);
+
+  // 검색어로 책 필터링
+  const filterBooksByKeyword = (keyword: string) => {
+    if (!keyword.trim()) {
+      return mockBooks;
+    }
+
+    const lowercasedKeyword = keyword.toLowerCase();
+    return mockBooks.filter(book =>
+      book.title.toLowerCase().includes(lowercasedKeyword) ||
+      formatAuthor(book.author).toLowerCase().includes(lowercasedKeyword) ||
+      book.publisher.toLowerCase().includes(lowercasedKeyword)
+    );
+  };
+
+  // 검색 처리
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // URL 파라미터 업데이트
+    const newParams = new URLSearchParams(searchParams);
+    if (searchKeyword) {
+      newParams.set("keyword", searchKeyword);
+    } else {
+      newParams.delete("keyword");
+    }
+    newParams.set("page", "1"); // 검색 시 첫 페이지로 이동
+
+    setSearchParams(newParams);
+  };
+
+  // 정렬 변경 처리
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSortOption = e.target.value;
+    setSortOption(newSortOption);
+
+    // URL 파라미터 업데이트
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("sort", newSortOption);
+    setSearchParams(newParams);
+  };
+
+  // 페이지당 아이템 수 변경 처리
+  const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newItemsPerPage = Number(e.target.value);
+    setItemsPerPage(newItemsPerPage);
+
+    // URL 파라미터 업데이트
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("perPage", newItemsPerPage.toString());
+    newParams.set("page", "1"); // 페이지당 아이템 수 변경 시 첫 페이지로 이동
+    setSearchParams(newParams);
+  };
+
+  // 페이지 변경 처리
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+
+    // URL 파라미터 업데이트
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("page", pageNumber.toString());
+    setSearchParams(newParams);
+
+    // 페이지 상단으로 스크롤
+    window.scrollTo(0, 0);
+  };
 
   // 정렬 함수
   const sortBooks = (books: typeof mockBooks) => {
@@ -70,209 +146,113 @@ const MyBookPage: React.FC = () => {
       return [...books].sort((a, b) =>
         new Date(b.purchaseDate).getTime() - new Date(a.purchaseDate).getTime()
       );
-    } else if (sortOption === "제목순") {
+    } else if (sortOption === "제목 가나다순") {
       return [...books].sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortOption === "저자 가나다순") {
+      return [...books].sort((a, b) =>
+        formatAuthor(a.author).localeCompare(formatAuthor(b.author))
+      );
     }
     return books;
   };
 
+  // 책 읽기 핸들러
+  const handleReadBook = (bookId: string) => {
+    // 여기에 책 읽기 로직 구현 (나중에 라우팅 또는 API 호출 등으로 대체)
+    console.log(`책 읽기: ${bookId}`);
+  };
+
+  // 페이지네이션 계산
   const sortedBooks = sortBooks(filteredBooks);
+  const totalItems = sortedBooks.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  // 현재 페이지에 표시할 책 목록
+  const currentBooks = sortedBooks.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <MyBookContainer>
       <PageHeader>
         <PageTitle>내 서재</PageTitle>
         <BookCount>총 {filteredBooks.length}권의 책</BookCount>
+
+        <FilterContainer>
+          <SearchBox onSubmit={handleSearch}>
+            <input
+              type="text"
+              className="search-keyword-input"
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              placeholder="내 서재 검색"
+            />
+            <button type="submit" className="search-submit-button">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z"
+                  fill="#555"
+                  stroke="#555"
+                  strokeWidth="0.5"
+                />
+              </svg>
+            </button>
+          </SearchBox>
+          <SortingBar
+            sortOptions={sortOptions}
+            selectedSort={sortOption}
+            onSortChange={handleSortChange}
+            itemsPerPageOptions={itemsPerPageOptions}
+            selectedItemsPerPage={itemsPerPage}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
+        </FilterContainer>
       </PageHeader>
 
-      <FilterContainer>
-        <CategoryButtons>
-          {categories.map(category => (
-            <CategoryButton
-              key={category}
-              isSelected={selectedCategory === category}
-              onClick={() => setSelectedCategory(category)}
-            >
-              {category}
-            </CategoryButton>
-          ))}
-        </CategoryButtons>
+      {currentBooks.length > 0 ? (
+        <>
+          <BookList>
+            {currentBooks.map((book) => (
+              <BookItem key={book.id}>
+                <BookCoverWrapper
+                  onClick={() => handleReadBook(book.id)}
+                >
+                  <BookCover src={book.imageUrl} alt={book.title} />
+                </BookCoverWrapper>
+                <BookInfo>
+                  <BookTitle>{book.title}</BookTitle>
+                  <BookAuthor>{formatAuthor(book.author)}</BookAuthor>
+                  <PurchaseDate>구매일: {book.purchaseDate}</PurchaseDate>
+                </BookInfo>
+              </BookItem>
+            ))}
+          </BookList>
 
-        <SortSelect
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-        >
-          <option value="최근 구매순">최근 구매순</option>
-          <option value="제목순">제목순</option>
-        </SortSelect>
-      </FilterContainer>
-
-      {sortedBooks.length > 0 ? (
-        <BookList>
-          {sortedBooks.map((book) => (
-            <BookItem key={book.id}>
-              <BookCover src={book.coverImage} alt={book.title} />
-              <BookInfo>
-                <CategoryTag>{book.category}</CategoryTag>
-                <BookTitle>{book.title}</BookTitle>
-                <BookAuthor>{book.author}</BookAuthor>
-                <PurchaseDate>구매일: {book.purchaseDate}</PurchaseDate>
-                <ReadButton>읽기</ReadButton>
-              </BookInfo>
-            </BookItem>
-          ))}
-        </BookList>
+          {totalPages > 1 && (
+            <PaginationContainer>
+              <Pagination
+                currentPage={currentPage}
+                totalItems={totalItems}
+                itemsPerPage={itemsPerPage}
+                onPageChange={handlePageChange}
+              />
+            </PaginationContainer>
+          )}
+        </>
       ) : (
         <EmptyState>
-          선택한 카테고리에 책이 없습니다.
+          책이 없습니다.
         </EmptyState>
       )}
     </MyBookContainer>
   );
 };
-
-// 스타일 컴포넌트
-const MyBookContainer = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-`;
-
-const PageHeader = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 30px;
-`;
-
-const PageTitle = styled.h1`
-  font-size: 28px;
-  font-weight: bold;
-  margin-bottom: 10px;
-`;
-
-const BookCount = styled.p`
-  font-size: 16px;
-  color: #666;
-`;
-
-const FilterContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-`;
-
-const CategoryButtons = styled.div`
-  display: flex;
-  gap: 10px;
-`;
-
-const CategoryButton = styled.button<{ isSelected: boolean }>`
-  padding: 8px 16px;
-  border-radius: 20px;
-  border: 1px solid ${props => props.isSelected ? '#4a90e2' : '#ddd'};
-  background-color: ${props => props.isSelected ? '#4a90e2' : 'white'};
-  color: ${props => props.isSelected ? 'white' : '#333'};
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: ${props => props.isSelected ? '#4a90e2' : '#f5f5f5'};
-  }
-`;
-
-const SortSelect = styled.select`
-  padding: 8px 12px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  font-size: 14px;
-  cursor: pointer;
-`;
-
-const BookList = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 25px;
-  list-style: none;
-  padding: 0;
-`;
-
-const BookItem = styled.li`
-  border: 1px solid #eaeaea;
-  border-radius: 8px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  }
-`;
-
-const BookCover = styled.img`
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
-`;
-
-const BookInfo = styled.div`
-  padding: 15px;
-  position: relative;
-`;
-
-const CategoryTag = styled.span`
-  position: absolute;
-  top: -12px;
-  left: 15px;
-  background-color: #f8f8f8;
-  border: 1px solid #eaeaea;
-  border-radius: 15px;
-  padding: 3px 10px;
-  font-size: 12px;
-  color: #666;
-`;
-
-const BookTitle = styled.h3`
-  font-size: 16px;
-  margin: 10px 0 8px 0;
-  font-weight: bold;
-`;
-
-const BookAuthor = styled.p`
-  font-size: 14px;
-  color: #666;
-  margin: 0 0 8px 0;
-`;
-
-const PurchaseDate = styled.p`
-  font-size: 12px;
-  color: #999;
-  margin: 0 0 15px 0;
-`;
-
-const ReadButton = styled.button`
-  width: 100%;
-  padding: 8px 0;
-  background-color: #4a90e2;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: #3a80d2;
-  }
-`;
-
-const EmptyState = styled.div`
-  text-align: center;
-  padding: 50px 0;
-  color: #999;
-  font-size: 16px;
-`;
 
 export default MyBookPage;
