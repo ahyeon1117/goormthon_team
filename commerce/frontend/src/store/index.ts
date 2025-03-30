@@ -9,9 +9,3 @@ export {
   useCartStore,
   getCartItemsAsBooks
 } from './cartStore';
-
-// 인벤토리 스토어
-export {
-  useInventoryStore,
-  getInventoryItemsAsBooks
-} from './inventoryStore';

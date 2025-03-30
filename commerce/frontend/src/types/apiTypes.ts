@@ -120,20 +120,6 @@ export interface CartActionResponse {
   result: string;
 }
 
-// 인벤토리 아이템 인터페이스
-export interface InventoryItemDto {
-  id: number;
-  productId: number;
-  productTitle: string;
-  lastAccessed: string;
-}
-
-// 인벤토리 조회 응답 인터페이스
-export interface InventoryItemsResponse {
-  inventoryItems: InventoryItemDto[];
-  totalCount: number;
-}
-
 /**
  * 저자 이름 구분자 변경 함수
  * 백엔드에서 공동저자를 '^' 구분자로 전달받아 ', '로 변경합니다.
@@ -178,30 +164,6 @@ export const mapCartItemToBookItem = (cartItem: CartItemDto): import('./index').
     reviewCount: 0,   // 기본값
     isFavored: false,
     isChecked: true,  // 장바구니에 추가된 상품은 기본적으로 체크됨
-  };
-};
-
-/**
- * 인벤토리 아이템을 프론트엔드 BookItem 형식으로 변환하는 유틸리티 함수
- * 참고: 인벤토리 아이템에는 제한된 정보만 있으므로, 나머지는 기본값 설정
- */
-export const mapInventoryItemToBookItem = (
-  inventoryItem: InventoryItemDto,
-  productDetails?: Partial<ProductResponse>
-): import('./index').BookItem => {
-  // 상품 상세 정보가 제공된 경우 해당 정보 사용, 아니면 기본값 사용
-  return {
-    id: inventoryItem.productId.toString(),
-    title: inventoryItem.productTitle,
-    imageUrl: productDetails?.image || '/placeholder.jpg', // 기본 이미지 경로 제공
-    author: productDetails?.author ? formatAuthor(productDetails.author) : '',
-    publisher: productDetails?.publisher || '',
-    publishDate: productDetails?.pubdate || '',
-    price: productDetails?.discount || 0,
-    rating: 0,  // 기본값
-    reviewCount: 0,  // 기본값
-    isFavored: false,
-    isChecked: false,
   };
 };
 
