@@ -5,6 +5,7 @@ import { getProductById } from "../../api/productApi";
 import { BookItem } from "../../types";
 import { useCart } from "../../hooks";
 import { addWishItem, getWishItems, removeWishItem } from "../../api/wishApi";
+import { getCurrentUserOrderItems } from "../../api/orderApi"; // 주문 API import 추가
 //리뷰
 import { useReviewStore } from "../../store/reviewStore";
 import { ReviewRequestDto, ReviewResponseDto } from '../../types/apiTypes.ts'; // 타입 import
@@ -26,6 +27,7 @@ const DetailPage = () => {
   const [reviewTitle, setReviewTitle] = useState(''); //리뷰
   const [reviewText, setReviewText] = useState(''); //리뷰
   const [userInfo, setUserInfo] = useState<UserInfoResponse | null>(null); // 유저 정보 상태 추가
+  const [isPurchased, setIsPurchased] = useState(false); // 상품 구매 여부 상태 추가
   // Zustand에서 상태와 함수 가져오기
   const { reviews, createReview, fetchReviewsByProduct } = useReviewStore();
 
@@ -111,6 +113,34 @@ const DetailPage = () => {
     checkCartStatus();
   }, [product, cartItems]);
 
+  // 이미 구매한 상품인지 확인
+  useEffect(() => {
+    const checkPurchaseStatus = async () => {
+      if (!product) return;
+
+      try {
+        console.log('구매 상태 확인 중...');
+        const orderItems = await getCurrentUserOrderItems();
+        console.log('사용자 주문 상품 목록:', orderItems);
+
+        // 현재 상품이 주문 목록에 있는지 확인
+        const purchased = orderItems.some(item => {
+          const itemId = String(item.id);
+          const productId = String(product.id);
+          console.log(`비교: 주문 상품 ID(${itemId}) vs 현재 상품 ID(${productId}), 일치: ${itemId === productId}`);
+          return itemId === productId;
+        });
+
+        console.log(`상품 ID(${product.id})는 ${purchased ? '이미 구매한 상품입니다' : '아직 구매하지 않은 상품입니다'}`);
+        setIsPurchased(purchased);
+      } catch (error) {
+        console.error('구매 상태 확인 중 오류 발생:', error);
+      }
+    };
+
+    checkPurchaseStatus();
+  }, [product]);
+
   // 장바구니 토글 함수
   const toggleCart = async () => {
     if (!product) return;
@@ -169,6 +199,12 @@ const DetailPage = () => {
         isDirectPurchase: true
       }
     });
+  };
+
+  // 내 서재로 이동 함수
+  const goToMyLibrary = () => {
+    console.log('내 서재로 이동');
+    navigate('/mybook');
   };
 
   // 찜하기 목록 확인
@@ -361,7 +397,13 @@ const DetailPage = () => {
             >
               {cartLoading ? '처리 중...' : (isInCart ? '장바구니 빼기' : '장바구니 담기')}
             </S.CartButton>
-            <S.PurchaseButton onClick={handlePurchase}>바로구매</S.PurchaseButton>
+            {isPurchased ? (
+              <S.PurchaseButton onClick={goToMyLibrary}>
+                내 서재
+              </S.PurchaseButton>
+            ) : (
+              <S.PurchaseButton onClick={handlePurchase}>바로구매</S.PurchaseButton>
+            )}
           </S.ButtonsSection>
         </S.ProductDetails>
       </S.DetailContainer>

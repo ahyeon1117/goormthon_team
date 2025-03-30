@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../../hooks";
 import { addWishItem, getWishItems, removeWishItem } from "../../api/wishApi";
 import { WishItemResponse, WishResult } from "../../types/apiTypes";
+import { getCurrentUserOrderItems } from "../../api/orderApi";
 
 // 정렬 옵션
 const sortOptions: SortOption[] = [
@@ -954,9 +955,13 @@ const SearchResultsPage: React.FC = () => {
   }, [loading, books.length, updateWishStatusInBooks]);
 
   // 바로구매 처리 함수 (ProductItem용)
-  const handleProductPurchase = (bookId: string, isChecked: boolean) => {
+  const handleProductPurchase = async (bookId: string, isChecked: boolean) => {
     try {
       console.log(`바로구매 요청: 상품 ID(${bookId}), 체크 상태(${isChecked})`);
+
+      // 사용자의 기존 구매 상품 목록 조회
+      const userOrderItems = await getCurrentUserOrderItems();
+      console.log('사용자 구매 상품 목록:', userOrderItems);
 
       // 체크된 상품이 있는 경우
       if (isChecked) {
@@ -969,8 +974,36 @@ const SearchResultsPage: React.FC = () => {
 
         console.log(`체크된 ${checkedBooks.length}개 상품 바로구매 진행`);
 
-        // 주문 정보 생성
-        const orderItems = checkedBooks.map(book => ({
+        // 이미 구매한 상품 필터링
+        const alreadyPurchasedBooks = checkedBooks.filter(book =>
+          userOrderItems.some(item => String(item.id) === String(book.id))
+        );
+
+        // 새로 구매할 상품 필터링
+        const newBooks = checkedBooks.filter(book =>
+          !userOrderItems.some(item => String(item.id) === String(book.id))
+        );
+
+        // 모든 상품이 이미 구매한 경우
+        if (alreadyPurchasedBooks.length === checkedBooks.length) {
+          alert('선택하신 모든 상품은 이미 구매하신 상품입니다.');
+          return;
+        }
+
+        // 일부 상품만 이미 구매한 경우
+        if (alreadyPurchasedBooks.length > 0 && newBooks.length > 0) {
+          const confirmPurchase = window.confirm(
+            `선택하신 ${checkedBooks.length}개 상품 중 ${alreadyPurchasedBooks.length}개는 이미 구매하신 상품입니다.\n` +
+            `나머지 ${newBooks.length}개 상품만 구매하시겠습니까?`
+          );
+
+          if (!confirmPurchase) {
+            return;
+          }
+        }
+
+        // 주문 정보 생성 (이미 구매한 상품 제외)
+        const orderItems = newBooks.map(book => ({
           productId: Number(book.id),
           title: book.title,
           discount: book.price,
@@ -997,6 +1030,16 @@ const SearchResultsPage: React.FC = () => {
         }
 
         console.log(`상품 ID(${bookId}) 단일 상품 바로구매 진행`);
+
+        // 해당 상품이 이미 구매한 상품인지 확인
+        const isAlreadyPurchased = userOrderItems.some(item =>
+          String(item.id) === String(bookId)
+        );
+
+        if (isAlreadyPurchased) {
+          alert('이미 구매하신 상품입니다.');
+          return;
+        }
 
         // 주문 정보 생성
         const orderItem = {
