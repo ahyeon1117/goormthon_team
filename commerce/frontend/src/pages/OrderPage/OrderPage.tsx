@@ -3,69 +3,19 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import OrderSteps from './components/Common/OrderSteps/OrderSteps';
 import OrderItemList from './components/OrderItemList/OrderItemList';
 import * as S from './OrderPage.styled';
-
-interface OrderItemType {
-    orderId: number;
-    productId: number;
-    title: string;
-    imageUrl: string;
-    price: number;
-}
-
-// 임시 데이터
-const orderItemsData: OrderItemType[] = [
-    {
-        orderId: 1,
-        productId: 1,
-        title: "반항하는 인간1 반항하는 인간1 반항하는 인간1 반항하는 인간1 반항하는 인간1 반항하는 인간1",
-        imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-        price: 10000,
-    },
-    {
-        orderId: 2,
-        productId: 2,
-        title: "반항하는 인간2",
-        imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-        price: 10000,
-    },
-    {
-        orderId: 3,
-        productId: 3,
-        title: "반항하는 인간3",
-        imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-        price: 20000,
-    },
-    {
-        orderId: 4,
-        productId: 4,
-        title: "반항하는 인간4",
-        imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-        price: 20000,
-    },
-    {
-        orderId: 5,
-        productId: 5,
-        title: "반항하는 인간5",
-        imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-        price: 30000,
-    },
-    {
-        orderId: 6,
-        productId: 6,
-        title: "반항하는 인간6",
-        imageUrl: "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937463839.jpg",
-        price: 30000,
-    },
-]
+import { useCart } from '../../hooks';
+import { createCartOrder } from '../../api/orderApi';
 
 const OrderPage: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const [isSidebarFixed, setIsSidebarFixed] = useState(false); // 사이드바 고정 여부
-    const [orderItems, setOrderItems] = useState<OrderItemType[]>([]);
-    const [isItemOpen, setIsItemOpen] = useState(true); // 주문상품 섹션 펼치기 여부
-    const [isPaymentOpen, setIsPaymentOpen] = useState(true); // 결제수단 섹션 펼치기 여부ㅓ
-    const [paymentMethod, setPaymentMethod] = useState('rocket_pay'); // 결제수단
+    const [isSidebarFixed, setIsSidebarFixed] = useState<boolean>(false); // 사이드바 고정 여부
+    const [isItemOpen, setIsItemOpen] = useState<boolean>(true); // 주문상품 섹션 펼치기 여부
+    const [isPaymentOpen, setIsPaymentOpen] = useState<boolean>(true); // 결제수단 섹션 펼치기 여부
+    const [paymentMethod, setPaymentMethod] = useState<string>('rocketPay'); // 결제수단
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    // const [error, setError] = useState<string | null>(null);
+    const { books: cartBooks, totalCount, calculateTotalPrice } = useCart();
 
     // 다른 페이지 -> 주문 페이지로 이동 시 스크롤 처리
     useEffect(() => {
@@ -73,9 +23,6 @@ const OrderPage: React.FC = () => {
     }, [location.pathname]);
 
     useEffect(() => {
-        // 주문 데이터 초기화
-        setOrderItems(orderItemsData);
-
         // 사이드바 고정 핸들러
         const handleScroll = () => {
             setIsSidebarFixed(window.scrollY > 170);
@@ -97,13 +44,28 @@ const OrderPage: React.FC = () => {
     }
 
     // 결제하기 버튼 클릭 핸들러
-    const handlePaymentClick = () => {
-        // navigate('/payment');
+    const handlePaymentClick = async () => {
+        try {
+            setIsLoading(true);
+            // setError(null);
+            // 장바구니 상품 주문 API 호출
+            const response = await createCartOrder(paymentMethod);
+
+            if (response) {
+                console.log('장바구니 상품 주문 성공:', response);
+                alert('주문이 완료되었습니다!');
+                navigate('/'); // 임시
+                // navigate(`/payment/${response.id}`);
+            }
+        } catch (error) {
+            console.error('주문 처리 중 오류 발생:', error);
+            // setError('주문 처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     // 서버에서 가져온 가격
-    const totalPrice = 120000;
-
     return (
         <S.OrderPageContainer>
             {/* 헤더 */}
@@ -121,7 +83,7 @@ const OrderPage: React.FC = () => {
                         <S.ItemHeader>
                             <div>
                                 <span>주문상품</span>
-                                <span>{orderItems.length}</span>
+                                <span>{totalCount}</span>
                                 <span>개</span>
                             </div>
                             <div onClick={() => handleToggleOpen('item')}>
@@ -130,7 +92,7 @@ const OrderPage: React.FC = () => {
                         </S.ItemHeader>
 
                         {/* 주문 상품 리스트 */}
-                        {isItemOpen && <OrderItemList orderItems={orderItems} />}
+                        {isItemOpen && <OrderItemList orderItems={cartBooks} />}
                     </S.ItemSection>
 
                     {/* 결제수단 섹션 */}
@@ -144,26 +106,26 @@ const OrderPage: React.FC = () => {
                         {isPaymentOpen && (
                             <S.PaymentMethods>
                                 <S.PaymentMethod
-                                    selected={paymentMethod === 'rocket_pay'}
-                                    onClick={() => setPaymentMethod('rocket_pay')}
+                                    selected={paymentMethod === 'rocketPay'}
+                                    onClick={() => setPaymentMethod('rocketPay')}
                                 >
                                     로켓페이
                                 </S.PaymentMethod>
                                 <S.PaymentMethod
-                                    selected={paymentMethod === 'credit_card'}
-                                    onClick={() => setPaymentMethod('credit_card')}
+                                    selected={paymentMethod === 'creditCard'}
+                                    onClick={() => setPaymentMethod('creditCard')}
                                 >
                                     신용카드
                                 </S.PaymentMethod>
                                 <S.PaymentMethod
-                                    selected={paymentMethod === 'bank_transfer'}
-                                    onClick={() => setPaymentMethod('bank_transfer')}
+                                    selected={paymentMethod === 'bankTransfer'}
+                                    onClick={() => setPaymentMethod('bankTransfer')}
                                 >
                                     무통장입금
                                 </S.PaymentMethod>
                                 <S.PaymentMethod
-                                    selected={paymentMethod === 'account_transfer'}
-                                    onClick={() => setPaymentMethod('account_transfer')}
+                                    selected={paymentMethod === 'accountTransfer'}
+                                    onClick={() => setPaymentMethod('accountTransfer')}
                                 >
                                     계좌이체
                                 </S.PaymentMethod>
@@ -182,7 +144,7 @@ const OrderPage: React.FC = () => {
                         <S.OrderSummaryInfo>
                             <S.SummaryRow>
                                 <span>상품금액</span>
-                                <span>{totalPrice.toLocaleString()} 원</span>
+                                <span>{calculateTotalPrice().toLocaleString()} 원</span>
                             </S.SummaryRow>
                             <S.SummaryRow>
                                 <span>할인금액</span>
@@ -193,11 +155,16 @@ const OrderPage: React.FC = () => {
                         {/* 총 주문 금액 */}
                         <S.TotalPrice>
                             <span>총 주문 금액</span>
-                            <span>{totalPrice.toLocaleString()} 원</span>
+                            <span>{calculateTotalPrice().toLocaleString()} 원</span>
                         </S.TotalPrice>
 
                         {/* 주문하기 버튼 */}
-                        <S.OrderButton onClick={handlePaymentClick}>결제하기</S.OrderButton>
+                        <S.OrderButton
+                            onClick={handlePaymentClick}
+                            disabled={isLoading || totalCount === 0}
+                        >
+                            {isLoading ? '처리 중...' : '결제하기'}
+                        </S.OrderButton>
                     </S.OrderSummarySection>
                 </S.OrderSidebar>
 

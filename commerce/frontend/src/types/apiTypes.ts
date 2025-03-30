@@ -201,3 +201,19 @@ export const mapProductResToBestNewBook = (product: ProductResponse, index: numb
     publisher: product.publisher
   };
 };
+
+// 주문 응답 인터페이스
+export interface OrderResponse {
+  id: number;
+  orderStatus: string;
+  totalPrice: number;
+  paymentMethod: string;
+  createdAt: string;
+  orderItems: OrderItemDto[];
+}
+
+// 주문 아이템 인터페이스
+export interface OrderItemDto {
+  id: number;
+  productId: number;
+}

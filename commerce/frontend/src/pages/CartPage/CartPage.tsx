@@ -8,9 +8,9 @@ import { useAuth, useCart } from '../../hooks';
 const CartPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [isSidebarFixed, setIsSidebarFixed] = useState(false); // 사이드바 고정 여부
+  const [isSidebarFixed, setIsSidebarFixed] = useState<boolean>(false); // 사이드바 고정 여부
   const [checkedItems, setCheckedItems] = useState<string[]>([]); // 체크된 아이템의 carId 저장
-  const [isFirstLoad, setIsFirstLoad] = useState(true); // 첫 렌더링 여부 (상품이 삭제된 후에도 체크상태 유지를 위해 필요)
+  const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true); // 첫 렌더링 여부 (상품이 삭제된 후에도 체크상태 유지를 위해 필요)
   const { isAuthenticated } = useAuth();
   const {
     books: cartBooks,
@@ -20,6 +20,7 @@ const CartPage: React.FC = () => {
     removeFromCart,
     removeMultipleFromCart
   } = useCart();
+  
   // 전체 아이템 개수와 선택된 아이템 개수가 같을 때만 전체선택 체크
   const isAllChecked = checkedItems.length > 0 && checkedItems.length === cartBooks.length;
 

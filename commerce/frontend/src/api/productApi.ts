@@ -88,7 +88,7 @@ export const getNewProducts = async (): Promise<BestNewBook[]> => {
       );
     }
 
-    console.error('신상품 목록 조회 중 오류 발생 :', response.data.msg);
+    console.warn('신상품 목록을 가져오는 데 실패했습니다.');
     return [];
 
   } catch (error) {

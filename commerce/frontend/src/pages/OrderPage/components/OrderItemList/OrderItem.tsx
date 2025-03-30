@@ -1,15 +1,16 @@
+import { BookItem } from '../../../../types';
 import * as S from './OrderItemList.styled';
 
-interface OrderItemType {
-    orderId: number;
-    productId: number;
-    title: string;
-    imageUrl: string;
-    price: number;
-}
+// interface OrderItemType {
+//     orderId: number;
+//     productId: number;
+//     title: string;
+//     imageUrl: string;
+//     price: number;
+// }
 
 interface Props {
-    orderItem: OrderItemType;
+    orderItem: BookItem;
 }
 
 const OrderItem: React.FC<Props> = ({ orderItem }) => {
