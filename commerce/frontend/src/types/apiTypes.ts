@@ -19,6 +19,16 @@ export interface UpdateNicknameRequest {
   nickname: string;
 }
 
+// 구매 도서 인터페이스 정의
+export interface MyBook {
+  id: string;
+  title: string;
+  author: string;
+  imageUrl: string;
+  publisher: string;
+  purchaseDate: string;
+}
+
 // 리뷰 응답 데이터 타입
 export interface ReviewResponseDto {
   id: number;

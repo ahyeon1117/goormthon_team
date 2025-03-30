@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
-import { formatAuthor } from "../../types/apiTypes";
-import { mockBooks } from "./components/mockData";
+import { formatAuthor, ProductResponse, MyBook } from "../../types/apiTypes";
+import { getCurrentUserOrderItems } from "../../api/orderApi";
 import Pagination from "./components/Pagination/Pagination";
 import SortingBar from "./components/SortingBar/SortingBar";
 import {
@@ -35,9 +35,12 @@ const MyBookPage: React.FC = () => {
 
   const [sortOption, setSortOption] = useState<string>(initialSort);
   const [searchKeyword, setSearchKeyword] = useState<string>(initialKeyword);
-  const [filteredBooks, setFilteredBooks] = useState(mockBooks);
+  const [books, setBooks] = useState<MyBook[]>([]);
+  const [filteredBooks, setFilteredBooks] = useState<MyBook[]>([]);
   const [itemsPerPage, setItemsPerPage] = useState<number>(initialItemsPerPage);
   const [currentPage, setCurrentPage] = useState<number>(initialPage);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   // 정렬 옵션 정의
   const sortOptions = [
@@ -52,6 +55,50 @@ const MyBookPage: React.FC = () => {
     { value: 20, label: "20개씩 보기" },
     { value: 40, label: "40개씩 보기" },
   ];
+
+  // 검색어로 책 필터링
+  const filterBooksByKeyword = useCallback((keyword: string) => {
+    if (!keyword.trim()) {
+      return books;
+    }
+
+    const lowercasedKeyword = keyword.toLowerCase();
+    return books.filter(book =>
+      book.title.toLowerCase().includes(lowercasedKeyword) ||
+      book.author.toLowerCase().includes(lowercasedKeyword) ||
+      book.publisher.toLowerCase().includes(lowercasedKeyword)
+    );
+  }, [books]);
+
+  // API에서 구매한 책 데이터 가져오기
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const orderItems = await getCurrentUserOrderItems();
+
+        // ProductResponse를 MyBook 형식으로 변환
+        const myBooks: MyBook[] = orderItems.map((item: ProductResponse) => ({
+          id: item.id,
+          title: item.title,
+          author: formatAuthor(item.author),
+          imageUrl: item.image,
+          publisher: item.publisher,
+          purchaseDate: item.pubdate // 출판일을 구매일로 임시 사용 (실제로는 주문 날짜가 필요)
+        }));
+
+        setBooks(myBooks);
+        setIsLoading(false);
+      } catch (err) {
+        console.error("책 데이터를 불러오는 중 오류 발생:", err);
+        setError("책 데이터를 불러오는 데 실패했습니다. 다시 시도해 주세요.");
+        setIsLoading(false);
+      }
+    };
+
+    fetchBooks();
+  }, []);
 
   // 다른 페이지 -> 마이북 페이지로 이동 시 스크롤 처리
   useEffect(() => {
@@ -72,21 +119,7 @@ const MyBookPage: React.FC = () => {
 
     const filtered = filterBooksByKeyword(keyword);
     setFilteredBooks(filtered);
-  }, [searchParams]);
-
-  // 검색어로 책 필터링
-  const filterBooksByKeyword = (keyword: string) => {
-    if (!keyword.trim()) {
-      return mockBooks;
-    }
-
-    const lowercasedKeyword = keyword.toLowerCase();
-    return mockBooks.filter(book =>
-      book.title.toLowerCase().includes(lowercasedKeyword) ||
-      formatAuthor(book.author).toLowerCase().includes(lowercasedKeyword) ||
-      book.publisher.toLowerCase().includes(lowercasedKeyword)
-    );
-  };
+  }, [searchParams, filterBooksByKeyword]);
 
   // 검색 처리
   const handleSearch = (e: React.FormEvent) => {
@@ -141,7 +174,7 @@ const MyBookPage: React.FC = () => {
   };
 
   // 정렬 함수
-  const sortBooks = (books: typeof mockBooks) => {
+  const sortBooks = (books: MyBook[]) => {
     if (sortOption === "최근 구매순") {
       return [...books].sort((a, b) =>
         new Date(b.purchaseDate).getTime() - new Date(a.purchaseDate).getTime()
@@ -149,9 +182,7 @@ const MyBookPage: React.FC = () => {
     } else if (sortOption === "제목 가나다순") {
       return [...books].sort((a, b) => a.title.localeCompare(b.title));
     } else if (sortOption === "저자 가나다순") {
-      return [...books].sort((a, b) =>
-        formatAuthor(a.author).localeCompare(formatAuthor(b.author))
-      );
+      return [...books].sort((a, b) => a.author.localeCompare(b.author));
     }
     return books;
   };
@@ -216,7 +247,11 @@ const MyBookPage: React.FC = () => {
         </FilterContainer>
       </PageHeader>
 
-      {currentBooks.length > 0 ? (
+      {isLoading ? (
+        <EmptyState>데이터를 불러오는 중입니다...</EmptyState>
+      ) : error ? (
+        <EmptyState>{error}</EmptyState>
+      ) : currentBooks.length > 0 ? (
         <>
           <BookList>
             {currentBooks.map((book) => (
@@ -228,14 +263,14 @@ const MyBookPage: React.FC = () => {
                 </BookCoverWrapper>
                 <BookInfo>
                   <BookTitle>{book.title}</BookTitle>
-                  <BookAuthor>{formatAuthor(book.author)}</BookAuthor>
+                  <BookAuthor>{book.author}</BookAuthor>
                   <PurchaseDate>구매일: {book.purchaseDate}</PurchaseDate>
                 </BookInfo>
               </BookItem>
             ))}
           </BookList>
 
-          {totalPages > 1 && (
+          {totalPages >= 1 && (
             <PaginationContainer>
               <Pagination
                 currentPage={currentPage}
