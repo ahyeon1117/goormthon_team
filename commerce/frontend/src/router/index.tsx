@@ -7,7 +7,6 @@ import LoginPage from '../pages/LoginPage/LoginPage';
 import SignupPage from '../pages/SignupPage/SignupPage.tsx';
 import CartPage from '../pages/CartPage/CartPage';
 import OrderPage from '../pages/OrderPage/OrderPage';
-import LibraryPage from '../pages/LibraryPage/LibraryPage';
 import MyBookPage from '../pages/MyBookPage/MyBookPage';
 import ProtectedRoute from './ProtectedRoute';
 import EditnamePage from '../pages/EditPage/EditnamePage.tsx';
@@ -55,14 +54,6 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <OrderPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: '/library',
-        element: (
-          <ProtectedRoute>
-            <LibraryPage />
           </ProtectedRoute>
         ),
       },
