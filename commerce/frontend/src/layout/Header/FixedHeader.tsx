@@ -114,7 +114,7 @@ const FixedHeader: React.FC = () => {
         <S.UserSection>
           <S.CartLink to="/cart" onClick={() => handleSamePageScroll("/cart")}>
             <AiOutlineShopping size={38} />
-            <S.CartCnt>{totalCount}</S.CartCnt>
+            {isAuthenticated && <S.CartCnt>{totalCount}</S.CartCnt>}
           </S.CartLink>
           <S.UserButton onClick={handleUserIconClick}>
             <AiOutlineUser size={38} />

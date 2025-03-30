@@ -112,7 +112,7 @@ const MainPageHeader = () => {
           <STUserSection>
             <CartLink to="/cart" onClick={() => handleSamePageScroll("/cart")}>
               <CartIcon />
-              <CartCnt>{totalCount}</CartCnt>
+              {isAuthenticated && <CartCnt>{totalCount}</CartCnt>}
             </CartLink>
             <LoginIcon onClick={handleLoginClick} style={{ cursor: 'pointer' }}></LoginIcon>
             <UserProfileModal showModal={showModal} onClose={() => setShowModal(false)} />
