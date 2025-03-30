@@ -6,6 +6,7 @@ import * as S from './OrderPage.styled';
 import { useCart } from '../../hooks';
 import { createOrder } from '../../api/orderApi';
 import { BookItem } from '../../types';
+
 const OrderPage: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -14,12 +15,12 @@ const OrderPage: React.FC = () => {
     const [isPaymentOpen, setIsPaymentOpen] = useState<boolean>(true); // 결제수단 섹션 펼치기 여부
     const [paymentMethod, setPaymentMethod] = useState<string>('rocketPay'); // 결제수단
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    // const [error, setError] = useState<string | null>(null);
     const { totalCount, fetchCartItems } = useCart();
 
     // 로그인 전에 /order로 이동 시, 로그인 이후 리다이렉트 되면서 발생하는 undefined 에러를 방지하기 위해
     // 기본 값 설정 후, 기본 값인 경우는 '/'로 리다이렉트
     const { items = [], isDirectPurchase = false, totalPrice = 0 } = location.state || {};
+    
     // 데이터가 없는 경우 홈 페이지로 리다이렉트 (로그인 전 /order로 리다이렉트 시 undefined 에러 발생)
     useEffect(() => {
         if (!location.state || items.length === 0) {
@@ -59,8 +60,6 @@ const OrderPage: React.FC = () => {
     const handlePaymentClick = async () => {
         try {
             setIsLoading(true);
-            // setError(null);
-
             // 상품 주문 API 호출
             const array = isDirectPurchase 
                 ? [items[0].productId] // 바로구매인 경우
@@ -72,7 +71,7 @@ const OrderPage: React.FC = () => {
                 console.log('장바구니 상품 주문 성공:', response);
                 
                 await fetchCartItems(); // 장바구니 데이터 갱신
-                alert('주문이 완료되었습니다!');
+                alert('주문이 완료되었습니다.');
                 navigate('/'); // 임시
                 // navigate(`/payment/${response.id}`);
             }

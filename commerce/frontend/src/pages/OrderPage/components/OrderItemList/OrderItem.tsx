@@ -1,5 +1,7 @@
+import { Link } from 'react-router-dom';
 import { BookItem, DirectOrderItemType } from '../../../../types';
 import * as S from './OrderItemList.styled';
+
 
 interface OrderItemProps {
     orderItem: BookItem | DirectOrderItemType;
@@ -10,13 +12,15 @@ const OrderItem: React.FC<OrderItemProps> = ({ orderItem }) => {
         <S.OrderItem>
             <S.ProductInfoWrapper>
                 {/* 상품 이미지 */}
-                <S.ProductImage>
-                    <img
-                        src={'id' in orderItem ? orderItem.imageUrl: orderItem.image} // 장바구니 상품일 경우 imageUrl, 바로구매 상품일 경우 image
-                        alt={orderItem.title}
-                        className="product-image"
-                    />
-                </S.ProductImage>
+                <Link to={`/detail/${'id' in orderItem ? orderItem.id : orderItem.productId}`}>
+                    <S.ProductImage>
+                        <img
+                            src={'id' in orderItem ? orderItem.imageUrl : orderItem.image} // 장바구니 상품일 경우 imageUrl, 바로구매 상품일 경우 image
+                            alt={orderItem.title}
+                            className="product-image"
+                        />
+                    </S.ProductImage>
+                </Link>
                 {/* 상품 정보 */}
                 <S.ProductInfo className="product-info">
                     <div className="product-tag">소득공제</div>
