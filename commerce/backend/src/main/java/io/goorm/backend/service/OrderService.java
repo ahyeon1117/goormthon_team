@@ -67,4 +67,19 @@ public class OrderService {
         order.cancel();
     }
 
+    /**
+     * 주문 전체 조회
+     */
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getOrders() {
+        // 유저 조회
+        String userId = jwtService.getUserId();
+        User user = userService.findById(userId);
+
+        // 주문 전체 조회
+        List<Order> orders = orderRepository.findByUser(user);
+        return orders.stream()
+            .map(OrderResponse::from)
+            .collect(Collectors.toList());
+    }
 }
