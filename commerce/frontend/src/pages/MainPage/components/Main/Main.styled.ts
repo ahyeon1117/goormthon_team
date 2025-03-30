@@ -75,11 +75,10 @@ export const ImageMove = styled.img<{ $isActive: boolean; $index: number }>`
   height: 100%;
   object-fit: cover;
   position: absolute;
-    transition: transform 1s ease-in-out, opacity 1s ease-in-out;
-    opacity: ${({ $isActive }) => ($isActive ? 1 : 0)};
-    transform: ${({ $index, $isActive }) =>
-    $isActive ? `translateX(0)` : `translateX(${$index > 0 ? '100%' : '-100%'})`};
-    display: ${({ $isActive }) => ($isActive ? 'block' : 'none')};  // active 이미지만 보이게 함
+  transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+  opacity: ${({ $isActive }) => ($isActive ? 1 : 0)};
+  transform: ${({ $index, $isActive }) =>
+  $isActive ? `translateX(0)` : `translateX(${$index > 0 ? '100%' : '-100%'})`};
 `;
 
 export const ButtonContainer = styled.div`
