@@ -85,7 +85,7 @@ const Main = ({ onBestClick, onNewClick }: MainProps) => {
                 src={src}
                 alt={`Banner ${index + 1}`}
                 $isActive={index === currentIndex}
-                index={index}
+                $index={index}
               />
             ))}
             <S.ButtonContainer>

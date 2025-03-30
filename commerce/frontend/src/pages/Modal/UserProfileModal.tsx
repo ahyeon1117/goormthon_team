@@ -11,12 +11,12 @@ interface MemberInfoModalProps {
   isFixedHeader?: boolean; // FixedHeader에서 호출 시 true
 }
 
-const ModalBackground = styled.div<{ show: boolean; isFixedHeader?: boolean }>`
+const ModalBackground = styled.div<{ $show: boolean; $top: string }>`
   position: fixed;
   right: 150px;
-  top: ${props => props.isFixedHeader ? '60px' : '160px'};
+  top: ${props => props.$top};
   background: rgba(0, 0, 0, 0.5);
-  display: ${props => (props.show ? 'flex' : 'none')};
+  display: ${props => (props.$show ? 'flex' : 'none')};
   justify-content: center;
   align-items: center;
   z-index: 9999; /* 모달을 다른 모든 요소 위에 표시 */
@@ -74,6 +74,7 @@ const MemberInfoModal: React.FC<MemberInfoModalProps> = ({ showModal, onClose, i
   const [userInfo, setUserInfo] = useState<UserInfoResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate(); // 회원정보 수정 페이지로 이동할 때 사용
+  const topPosition = isFixedHeader ? '60px' : '160px';
 
   // 모달이 열릴 때 사용자 정보를 가져오는 함수
   useEffect(() => {
@@ -102,7 +103,7 @@ const MemberInfoModal: React.FC<MemberInfoModalProps> = ({ showModal, onClose, i
   };
 
   return (
-    <ModalBackground show={Boolean(showModal)} isFixedHeader={isFixedHeader}>
+    <ModalBackground $show={Boolean(showModal)} $top={topPosition}>
       <ModalContainer>
         <CloseButton onClick={onClose}>X</CloseButton>
         <h2>회원 정보</h2>

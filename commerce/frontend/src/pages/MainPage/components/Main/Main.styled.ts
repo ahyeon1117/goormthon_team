@@ -70,15 +70,15 @@ export const STMainBannerA = styled.div`
   align-items: center;
 `;
 
-export const ImageMove = styled.img<{ $isActive: boolean; index: number }>`
+export const ImageMove = styled.img<{ $isActive: boolean; $index: number }>`
   width: 100%;
   height: 100%;
   object-fit: cover;
   position: absolute;
     transition: transform 1s ease-in-out, opacity 1s ease-in-out;
     opacity: ${({ $isActive }) => ($isActive ? 1 : 0)};
-    transform: ${({ index, $isActive }) =>
-    $isActive ? `translateX(0)` : `translateX(${index > 0 ? '100%' : '-100%'})`};
+    transform: ${({ $index, $isActive }) =>
+    $isActive ? `translateX(0)` : `translateX(${$index > 0 ? '100%' : '-100%'})`};
     display: ${({ $isActive }) => ($isActive ? 'block' : 'none')};  // active 이미지만 보이게 함
 `;
 
