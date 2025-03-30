@@ -130,6 +130,18 @@ public class CartService {
         return ResDeleteProductFromCart.success();
     }
 
+    // 외부 서비스용 (사용자의 장바구니 목록 조회)
+    public List<CartItem> getCartItems(User user) {
+        // 유저의 장바구니 조회
+        Cart cart = cartRepository.findByUser(user)
+            .orElseThrow(() -> new RuntimeException("사용자의 장바구니를 찾을 수 없습니다."));
+
+        // 장바구니 아이템 목록 조회
+        List<CartItem> cartItems = cart.getCartItems();
+
+        return cartItems;
+    }
+
     // @Transactional
     // public List<CartItem> getCartItems(String userId) {
     //     User user = userService.findById(userId);

@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum OrderStatus {
+    // REFUNDED(5);
     PENDING(1),
     COMPLETED(2),
-    CANCELLED(3),
-    REFUNDED(5);
+    CANCELLED(3);
 
     private final int value;
 
@@ -18,7 +18,6 @@ public enum OrderStatus {
             case 1 -> PENDING;
             case 2 -> COMPLETED;
             case 3 -> CANCELLED;
-            case 5 -> REFUNDED;
             default -> throw new IllegalArgumentException(
                 "유효하지 않은 주문 상태 값: " + value
             );

@@ -50,18 +50,20 @@ public class Order {
     )
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne(
-        mappedBy = "order",
-        cascade = CascadeType.ALL,
-        orphanRemoval = true
-    )
-    private Payment payment;
+     @OneToOne(
+         mappedBy = "order",
+         cascade = CascadeType.ALL,
+         orphanRemoval = true
+     )
+     private Payment payment;
 
-    @Builder
-    public Order(User user, BigDecimal totalPrice, OrderStatus status) {
+    // Order 객체 생성은 createOrder 메서드로 생성하도록 생성자와 빌더는 protected로 제한
+    @Builder(access = AccessLevel.PROTECTED)
+    protected Order(User user, BigDecimal totalPrice, OrderStatus status, String paymentMethod) {
         this.user = user;
         this.totalPrice = totalPrice;
         this.status = status;
+//        this.paymentMethod = paymentMethod;
     }
 
     public void addOrderItem(OrderItem orderItem) {
@@ -69,12 +71,44 @@ public class Order {
         orderItem.setOrder(this);
     }
 
-    public void setPayment(Payment payment) {
-        this.payment = payment;
-        payment.setOrder(this);
-    }
+     public void setPayment(Payment payment) {
+         this.payment = payment;
+         payment.setOrder(this);
+     }
 
     public void updateStatus(OrderStatus status) {
         this.status = status;
     }
+
+    /**
+     * 주문 생성 메서드
+     */
+    public static Order createOrder(User user, BigDecimal totalPrice, String paymentMethod, OrderItem... orderItems) {
+        Order order = Order.builder()
+            .user(user)
+            .totalPrice(totalPrice)
+            .status(OrderStatus.COMPLETED)
+//            .status(OrderStatus.PENDING) // 결제 기능 추가 후 변경
+            .paymentMethod(paymentMethod)
+            .build();
+
+        // 양방향 연관관계 설정
+        for (OrderItem orderItem : orderItems) {
+            order.addOrderItem(orderItem);
+        }
+        return order;
+    }
+
+    /**
+     * 주문 취소 비즈니스 로직
+     */
+    // [수정 2]
+    public void cancel() {
+        // 취소 제한 조건 추가해야 할지? (예를 들면, 주문한 책을 읽은 경우 취소 불가)
+        // if (this.status == OrderStatus.COMPLETED) {
+        //     throw new IllegalStateException("이미 완료된 주문입니다.");
+        // }
+        this.updateStatus(OrderStatus.CANCELLED);
+    }
+
 }
