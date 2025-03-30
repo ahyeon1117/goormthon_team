@@ -46,7 +46,7 @@ const MainPageHeader = () => {
   // 로그인 되어 있으면 모달 띄우기
   const handleLoginClick = () => {
     if (isAuthenticated) {
-      setShowModal(true); // 로그인 되어 있으면 모달 띄우기
+      setShowModal(prev => !prev); // 토글 방식으로 변경
     } else {
       navigate('/login'); // 로그인 안되어 있으면 로그인 페이지로 이동
     }
@@ -130,8 +130,11 @@ const MainPageHeader = () => {
             <div onClick={handleLoginClick} style={{ cursor: 'pointer' }}>
               <LoginIcon />
             </div>
-            {showModal && isAuthenticated && (
-              <UserProfileModal showModal={showModal} onClose={() => setShowModal(false)} />
+            {isAuthenticated && (
+              <UserProfileModal
+                showModal={Boolean(showModal)}
+                onClose={() => setShowModal(false)}
+              />
             )}
           </STUserSection>
         </STMainHeader>

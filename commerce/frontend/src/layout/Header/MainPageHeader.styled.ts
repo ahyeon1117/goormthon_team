@@ -118,17 +118,20 @@ export const SearchIcon = styled(AiOutlineSearch)`
 export const LoginIcon = styled(AiOutlineUser)`
   width: 40px;
   height: 40px;
+  display: flex;
 `;
 
 export const CartIcon = styled(AiOutlineShopping)`
   width: 40px;
   height: 40px;
+  display: flex;
 `;
 
 export const BookIcon = styled(AiOutlineBook)`
   width: 40px;
   height: 38px;
   color: #333;
+  display: flex;
 `;
 
 export const UserLink = styled(Link)`

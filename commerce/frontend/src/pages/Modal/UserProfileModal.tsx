@@ -8,12 +8,13 @@ import { useNavigate } from 'react-router-dom'; // 회원정보 수정 페이지
 interface MemberInfoModalProps {
   showModal: boolean;
   onClose: () => void;
+  isFixedHeader?: boolean; // FixedHeader에서 호출 시 true
 }
 
-const ModalBackground = styled.div<{ show: boolean }>`
+const ModalBackground = styled.div<{ show: boolean; isFixedHeader?: boolean }>`
   position: fixed;
   right: 150px;
-  top: 160px;
+  top: ${props => props.isFixedHeader ? '60px' : '160px'};
   background: rgba(0, 0, 0, 0.5);
   display: ${props => (props.show ? 'flex' : 'none')};
   justify-content: center;
@@ -69,7 +70,7 @@ const ActionButton = styled.button`
 
 `;
 
-const MemberInfoModal: React.FC<MemberInfoModalProps> = ({ showModal, onClose }) => {
+const MemberInfoModal: React.FC<MemberInfoModalProps> = ({ showModal, onClose, isFixedHeader }) => {
   const [userInfo, setUserInfo] = useState<UserInfoResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate(); // 회원정보 수정 페이지로 이동할 때 사용
@@ -101,7 +102,7 @@ const MemberInfoModal: React.FC<MemberInfoModalProps> = ({ showModal, onClose })
   };
 
   return (
-    <ModalBackground show={showModal}>
+    <ModalBackground show={Boolean(showModal)} isFixedHeader={isFixedHeader}>
       <ModalContainer>
         <CloseButton onClick={onClose}>X</CloseButton>
         <h2>회원 정보</h2>
@@ -129,4 +130,3 @@ const MemberInfoModal: React.FC<MemberInfoModalProps> = ({ showModal, onClose })
 };
 
 export default MemberInfoModal;
-
