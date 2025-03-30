@@ -16,7 +16,16 @@ const OrderPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     // const [error, setError] = useState<string | null>(null);
     const { totalCount, fetchCartItems } = useCart();
-    const { items, isDirectPurchase, totalPrice } = location.state || {};
+
+    // 로그인 전에 /order로 이동 시, 로그인 이후 리다이렉트 되면서 발생하는 undefined 에러를 방지하기 위해
+    // 기본 값 설정 후, 기본 값인 경우는 '/'로 리다이렉트
+    const { items = [], isDirectPurchase = false, totalPrice = 0 } = location.state || {};
+    // 데이터가 없는 경우 홈 페이지로 리다이렉트 (로그인 전 /order로 리다이렉트 시 undefined 에러 발생)
+    useEffect(() => {
+        if (!location.state || items.length === 0) {
+            navigate('/');
+        }
+    }, [location.state, items, navigate]);
 
     // 다른 페이지 -> 주문 페이지로 이동 시 스크롤 처리
     useEffect(() => {
@@ -152,7 +161,7 @@ const OrderPage: React.FC = () => {
                         <S.OrderSummaryInfo>
                             <S.SummaryRow>
                                 <span>상품금액</span>
-                                <span>{isDirectPurchase ? items[0].discount.toLocaleString() : totalPrice.toLocaleString()} 원</span>
+                                <span>{totalPrice.toLocaleString()} 원</span>
                             </S.SummaryRow>
                             <S.SummaryRow>
                                 <span>할인금액</span>
@@ -163,7 +172,7 @@ const OrderPage: React.FC = () => {
                         {/* 총 주문 금액 */}
                         <S.TotalPrice>
                             <span>총 주문 금액</span>
-                            <span>{isDirectPurchase ? items[0].discount.toLocaleString() : totalPrice.toLocaleString()} 원</span>
+                            <span>{totalPrice.toLocaleString()} 원</span>
                         </S.TotalPrice>
 
                         {/* 주문하기 버튼 */}

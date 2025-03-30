@@ -983,7 +983,8 @@ const SearchResultsPage: React.FC = () => {
         navigate('/order', {
           state: {
             items: orderItems,
-            isDirectPurchase: true
+            isDirectPurchase: true,
+            totalPrice: orderItems.reduce((sum, item) => sum + item.discount, 0)
           }
         });
       } else {
