@@ -196,7 +196,8 @@ const DetailPage = () => {
           author: product.author,
           publisher: product.publisher
         }],
-        isDirectPurchase: true
+        isDirectPurchase: true,
+        totalPrice: product.price
       }
     });
   };
