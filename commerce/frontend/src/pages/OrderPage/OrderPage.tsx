@@ -70,10 +70,19 @@ const OrderPage: React.FC = () => {
             if (response) {
                 console.log('장바구니 상품 주문 성공:', response);
                 
-                await fetchCartItems(); // 장바구니 데이터 갱신
+                // await fetchCartItems(); // 장바구니 데이터 갱신
+
                 alert('주문이 완료되었습니다.');
-                navigate('/'); // 임시
-                // navigate(`/payment/${response.id}`);
+
+                navigate(`/order/complete`, {
+                    state: {
+                        items: items,
+                        totalPrice: totalPrice,
+                        paymentMethod: paymentMethod === 'rocketPay' ? '로켓페이' 
+                        : paymentMethod === 'creditCard' ? '신용카드' 
+                        : paymentMethod === 'bankTransfer' ? '무통장입금' : '계좌이체',
+                    }
+                });
             }
         } catch (error) {
             console.error('주문 처리 중 오류 발생:', error);
@@ -177,7 +186,7 @@ const OrderPage: React.FC = () => {
                         {/* 주문하기 버튼 */}
                         <S.OrderButton
                             onClick={handlePaymentClick}
-                            disabled={isLoading || totalCount === 0}
+                            // disabled={isLoading || totalCount === 0}
                         >
                             {isLoading ? '처리 중...' : '결제하기'}
                         </S.OrderButton>
