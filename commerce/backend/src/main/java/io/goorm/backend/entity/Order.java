@@ -50,12 +50,16 @@ public class Order {
     )
     private List<OrderItem> orderItems = new ArrayList<>();
 
-     @OneToOne(
-         mappedBy = "order",
-         cascade = CascadeType.ALL,
-         orphanRemoval = true
-     )
-     private Payment payment;
+    // 결제 기능 구현 전, 임시 필드
+    private String paymentMethod; // "rocketPay", "creditCard", "bankTransfer", "accountTransfer"
+
+    // 결제 기능 구현 시 필요
+    // @OneToOne(
+    //     mappedBy = "order",
+    //     cascade = CascadeType.ALL,
+    //     orphanRemoval = true
+    // )
+    // private Payment payment;
 
     // Order 객체 생성은 createOrder 메서드로 생성하도록 생성자와 빌더는 protected로 제한
     @Builder(access = AccessLevel.PROTECTED)
@@ -63,7 +67,7 @@ public class Order {
         this.user = user;
         this.totalPrice = totalPrice;
         this.status = status;
-//        this.paymentMethod = paymentMethod;
+        this.paymentMethod = paymentMethod;
     }
 
     public void addOrderItem(OrderItem orderItem) {
@@ -71,10 +75,11 @@ public class Order {
         orderItem.setOrder(this);
     }
 
-     public void setPayment(Payment payment) {
-         this.payment = payment;
-         payment.setOrder(this);
-     }
+    // 결제 기능 구현 시 필요
+    // public void setPayment(Payment payment) {
+    //     this.payment = payment;
+    //     payment.setOrder(this);
+    // }
 
     public void updateStatus(OrderStatus status) {
         this.status = status;
@@ -87,8 +92,8 @@ public class Order {
         Order order = Order.builder()
             .user(user)
             .totalPrice(totalPrice)
-            .status(OrderStatus.COMPLETED)
-//            .status(OrderStatus.PENDING) // 결제 기능 추가 후 변경
+            .status(OrderStatus.COMPLETED) // 주문 기능 구현 전: 초기 배송 상테
+//            .status(OrderStatus.PENDING) // 주문 기능 구현 시 변경
             .paymentMethod(paymentMethod)
             .build();
 
