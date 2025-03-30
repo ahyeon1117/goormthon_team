@@ -1,17 +1,9 @@
 import OrderItem from "./OrderItem";
 import * as S from './OrderItemList.styled';
-import { BookItem } from "../../../../types";
-
-// interface OrderItemType {
-//     orderId: number;
-//     productId: number;
-//     title: string;
-//     imageUrl: string;
-//     price: number;
-//   }
+import { BookItem, DirectOrderItemType } from "../../../../types";
 
 interface OrderItemListProps {
-    orderItems: BookItem[];
+    orderItems: (BookItem | DirectOrderItemType)[];
 }
 
 const OrderItemList: React.FC<OrderItemListProps> = ({ orderItems }) => {
@@ -19,7 +11,7 @@ const OrderItemList: React.FC<OrderItemListProps> = ({ orderItems }) => {
         <S.OrderItemList>
             {orderItems.map((item) => (
                 <OrderItem
-                    key={item.id}
+                    key={'id' in item ? item.id : item.productId} // 장바구니 상품일 경우 id, 바로구매 상품일 경우 productId
                     orderItem={item}
                 />
             ))}

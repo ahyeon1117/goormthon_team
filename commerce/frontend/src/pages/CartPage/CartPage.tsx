@@ -8,21 +8,27 @@ import { useAuth, useCart } from '../../hooks';
 const CartPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [isSidebarFixed, setIsSidebarFixed] = useState<boolean>(false); // 사이드바 고정 여부
-  const [checkedItems, setCheckedItems] = useState<string[]>([]); // 체크된 아이템의 carId 저장
-  const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true); // 첫 렌더링 여부 (상품이 삭제된 후에도 체크상태 유지를 위해 필요)
+  const [isSidebarFixed, setIsSidebarFixed] = useState(false); // 사이드바 고정 여부
+  const [checkedItems, setCheckedItems] = useState<string[]>([]); // 체크된 아이템의 bookId 저장
+  const [isFirstLoad, setIsFirstLoad] = useState(true); // 첫 렌더링 여부 (상품이 삭제된 후에도 체크상태 유지를 위해 필요)
   const { isAuthenticated } = useAuth();
   const {
     books: cartBooks,
     totalCount,
     fetchCartItems,
-    calculateTotalPrice,
     removeFromCart,
     removeMultipleFromCart
   } = useCart();
-  
+
   // 전체 아이템 개수와 선택된 아이템 개수가 같을 때만 전체선택 체크
   const isAllChecked = checkedItems.length > 0 && checkedItems.length === cartBooks.length;
+
+  // 선택된 아이템의 총 가격
+  const checkedItemsPrice = () => {
+    return cartBooks
+      .filter(item => checkedItems.includes(item.id))
+      .reduce((sum, item) => sum + item.price, 0);
+  }
 
   // 다른 페이지에서 카트 페이지로 들어온 경우, 스크롤 최상단 처리
   useEffect(() => {
@@ -43,21 +49,22 @@ const CartPage: React.FC = () => {
 
   // 렌더링 시 최신 장바구니 데이터 가져오기
   useEffect(() => {
-    if (isAuthenticated) {  
+    if (isAuthenticated) {
       fetchCartItems();
     }
   }, [isAuthenticated, fetchCartItems]);
-  
+
   // 장바구니 데이터 업데이트 시 checkedItems도 업데이트
   useEffect(() => {
-    if (isFirstLoad) { // 첫 렌더링 시 전체선택 되도록
+    // cartBooks가 비어있지 않고 isFirstLoad일 때만 전체선택
+    if (isFirstLoad && cartBooks.length > 0) {
       setCheckedItems(cartBooks.map(item => item.id));
       setIsFirstLoad(false);
-    } else { // 이후 렌더링 시애는 체크상태 유지
+    } else { // 이후 렌더링 시에는 체크상태 유지
       setCheckedItems(prev =>
         cartBooks
-        .map(item => item.id)
-        .filter(id => prev.includes(id))
+          .map(item => item.id)
+          .filter(id => prev.includes(id))
       );
     }
   }, [cartBooks, isFirstLoad]);
@@ -93,7 +100,7 @@ const CartPage: React.FC = () => {
   // 선택된 아이템 삭제 핸들러
   const handleDeleteChecked = async () => {
     if (checkedItems.length === 0) return;
-    
+
     const isConfirmed = window.confirm('선택한 상품을 삭제하시겠습니까?');
 
     if (isConfirmed) {
@@ -104,7 +111,13 @@ const CartPage: React.FC = () => {
 
   // 주문하기 버튼 클릭 핸들러
   const handleOrderClick = () => {
-    navigate('/order');
+    navigate('/order', {
+      state: {
+        items: cartBooks.filter(item => checkedItems.includes(item.id)),
+        isDirectPurchase: false,
+        totalPrice: checkedItemsPrice()
+      }
+    });
   }
 
   return (
@@ -150,7 +163,7 @@ const CartPage: React.FC = () => {
             <S.OrderSummaryInfo>
               <S.SummaryRow>
                 <span>상품금액</span>
-                <span>{calculateTotalPrice().toLocaleString()} 원</span>
+                <span>{checkedItemsPrice().toLocaleString()} 원</span>
               </S.SummaryRow>
               <S.SummaryRow>
                 <span>할인금액</span>
@@ -161,7 +174,7 @@ const CartPage: React.FC = () => {
             {/* 총 주문 금액 */}
             <S.TotalPrice>
               <span>총 주문 금액</span>
-              <span>{calculateTotalPrice().toLocaleString()} 원</span>
+              <span>{checkedItemsPrice().toLocaleString()} 원</span>
             </S.TotalPrice>
 
             {/* 주문하기 버튼 */}

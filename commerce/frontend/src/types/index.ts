@@ -36,3 +36,13 @@ export interface BestNewBook {
   author: string;
   publisher: string;
 }
+
+// 바로 구매 주문 상품 타입
+export interface DirectOrderItemType {
+  productId: number;
+  title: string;
+  discount: number;
+  image: string;
+  author: string;
+  publisher: string;
+}

@@ -4,8 +4,8 @@ import OrderSteps from './components/Common/OrderSteps/OrderSteps';
 import OrderItemList from './components/OrderItemList/OrderItemList';
 import * as S from './OrderPage.styled';
 import { useCart } from '../../hooks';
-import { createCartOrder } from '../../api/orderApi';
-
+import { createOrder } from '../../api/orderApi';
+import { BookItem } from '../../types';
 const OrderPage: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -15,7 +15,8 @@ const OrderPage: React.FC = () => {
     const [paymentMethod, setPaymentMethod] = useState<string>('rocketPay'); // 결제수단
     const [isLoading, setIsLoading] = useState<boolean>(false);
     // const [error, setError] = useState<string | null>(null);
-    const { books: cartBooks, totalCount, calculateTotalPrice } = useCart();
+    const { totalCount, fetchCartItems } = useCart();
+    const { items, isDirectPurchase, totalPrice } = location.state || {};
 
     // 다른 페이지 -> 주문 페이지로 이동 시 스크롤 처리
     useEffect(() => {
@@ -23,6 +24,8 @@ const OrderPage: React.FC = () => {
     }, [location.pathname]);
 
     useEffect(() => {
+        console.log('주문 페이지 렌더링', { items, isDirectPurchase, totalPrice });
+
         // 사이드바 고정 핸들러
         const handleScroll = () => {
             setIsSidebarFixed(window.scrollY > 170);
@@ -48,11 +51,18 @@ const OrderPage: React.FC = () => {
         try {
             setIsLoading(true);
             // setError(null);
-            // 장바구니 상품 주문 API 호출
-            const response = await createCartOrder(paymentMethod);
+
+            // 상품 주문 API 호출
+            const array = isDirectPurchase 
+                ? [items[0].productId] // 바로구매인 경우
+                : items.map((item: BookItem) => Number(item.id)); // 장바구니 구매인 경우
+
+            const response = await createOrder(paymentMethod, array);
 
             if (response) {
                 console.log('장바구니 상품 주문 성공:', response);
+                
+                await fetchCartItems(); // 장바구니 데이터 갱신
                 alert('주문이 완료되었습니다!');
                 navigate('/'); // 임시
                 // navigate(`/payment/${response.id}`);
@@ -65,7 +75,6 @@ const OrderPage: React.FC = () => {
         }
     }
 
-    // 서버에서 가져온 가격
     return (
         <S.OrderPageContainer>
             {/* 헤더 */}
@@ -83,8 +92,7 @@ const OrderPage: React.FC = () => {
                         <S.ItemHeader>
                             <div>
                                 <span>주문상품</span>
-                                <span>{totalCount}</span>
-                                <span>개</span>
+                                <span>{items.length}개</span>
                             </div>
                             <div onClick={() => handleToggleOpen('item')}>
                                 {isItemOpen ? <S.ArrowUpIcon /> : <S.ArrowDownIcon />}
@@ -92,7 +100,7 @@ const OrderPage: React.FC = () => {
                         </S.ItemHeader>
 
                         {/* 주문 상품 리스트 */}
-                        {isItemOpen && <OrderItemList orderItems={cartBooks} />}
+                        {isItemOpen && <OrderItemList orderItems={items} />}
                     </S.ItemSection>
 
                     {/* 결제수단 섹션 */}
@@ -144,7 +152,7 @@ const OrderPage: React.FC = () => {
                         <S.OrderSummaryInfo>
                             <S.SummaryRow>
                                 <span>상품금액</span>
-                                <span>{calculateTotalPrice().toLocaleString()} 원</span>
+                                <span>{isDirectPurchase ? items[0].discount.toLocaleString() : totalPrice.toLocaleString()} 원</span>
                             </S.SummaryRow>
                             <S.SummaryRow>
                                 <span>할인금액</span>
@@ -155,7 +163,7 @@ const OrderPage: React.FC = () => {
                         {/* 총 주문 금액 */}
                         <S.TotalPrice>
                             <span>총 주문 금액</span>
-                            <span>{calculateTotalPrice().toLocaleString()} 원</span>
+                            <span>{isDirectPurchase ? items[0].discount.toLocaleString() : totalPrice.toLocaleString()} 원</span>
                         </S.TotalPrice>
 
                         {/* 주문하기 버튼 */}

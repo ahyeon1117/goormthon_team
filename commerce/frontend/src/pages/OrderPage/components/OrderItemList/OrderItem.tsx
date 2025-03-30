@@ -1,25 +1,21 @@
-import { BookItem } from '../../../../types';
+import { BookItem, DirectOrderItemType } from '../../../../types';
 import * as S from './OrderItemList.styled';
 
-// interface OrderItemType {
-//     orderId: number;
-//     productId: number;
-//     title: string;
-//     imageUrl: string;
-//     price: number;
-// }
-
-interface Props {
-    orderItem: BookItem;
+interface OrderItemProps {
+    orderItem: BookItem | DirectOrderItemType;
 }
 
-const OrderItem: React.FC<Props> = ({ orderItem }) => {
+const OrderItem: React.FC<OrderItemProps> = ({ orderItem }) => {
     return (
         <S.OrderItem>
             <S.ProductInfoWrapper>
                 {/* 상품 이미지 */}
                 <S.ProductImage>
-                    <img src={orderItem.imageUrl} alt="" className="product-image" />
+                    <img
+                        src={'id' in orderItem ? orderItem.imageUrl: orderItem.image} // 장바구니 상품일 경우 imageUrl, 바로구매 상품일 경우 image
+                        alt={orderItem.title}
+                        className="product-image"
+                    />
                 </S.ProductImage>
                 {/* 상품 정보 */}
                 <S.ProductInfo className="product-info">
@@ -29,7 +25,7 @@ const OrderItem: React.FC<Props> = ({ orderItem }) => {
             </S.ProductInfoWrapper>
 
             {/* 가격 정보 */}
-            <S.ProductPrice>{orderItem.price.toLocaleString()}원</S.ProductPrice>
+            <S.ProductPrice>{'id' in orderItem ? orderItem.price.toLocaleString() : orderItem.discount.toLocaleString()}원</S.ProductPrice>
         </S.OrderItem>
     )
 }
