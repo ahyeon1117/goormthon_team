@@ -11,6 +11,8 @@ import io.goorm.backend.entity.User;
 import io.goorm.backend.repository.CartItemRepository;
 import io.goorm.backend.repository.CartRepository;
 import jakarta.transaction.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -131,15 +133,41 @@ public class CartService {
     }
 
     // 외부 서비스용 (사용자의 장바구니 목록 조회)
+    @Transactional
     public List<CartItem> getCartItems(User user) {
         // 유저의 장바구니 조회
         Cart cart = cartRepository.findByUser(user)
             .orElseThrow(() -> new RuntimeException("사용자의 장바구니를 찾을 수 없습니다."));
 
         // 장바구니 아이템 목록 조회
-        List<CartItem> cartItems = cart.getCartItems();
+        return cart.getCartItems();
+    }
 
-        return cartItems;
+    // 외부 서비스용 (장바구니에서 특정 상품 삭제)
+    @Transactional
+    public void removeCartItems(User user, List<Long> productIdList) {
+        // 사용자 장바구니 조회
+        Cart cart = cartRepository.findByUser(user)
+            .orElseThrow(() -> new RuntimeException("사용자의 장바구니를 찾을 수 없습니다."));
+
+        // 사용자 장바구니 목록 조회
+        List<CartItem> cartItems = getCartItems(user);
+
+        // 삭제할 상품 목록을 저장하는 리스트 (컬렉션을 순회하는 동시에 수정하면 에러가 발생할 수 있음)
+        List<CartItem> itemsToRemove = new ArrayList<>();
+
+        // 삭제할 아이템 담기
+        for (CartItem cartItem : cartItems) {
+            if(productIdList.contains(cartItem.getProduct().getId())) {
+                itemsToRemove.add(cartItem);
+            }
+        }
+
+        // 아이템 삭제
+        for (CartItem item : itemsToRemove) {
+            cart.removeCartItem(item);
+            cartItemRepository.delete(item);
+        }
     }
 
     // @Transactional

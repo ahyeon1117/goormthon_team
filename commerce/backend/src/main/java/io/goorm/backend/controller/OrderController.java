@@ -1,7 +1,6 @@
 package io.goorm.backend.controller;
 
-import io.goorm.backend.dto.req.CartOrderRequest;
-import io.goorm.backend.dto.req.DirectOrderRequest;
+import io.goorm.backend.dto.req.OrderRequest;
 import io.goorm.backend.dto.res.ApiResponse;
 import io.goorm.backend.dto.res.OrderResponse;
 import io.goorm.backend.service.OrderService;
@@ -19,26 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
    private final OrderService orderService;
-
-   @PostMapping("/direct")
-   public ResponseEntity<ApiResponse<OrderResponse>> createDirectOrder(
-    @Valid @RequestBody DirectOrderRequest requestMessage
+   
+   @PostMapping("/create")
+   public ResponseEntity<ApiResponse<OrderResponse>> createOrder(
+    @Valid @RequestBody OrderRequest requestMessage
    ) {
       return ResponseEntity.ok(
          ApiResponse.success(
-            orderService.createDirectOrder(requestMessage.getProductId(), requestMessage.getPaymentMethod())
+            orderService.createOrder(requestMessage.getPaymentMethod(), requestMessage.getProductIdList())
          )
       );
    }
    
-   @PostMapping("/cart")
-   public ResponseEntity<ApiResponse<OrderResponse>> createOrderFromCart(
-    @Valid @RequestBody CartOrderRequest requestMessage
-   ) {
-      return ResponseEntity.ok(
-         ApiResponse.success(
-            orderService.createOrderFromCart(requestMessage.getPaymentMethod())
-         )
-      );
-   }
 }

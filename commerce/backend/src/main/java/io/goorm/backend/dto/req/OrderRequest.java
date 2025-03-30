@@ -5,11 +5,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartOrderRequest {
+public class OrderRequest {
 
     @NotEmpty
+    private List<Long> productIdList;
+    
+    @NotEmpty
     private String paymentMethod;
+
 }
