@@ -9,7 +9,7 @@ export const DetailPageWrapper = styled.div`
 export const DetailContainer = styled.div`
   display: flex;
   gap: 60px;
-  margin-top: 30px;
+  margin-top: 10px;
   margin-bottom: 100px;
 
   @media (max-width: 768px) {
