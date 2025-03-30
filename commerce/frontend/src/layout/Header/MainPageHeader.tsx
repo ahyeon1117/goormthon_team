@@ -84,9 +84,11 @@ const MainPageHeader = () => {
             {isAuthenticated ? (
               <STMallInner onClick={handleLogout} style={{ cursor: 'pointer' }}>로그아웃</STMallInner>
             ) : (
-              <STMallInner onClick={() => navigate('/login')} style={{ cursor: 'pointer' }}>로그인</STMallInner>
+              <>
+                <STMallInner onClick={() => navigate('/login')} style={{ cursor: 'pointer' }}>로그인</STMallInner>
+                <STMallInner onClick={() => navigate('/signup')} style={{ cursor: 'pointer' }}>회원가입</STMallInner>
+              </>
             )}
-            <STMallInner onClick={() => navigate('/signup')} style={{ cursor: 'pointer' }}>회원가입</STMallInner>
             <STMallInner onClick={() => navigate('/cart')} style={{ cursor: 'pointer' }}>장바구니</STMallInner>
             {isAuthenticated && (
               <STMallInner onClick={() => navigate('/mybook')} style={{ cursor: 'pointer' }}>내 서재</STMallInner>
