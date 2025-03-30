@@ -1,5 +1,6 @@
 package io.goorm.backend.controller;
 
+import io.goorm.backend.dto.ProductDto;
 import io.goorm.backend.dto.req.OrderRequest;
 import io.goorm.backend.dto.res.ApiResponse;
 import io.goorm.backend.dto.res.OrderResponse;
@@ -17,7 +18,7 @@ import java.util.List;
 public class OrderController {
 
    private final OrderService orderService;
-   
+
    /*
     * 주문 생성
     */
@@ -43,5 +44,16 @@ public class OrderController {
          )
       );
    }
-   
+
+      /**
+    * 현재 로그인한 사용자의 주문 상품 목록 조회
+    */
+    @GetMapping("/view-items")
+    public ResponseEntity<ApiResponse<List<ProductDto>>> getCurrentUserOrderItems() {
+       return ResponseEntity.ok(
+          ApiResponse.success(
+             orderService.getCurrentUserOrderProductDtos()
+          )
+       );
+    }
 }

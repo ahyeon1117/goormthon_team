@@ -1,5 +1,6 @@
 package io.goorm.backend.service;
 
+import io.goorm.backend.dto.ProductDto;
 import io.goorm.backend.dto.res.OrderResponse;
 import io.goorm.backend.entity.*;
 import io.goorm.backend.repository.OrderRepository;
@@ -38,7 +39,7 @@ public class OrderService {
                 return new OrderItem(product, product.getDiscount()); // 주문 상품 생성
             })
             .collect(Collectors.toList());
-        
+
         // 총 금액 계산
         BigDecimal totalPrice = BigDecimal.ZERO;
         for (OrderItem orderItem : orderItems) {
@@ -80,6 +81,26 @@ public class OrderService {
         List<Order> orders = orderRepository.findByUser(user);
         return orders.stream()
             .map(OrderResponse::from)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * 현재 로그인한 사용자의 주문한 상품(ProductDto) 목록 조회
+     */
+    @Transactional
+    public List<ProductDto> getCurrentUserOrderProductDtos() {
+        // 현재 로그인한 유저 ID 가져오기
+        String userId = jwtService.getUserId();
+        User user = userService.findById(userId);
+
+        // 사용자의 주문 목록 조회
+        List<Order> orders = orderRepository.findByUser(user);
+
+        // 모든 주문에서 상품(Product)을 추출하고 DTO로 변환
+        return orders.stream()
+            .flatMap(order -> order.getOrderItems().stream())
+            .map(OrderItem::getProduct)
+            .map(ProductDto::from)
             .collect(Collectors.toList());
     }
 }
