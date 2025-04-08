@@ -55,7 +55,3 @@ hibernate {
 		enableAssociationManagement = true
 	}
 }
-
-tasks.named('test') {
-	useJUnitPlatform()
-}

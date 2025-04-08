@@ -71,19 +71,18 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .headers(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(
-                request ->
-                    request
-                        .requestMatchers("/waiting/**")
-                        .permitAll()
-                        .requestMatchers("/api/v1/auth/**")
-                        .permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/products/**")
-                        .permitAll() // GET 메서드만 허용
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
-                        .permitAll() // Swagger UI 접근 허용
-                        .anyRequest()
-                        .authenticated() // 그 외 모든 요청 인증 처리
+            .authorizeHttpRequests(request ->
+                request
+                    .requestMatchers("/waiting/**")
+                    .permitAll()
+                    .requestMatchers("/api/v1/auth/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/products/**")
+                    .permitAll() // GET 메서드만 허용
+                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
+                    .permitAll() // Swagger UI 접근 허용
+                    .anyRequest()
+                    .authenticated() // 그 외 모든 요청 인증 처리
             )
             .addFilterBefore(
                 jwtAuthenticationFilter(), // 빈으로 정의된 필터 사용

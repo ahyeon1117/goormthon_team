@@ -27,7 +27,9 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProductResponse>> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<ProductResponse>> getProductById(
+        @PathVariable("id") Long id
+    ) {
         return ResponseEntity.ok(
             ApiResponse.success(productService.getProductById(id))
         );
@@ -44,7 +46,7 @@ public class ProductController {
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<ProductResponse>>> searchProducts(
-        @RequestParam String keyword
+        @RequestParam("keyword") String keyword
     ) {
         return ResponseEntity.ok(
             ApiResponse.success(productService.searchProducts(keyword))
@@ -57,5 +59,4 @@ public class ProductController {
             ApiResponse.success(productService.getNewProducts())
         );
     }
-
 }
