@@ -1055,7 +1055,8 @@ const SearchResultsPage: React.FC = () => {
         navigate('/order', {
           state: {
             items: [orderItem],
-            isDirectPurchase: true
+            isDirectPurchase: true,
+            totalPrice: orderItem.discount
           }
         });
       }

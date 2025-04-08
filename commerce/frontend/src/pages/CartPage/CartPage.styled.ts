@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { BsCheckCircleFill, BsCheckCircle } from 'react-icons/bs';
+import { PiWarningCircle } from "react-icons/pi";
 
 export const CartContainer = styled.div`
     width: 100%;
@@ -102,6 +103,25 @@ export const DeleteCheckedButton = styled.div`
             outline: none;
         }
     }
+`;
+
+export const WarnWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 100px;
+
+    div {
+        font-size: 18px;
+    }
+`;
+
+export const WarnIcon = styled(PiWarningCircle)`
+    width: 60px;
+    height: 60px;
+    color: #D9D9D9;
 `;
 
 export const CartSidebar = styled.aside`

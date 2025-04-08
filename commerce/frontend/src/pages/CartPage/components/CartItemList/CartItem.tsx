@@ -1,5 +1,6 @@
 import * as S from "./CartItemList.styled";
 import { BookItem } from "../../../../types";
+import { Link } from "react-router-dom";
 
 interface Props {
     cartItem: BookItem;
@@ -18,9 +19,11 @@ const CartItem: React.FC<Props> = ({ cartItem, isChecked, onItemCheck, onDelete 
                     {isChecked ? <S.CheckedIcon /> : <S.UncheckedIcon />}
                 </div>
                 {/* 상품 이미지 */}
-                <S.ProductImage>
-                    <img src={cartItem.imageUrl} alt="" className="product-image" />
-                </S.ProductImage>
+                <Link to={`/detail/${cartItem.id}`}>
+                    <S.ProductImage>
+                        <img src={cartItem.imageUrl} alt="" className="product-image" />
+                    </S.ProductImage>
+                </Link>
                 {/* 상품 정보 */}
                 <S.ProductInfo className="product-info">
                     <div className="product-tag">소득공제</div>

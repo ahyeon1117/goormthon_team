@@ -196,7 +196,8 @@ const DetailPage = () => {
           author: product.author,
           publisher: product.publisher
         }],
-        isDirectPurchase: true
+        isDirectPurchase: true,
+        totalPrice: product.price
       }
     });
   };
@@ -320,6 +321,7 @@ const DetailPage = () => {
 
     try {
       await createReview(newReview);  // 리뷰 생성 요청
+      alert('리뷰가 성공적으로 등록되었습니다.');
       setReviewTitle('');
       setReviewText('');
 

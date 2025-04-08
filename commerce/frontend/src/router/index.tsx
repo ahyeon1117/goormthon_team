@@ -10,7 +10,7 @@ import OrderPage from '../pages/OrderPage/OrderPage';
 import MyBookPage from '../pages/MyBookPage/MyBookPage';
 import ProtectedRoute from './ProtectedRoute';
 import EditnamePage from '../pages/EditPage/EditnamePage.tsx';
-
+import OrderCompletePage from '../pages/OrderPage/OrderCompletePage';
 // 라우터 설정
 const router = createBrowserRouter([
   {
@@ -62,6 +62,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <MyBookPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/order/complete',
+        element: (
+          <ProtectedRoute>
+            <OrderCompletePage />
           </ProtectedRoute>
         ),
       },
