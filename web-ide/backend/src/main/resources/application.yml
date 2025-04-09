@@ -1,15 +1,27 @@
 spring:
+  # DB 연결
   datasource:
     url: jdbc:postgresql://localhost:5432/user_db
     username: rocket
     password: qwer123!
     driver-class-name: org.postgresql.Driver
+
+  # schema.sql 실행
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema.sql
+
   # JPA 설정
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none # 테이블 자동 생성/삭제 비활성화
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        # show_sql: true   # SQL 쿼리 콘솔 출력
         format_sql: true # SQL 쿼리 포맷팅
-        show_sql: true   # SQL 쿼리 콘솔 출력
+
+logging:
+  level:
+    org.hibernate: DEBUG # SQL 쿼리 로그 출력
