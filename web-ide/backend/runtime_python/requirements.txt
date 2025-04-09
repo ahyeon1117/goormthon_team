@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pymongo
+psycopg2-binary
+jupyter-client
+requests
+pydantic
+python-dotenv
+motor
