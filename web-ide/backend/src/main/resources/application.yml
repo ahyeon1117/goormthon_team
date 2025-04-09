@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/user_db
+    username: rocket
+    password: qwer123!
+    driver-class-name: org.postgresql.Driver
+  # JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true # SQL 쿼리 포맷팅
+        show_sql: true   # SQL 쿼리 콘솔 출력
