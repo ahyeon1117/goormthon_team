@@ -1,0 +1,54 @@
+name: webIDE
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_container
+    ports:
+      - "27017:27017"
+    networks:
+      - app-tier
+    volumes:
+      - mongovolume:/data/db
+    environment:
+
+      MONGO_INITDB_ROOT_USERNAME: rocket
+      MONGO_INITDB_ROOT_PASSWORD: qwer123!
+
+  postgres:
+    image: bitnami/postgresql:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: rocket
+      POSTGRES_PASSWORD: qwer123!
+    ports:
+      - "5432:5432"
+    networks:
+      - app-tier
+    volumes:
+      - postgresvolume:/bitnami/postgresql  # bitnami 기준 디렉토리
+
+
+  fastapi:
+    build: ./runtime_python
+    container_name: fastapi-server
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+      - postgres
+    volumes:
+      - ./runtime_python:/app
+    working_dir: /app
+    command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+    environment:
+      ENV: docker  # ← 여기가 핵심
+
+volumes:
+  mongovolume:
+  postgresvolume:
