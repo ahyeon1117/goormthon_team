@@ -9,13 +9,13 @@ spring:
   # schema.sql 실행
   sql:
     init:
-      mode: always
+      mode: never # 개발 초기 미실행
       schema-locations: classpath:db/schema.sql
 
   # JPA 설정
   jpa:
     hibernate:
-      ddl-auto: none # 테이블 자동 생성/삭제 비활성화
+      ddl-auto: create # 개발 초기 실행
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -25,3 +25,4 @@ spring:
 logging:
   level:
     org.hibernate: DEBUG # SQL 쿼리 로그 출력
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # 파라미터 값 출력

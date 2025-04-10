@@ -1,22 +1,11 @@
--- 평소에는 DROP문 주석 처리
--- DB 초기화(테이블 삭제 후 재생성)가 필요할 때만 주석 해제 (ddl-auto: create 대체)
-DROP TABLE IF EXISTS "messages";
-DROP TABLE IF EXISTS "chat_rooms";
-DROP TABLE IF EXISTS "files";
-DROP TABLE IF EXISTS "folders";
-DROP TABLE IF EXISTS "project_members";
-DROP TABLE IF EXISTS "projects";
-DROP TABLE IF EXISTS "users";
-
 -- users 테이블
 CREATE TABLE IF NOT EXISTS "users" (
   "id" BIGSERIAL PRIMARY KEY,
   "username" VARCHAR(50) NOT NULL,
-  "email" VARCHAR(100) NOT NULL,
-  "password_hash" VARCHAR(255) NOT NULL,
+  "email" VARCHAR(100) NOT NULL UNIQUE,
+  "password" VARCHAR(255) NOT NULL,
   "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT "users_email_unique" UNIQUE ("email")
 );
 
 -- projects 테이블
@@ -50,8 +39,8 @@ CREATE TABLE IF NOT EXISTS "folders" (
   "project_id" BIGINT NOT NULL,
   "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT "folders_parent_id_fkey" FOREIGN KEY ("parent_id") 
-    REFERENCES "folders" ("id") ON DELETE CASCADE,
+  -- CONSTRAINT "folders_parent_id_fkey" FOREIGN KEY ("parent_id") 
+  --   REFERENCES "folders" ("id") ON DELETE CASCADE,
   CONSTRAINT "folders_project_id_fkey" FOREIGN KEY ("project_id") 
     REFERENCES "projects" ("id") ON DELETE CASCADE
 );
