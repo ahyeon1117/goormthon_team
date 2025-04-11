@@ -38,16 +38,50 @@ services:
     build: ./runtime_python
     container_name: fastapi-server
     ports:
-      - "8000:8000"
+      - "8000:8001"
     depends_on:
       - mongodb
       - postgres
     volumes:
       - ./runtime_python:/app
     working_dir: /app
+    #배포할 때 command: 생략 가능하거나 운영 버전으로 수정
     command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
     environment:
       ENV: docker  # ← 여기가 핵심
+    networks:
+      - app-tier
+
+  kernel-gateway:
+    build: runtime_python/kernel_gateway
+    container_name: jupyter-kernel-gateway
+    ports:
+      - "8888:8888"
+    environment:
+      - KG_AUTH_TOKEN=rocket
+    networks:
+      - app-tier
+    depends_on:
+      - fastapi
+    command: >
+      jupyter kernelgateway
+      --KernelGatewayApp.ip=0.0.0.0
+      --KernelGatewayApp.port=8888
+      --KernelGatewayApp.auth_token=rocket
+      --KernelGatewayApp.default_kernel_name='python3'
+      --KernelGatewayApp.allow_origin=http://fastapi:8000
+
+  redis:
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    image: "bitnami/redis:latest"
+    networks:
+      - app-tier
+#    외부에서 접속 못 하게 포트 설정 제거
+#    ports:
+#      - "6379:6379"
+
+#로그인 인증 로직 도입하면 제한 걸어줘야 함
 
 volumes:
   mongovolume:

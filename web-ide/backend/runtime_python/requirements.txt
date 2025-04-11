@@ -1,5 +1,5 @@
 fastapi
-uvicorn
+uvicorn[standard]
 pymongo
 psycopg2-binary
 jupyter-client
@@ -7,3 +7,8 @@ requests
 pydantic
 python-dotenv
 motor
+redis  # aioredis 대체
+websockets
+httpx
+pytest
+pytest-asyncio
