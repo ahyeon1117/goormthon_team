@@ -26,7 +26,7 @@ public class Message {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     @Column(nullable = false)
     private String content;
 
