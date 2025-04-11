@@ -1,8 +1,8 @@
 package io.goorm.backend.repository;
 
-import io.goorm.backend.entity.User;
+import io.goorm.backend.entity.ProjectMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Long> {
 }
