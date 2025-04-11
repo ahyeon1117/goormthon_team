@@ -1,4 +1,4 @@
-import rocketIcon from './assets/rocket-icon.svg';
+import rocketIcon from '../assets/rocket-icon.svg'
 import { FaCode } from 'react-icons/fa';
 import { Link } from 'react-router-dom'
 

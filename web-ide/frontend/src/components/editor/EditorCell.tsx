@@ -1,4 +1,4 @@
-import { Cell } from "../types/cell";
+import { Cell } from '../../types/cell';
 import MonacoEditor from '@monaco-editor/react';
 
 type Props = {
@@ -23,7 +23,7 @@ export const EditorCell = ({cell, onChange}: Props) => {
     />
   ) : (
     <textarea 
-      className='w-full border p-2'
+      className="w-full bg-background text-dashboard-gray border border-dashboard-gray/30 rounded-lg p-2 font-mono"
       value={cell.content}
       onChange={(e) => onChange(cell.id, e.target.value)}
     />
