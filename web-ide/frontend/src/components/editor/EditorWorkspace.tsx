@@ -13,7 +13,7 @@ function EditorWorkspace({ cells, onChange }: Props) {
         <p className="text-dashboard-gray text-sm">Code와 Text를 추가해보세요!</p>
       ) : (
         cells.map((cell) => (
-          <div key={cell.id}>
+          <div key={cell.metadata.id}>
             <EditorCell cell={cell} onChange={onChange} />
           </div>
         ))
