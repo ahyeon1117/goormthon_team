@@ -9,6 +9,9 @@ type Props = {
 const Header = ({ onAddCell }: Props) => {
   const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);
   const fileMenuRef = useRef<HTMLDivElement>(null);
+  const handleAddCode = () => onAddCell('code');
+const handleAddMarkdown = () => onAddCell('markdown');
+
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -50,8 +53,8 @@ const Header = ({ onAddCell }: Props) => {
       </div>
 
       <div className="flex items-center gap-6 text-sm text-dashboard-gray">
-        <button onClick={() => onAddCell('code')} className="hover:text-white">+ Code</button>
-        <button onClick={() => onAddCell('markdown')} className="hover:text-white">+ Text</button>
+        <button onClick={handleAddCode} className="hover:text-white">+ Code</button>
+        <button onClick={handleAddMarkdown} className="hover:text-white">+ Text</button>
         <FiUser className="text-xl hover:text-white" />
       </div>
     </header>

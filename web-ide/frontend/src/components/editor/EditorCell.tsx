@@ -7,13 +7,17 @@ type Props = {
 };
 
 export const EditorCell = ({cell, onChange}: Props) => {
-  return cell.type === 'code' ? (
-    <MonacoEditor 
-      language='python'
-      value={cell.content}
-      onChange={(value) => onChange(cell.id, value || '')}
-      theme='vs-dark'
-      height='100px'
+  const handleChange = (value: string) => {
+    onChange(cell.metadata.id, value);
+  };
+
+  return cell.cell_type === 'code' ? (
+    <MonacoEditor
+      language="python"
+      value={cell.source[0] || ''}
+      onChange={(value) => handleChange(value || '')}
+      theme="vs-dark"
+      height="100px"
       options={{
         wordWrap: 'on',
         minimap: { enabled: false },
@@ -22,10 +26,10 @@ export const EditorCell = ({cell, onChange}: Props) => {
       }}
     />
   ) : (
-    <textarea 
+    <textarea
       className="w-full bg-background text-dashboard-gray border border-dashboard-gray/30 rounded-lg p-2 font-mono"
-      value={cell.content}
-      onChange={(e) => onChange(cell.id, e.target.value)}
+      value={cell.source[0] || ''}
+      onChange={(e) => handleChange(e.target.value)}
     />
   );
 }
