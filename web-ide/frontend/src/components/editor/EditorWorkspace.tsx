@@ -3,7 +3,7 @@ import { Cell } from '../../types/cell';
 
 type Props = {
   cells: Cell[];
-  onChange: (id: string, content: string) => void;
+  onChange: (id: string, content: string[]) => void;
 };
 
 function EditorWorkspace({ cells, onChange }: Props) {

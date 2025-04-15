@@ -13,11 +13,11 @@ import ChatButton from '../components/workspace/ChatButton';
 const WorkspacePage = () => {
   const [selectedFile, setSelectedFile] = useState<FileLeaf | null>(null);
 
-  const handleChange = (id: string, content: string) => {
+  const handleChange = (id: string, content: string[]) => {
     if (!selectedFile) return;
 
     const updatedCells = selectedFile.content.cells.map((cell) =>
-      cell.metadata.id === id ? { ...cell, source: [content] } : cell
+      cell.metadata.id === id ? { ...cell, source: content } : cell
     );
 
     setSelectedFile({
