@@ -6,9 +6,12 @@ import MonacoEditor, {OnMount} from '@monaco-editor/react';
 type Props = {
   cell: Cell;
   onChange: (id: string, content: string[]) => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  onDelete: () => void;
 };
 
-export const EditorCell = ({cell, onChange}: Props) => {
+export const EditorCell = ({cell, onChange, onMoveUp, onMoveDown, onDelete}: Props) => {
   const editorRef = useRef<any>(null);
   const [editorHeight, setEditorHeight] = useState(20);
   const MAX_HEIGHT = 400; // 최대 높이 제한
@@ -43,7 +46,9 @@ export const EditorCell = ({cell, onChange}: Props) => {
     }
   }, [joinedSource]);
 
-  return cell.cell_type === 'code' ? (
+  return (
+    <div className='relative group'>
+    {cell.cell_type === 'code' ? (
     <MonacoEditor
       language="python"
       value={joinedSource}
@@ -71,5 +76,12 @@ export const EditorCell = ({cell, onChange}: Props) => {
       value={joinedSource}
       onChange={(e) => handleChange(e.target.value)}
     />
-  );
+  )}
+  <div className="absolute right-2 top-0 flex gap-1 opacity-0 group-hover:opacity-100 transition">
+      <button onClick={onMoveUp}>↑</button>
+      <button onClick={onMoveDown}>↓</button>
+      <button onClick={onDelete}>✕</button>
+    </div>
+  </div>
+);
 }
