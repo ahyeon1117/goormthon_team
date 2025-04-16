@@ -44,6 +44,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ErrorResponse.of(404, e.getMessage(), "USER_NOT_FOUND", request.getRequestURI()));
     }
+    
+    // [이메일 중복 예외] - 이메일이 이미 존재하는 경우
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateEmailException(DuplicateEmailException e, HttpServletRequest request) {
+        log.warn("이메일 중복: {}", request.getRequestURI(), e);
+    
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ErrorResponse.of(409, e.getMessage(), "DUPLICATE_EMAIL", request.getRequestURI()));
+    }
 
     // ========================================================
     // 2. 기본 예외 처리 (JWT, Validation, DB 등)
