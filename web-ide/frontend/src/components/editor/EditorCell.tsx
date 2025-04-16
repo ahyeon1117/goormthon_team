@@ -14,7 +14,7 @@ type Props = {
 export const EditorCell = ({cell, onChange, onMoveUp, onMoveDown, onDelete}: Props) => {
   const editorRef = useRef<any>(null);
   const [editorHeight, setEditorHeight] = useState(20);
-  const MAX_HEIGHT = 400; // 최대 높이 제한
+  // const MAX_HEIGHT = 400; // 최대 높이 제한
 
   const handleChange = (value: string) => {
     const lines = value.split('\n');
@@ -28,7 +28,7 @@ export const EditorCell = ({cell, onChange, onMoveUp, onMoveDown, onDelete}: Pro
     const updateHeight = () => {
       const contentHeight = editor.getContentHeight();
       if (contentHeight > 20) {
-        setEditorHeight(Math.min(contentHeight, MAX_HEIGHT));
+        setEditorHeight(contentHeight);
         editor.layout(); // 강제 layout
       }
     };
@@ -66,7 +66,11 @@ export const EditorCell = ({cell, onChange, onMoveUp, onMoveDown, onDelete}: Pro
         scrollbar: {
           vertical: 'auto', horizontal: 'auto',
         },
-        lineNumbers: 'on'
+        lineNumbers: 'on',
+        padding: {
+          top: 5,
+          bottom: 5
+        }
       }}
     />
   ) : (
