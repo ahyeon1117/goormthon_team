@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 회원가입 요청 DTO
+ * 이름, 이메일, 비밀번호를 입력받는다.
  */
 @Getter
 @NoArgsConstructor // HTTP 요청의 JSON을 객체로 변환하기 위한 기본 생성자

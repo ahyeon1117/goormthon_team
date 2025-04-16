@@ -6,12 +6,6 @@ spring:
     password: qwer123!
     driver-class-name: org.postgresql.Driver
 
-  # schema.sql 실행
-  sql:
-    init:
-      mode: never # 개발 초기 미실행
-      schema-locations: classpath:db/schema.sql
-
   # JPA 설정
   jpa:
     hibernate:
@@ -22,7 +16,28 @@ spring:
         # show_sql: true   # SQL 쿼리 콘솔 출력
         format_sql: true # SQL 쿼리 포맷팅
 
+  # 스키마 초기화 설정
+  sql:
+    init:
+      mode: never # 개발 초기 미실행
+      schema-locations: classpath:db/schema.sql
+
+  # Redis 설정
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+# JWT 설정 (보안을 위해 실제 배포 시 변경)
+jwt:
+  secret: d3e11a19fb2da11f7d2b5145934e462fb141f599fe7334739c59791c6fb30b77 # 64바이트 랜덤 문자열 (보안을 위해 실제 배포 시 변경)
+  refresh_secret: a9c8b7d6e5f4g3h2i1j0k9l8m7n6o5p4q3r2s1t0u9v8w7x6y5z4a3b2c1d # 64바이트 랜덤 문자열 (보안을 위해 실제 배포 시 변경)
+  expiration_time: 30 # 액세스 토큰 만료 시간(분)
+
+# 개발용 로깅 설정
 logging:
   level:
-    org.hibernate: DEBUG # SQL 쿼리 로그 출력
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # 파라미터 값 출력
+    org.hibernate.SQL: debug  # SQL 쿼리 출력
+    org.hibernate.type.descriptor.sql.BasicBinder: trace  # 바인딩 값도 출력
+    org.hibernate.query.sqm.function: info  # 함수 등록 로그 숨김
+    org.hibernate.orm: info  # Hibernate 내부 설정 로그 줄임
