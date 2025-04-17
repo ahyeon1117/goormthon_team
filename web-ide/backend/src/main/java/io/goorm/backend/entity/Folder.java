@@ -2,18 +2,21 @@ package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
 @Table(name = "folders")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Folder {
+    Optional<Folder> findByNameAndProject(String name, Project project);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,4 +39,11 @@ public class Folder {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Builder
+    public Folder(String name, Long parentId, Project project) {
+        this.name = name;
+        this.parentId = parentId;
+        this.project = project;
+    }
 }

@@ -2,6 +2,7 @@ package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,4 +41,12 @@ public class File {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Builder
+    public File(String name, String content, Folder folder, Project project) {
+        this.name = name;
+        this.content = content;
+        this.folder = folder;
+        this.project = project;
+    }
 }
