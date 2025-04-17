@@ -21,7 +21,7 @@ import java.io.IOException;
 
 /**
  * JWT 토큰 검증 필터
- * 로그인 이후의 요청에서 Authorization 헤더에 있는 토큰을 검증해서 사용자 인증을 시켜주는 필터
+ * 로그인 이후의 요청에서 Authorization 헤더에 있는 JWT 토큰을 검증해서 사용자 인증을 시켜주는 필터
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -36,8 +36,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        // 인증이 필요 없는 경로는 필터를 건너뜀
-        if (publicUrlMatcher != null && publicUrlMatcher.matches(request)) {
+
+        // 인증이 필요 없는 경로는 필터를 건너뜀 (auth, swagger 등)
+        if (publicUrlMatcher.matches(request)) {
             filterChain.doFilter(request, response);
             return;
         }

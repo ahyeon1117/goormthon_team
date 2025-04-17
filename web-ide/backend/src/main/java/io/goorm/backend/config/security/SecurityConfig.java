@@ -50,8 +50,13 @@ public class SecurityConfig {
         // ignoring()을 사용하면 필터 자체를 무시하기 때문에, permitAll()로 설정해야 보안 필터는 통과하면서 인증만 우회함
         OrRequestMatcher publicUrlMatcher = new OrRequestMatcher(
             new AntPathRequestMatcher("/api/v1/auth/**"),
+            new AntPathRequestMatcher("/v3/api-docs/**"),
             new AntPathRequestMatcher("/swagger-ui/**"),
-            new AntPathRequestMatcher("/v3/api-docs/**")
+            
+            // swagger-ui/** 만으로는 아래 경로들은 필터 매칭 안되므로 명시 필요
+            new AntPathRequestMatcher("/swagger-ui.html"),
+            new AntPathRequestMatcher("/swagger-resources/**"),
+            new AntPathRequestMatcher("/webjars/**")
         );
 
         http
@@ -59,7 +64,7 @@ public class SecurityConfig {
                 .headers(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Swagger UI 접근 허용
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**").permitAll() // Swagger UI 접근 허용
                         .anyRequest().authenticated() // 그 외 모든 요청 인증 처리
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

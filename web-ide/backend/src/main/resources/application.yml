@@ -28,6 +28,15 @@ spring:
       host: localhost
       port: 6379
 
+# Swagger 설정
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html # UI 접속 경로
+    operations-sorter: method # HTTP 메서드순 정렬
+    tags-sorter: alpha # 컨트롤러명 알파벳순 정렬
+  api-docs:
+    path: /v3/api-docs # OpenAPI JSON 문서 경로
+
 # JWT 설정 (보안을 위해 실제 배포 시 변경)
 jwt:
   secret: d3e11a19fb2da11f7d2b5145934e462fb141f599fe7334739c59791c6fb30b77 # 64바이트 랜덤 문자열 (보안을 위해 실제 배포 시 변경)

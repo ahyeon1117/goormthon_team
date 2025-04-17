@@ -32,10 +32,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 	// Spring Boot Extension (부가 기능)
-	implementation 'org.springframework.boot:spring-boot-starter-validation' // Validation (데이터 검증)
+	implementation 'org.springframework.boot:spring-boot-starter-validation' // Bean Validation
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis' // Redis
 
-	// 데이터베이스
+	// 외부 연동 도구
+	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6" // Swagger UI
+
+	// 데이터베이스 드라이버
 	runtimeOnly 'org.postgresql:postgresql'
 
 	// JWT (토큰 인증)
