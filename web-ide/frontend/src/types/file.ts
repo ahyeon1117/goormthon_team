@@ -12,14 +12,13 @@ export interface FolderNode {
 
 export interface FileLeaf {
   id: number;
-  name:string;
+  name: string;
   type: 'file';
   project_id: number;
   folder_id: number;
-  content: Content // 파일인경우
+  content: Content; // 파일인경우
 }
 
 export interface Content {
   cells: Cell[];
 }
-
