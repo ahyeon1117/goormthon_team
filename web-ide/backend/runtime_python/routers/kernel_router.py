@@ -1,8 +1,6 @@
-from pydantic import BaseModel
-import httpx
-import os
 from fastapi import APIRouter, HTTPException
-from services.kernel_manager import get_or_create_kernel
+from pydantic import BaseModel
+import aiohttp
 
 class UserRequest(BaseModel):
     user_id: str
@@ -15,18 +13,16 @@ KG_AUTH_TOKEN = "rocket"
 
 @router.post("/api/kernels")
 async def create_kernel(user_id: str):
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            f"{KERNEL_GATEWAY_URL}/api/kernels",  # 엔드포인트
-            headers={
-                "Authorization": f"token {KG_AUTH_TOKEN}",
-                "Content-Type": "application/json"
-            },
-            json={"user_id": user_id}  # 요청 본문에 JSON 데이터 포함
-        )
-        response.raise_for_status()  # 예외 처리
+    headers = {
+        "Authorization": f"token {KG_AUTH_TOKEN}",
+        "Content-Type": "application/json"
+    }
 
-        if response.status_code in (200, 201):
-            return response.json()
-        else:
-            raise HTTPException(status_code=response.status_code, detail="Kernel creation failed")
+    async with aiohttp.ClientSession() as session:
+        async with session.post(f"{KERNEL_GATEWAY_URL}/api/kernels", headers=headers, json={"user_id": user_id}) as resp:
+            if resp.status in (200, 201):
+                kernel_data = await resp.json()
+                return kernel_data
+            else:
+                detail = await resp.text()
+                raise HTTPException(status_code=resp.status, detail=f"Kernel creation failed: {detail}")
