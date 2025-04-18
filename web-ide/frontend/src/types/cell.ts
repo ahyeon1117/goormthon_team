@@ -1,5 +1,5 @@
 export type Cell = {
-  cell_type: "code" | "markdown";
+  cell_type: 'code' | 'markdown';
   source: string[];
   metadata: {
     id: string;

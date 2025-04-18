@@ -2,13 +2,7 @@ import { EditorCell } from './EditorCell';
 import { useFile } from '../../contexts/useFile';
 
 function EditorWorkspace() {
-  const {
-    selectedFile,
-    handleChange,
-    handleMoveUp,
-    handleMoveDown,
-    handleDelete,
-  } = useFile();
+  const { selectedFile, handleChange, handleMoveUp, handleMoveDown, handleDelete } = useFile();
 
   if (!selectedFile) return null;
 
