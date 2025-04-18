@@ -46,16 +46,12 @@ async def communicate_with_kernel(kernel_id: str, message: dict) -> dict:
                 msg_type = response_json.get("msg_type", "")
                 content = response_json.get("content", {})
 
-                # 커널 준비가 완료된 후 메시지 전송
-                await websocket.send(json.dumps(message))
-
                 # 커널 상태가 idle이면 메시지를 보낼 수 있음
                 if msg_type == "status" and content.get("execution_state") == "idle":
                     print("✅ Kernel is idle and ready for execution.")
                     break
                 # 상태가 idle이 아니면 계속 기다림
                 await asyncio.sleep(3)
-
 
             result = {
                 "outputs": [],
@@ -77,12 +73,14 @@ async def communicate_with_kernel(kernel_id: str, message: dict) -> dict:
                         "execution_count": content.get("execution_count"),
                         "metadata": content.get("metadata", {}),
                     })
+
                 elif msg_type == "stream":
                     result["outputs"].append({
                         "output_type": "stream",
                         "name": content.get("name"),
                         "text": content.get("text"),
                     })
+
                 elif msg_type == "error":
                     result["outputs"].append({
                         "output_type": "error",
