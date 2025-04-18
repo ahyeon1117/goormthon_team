@@ -1,9 +1,15 @@
-import { useRef, useEffect, useState } from 'react'
-
+import {
+  useRef,
+  useEffect,
+  useState,
+  ReactNode,
+  MouseEventHandler,
+} from 'react';
+import MonacoEditor, { OnMount } from '@monaco-editor/react';
 import { Cell } from '../../types/cell';
-import MonacoEditor, {OnMount} from '@monaco-editor/react';
 
 type Props = {
+  children: ReactNode;
   cell: Cell;
   onChange: (id: string, content: string[]) => void;
   onMoveUp: () => void;
@@ -11,15 +17,20 @@ type Props = {
   onDelete: () => void;
 };
 
-export const EditorCell = ({cell, onChange, onMoveUp, onMoveDown, onDelete}: Props) => {
+export function EditorCell({ children }: Props) {
+  return <div className="relative group">{children}</div>;
+}
+
+
+EditorCell.Code = function CodeCell({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
   const editorRef = useRef<any>(null);
   const [editorHeight, setEditorHeight] = useState(20);
-  // const MAX_HEIGHT = 400; // 최대 높이 제한
-
-  const handleChange = (value: string) => {
-    const lines = value.split('\n');
-    onChange(cell.metadata.id, lines);
-  };
 
   const handleEditorMount: OnMount = (editor) => {
     editorRef.current = editor;
@@ -34,58 +45,69 @@ export const EditorCell = ({cell, onChange, onMoveUp, onMoveDown, onDelete}: Pro
     };
     editor.onDidContentSizeChange(updateHeight);
   };
-
-
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const joinedSource = cell.source.join('\n');
-
-  useEffect(() => {
-    if(textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
-    }
-  }, [joinedSource]);
-
   return (
-    <div className='relative group'>
-    {cell.cell_type === 'code' ? (
     <MonacoEditor
       language="python"
-      value={joinedSource}
-      onChange={(value) => handleChange(value || '')}
+      value={value}
+      onChange={(value) => onChange(value || "")}
       onMount={handleEditorMount}
       theme="vs-dark"
       height={editorHeight}
       options={{
-        wordWrap: 'on',
+        wordWrap: "on",
         minimap: { enabled: false },
         fontSize: 14,
         tabSize: 2,
         scrollBeyondLastLine: false,
         automaticLayout: true,
         scrollbar: {
-          vertical: 'auto', horizontal: 'auto',
+          vertical: "auto",
+          horizontal: "auto",
         },
-        lineNumbers: 'on',
+        lineNumbers: "on",
         padding: {
           top: 5,
-          bottom: 5
-        }
+          bottom: 5,
+        },
       }}
     />
-  ) : (
+  );
+};
+
+EditorCell.Text = function TextCell({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const textarearef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (textarearef.current) {
+      textarearef.current.style.height = 'auto';
+      textarearef.current.style.height = `${textarearef.current.scrollHeight}px`;
+    }
+  }, [value]);
+
+  return (
     <textarea
-      ref={textareaRef}
+      ref={textarearef}
       className="w-full bg-background text-dashboard-gray border border-dashboard-gray/30 rounded-lg p-2 font-mono"
-      value={joinedSource}
-      onChange={(e) => handleChange(e.target.value)}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
     />
-  )}
-  <div className="absolute right-2 top-0 flex gap-1 opacity-0 group-hover:opacity-100 transition">
-      <button onClick={onMoveUp}>↑</button>
-      <button onClick={onMoveDown}>↓</button>
-      <button onClick={onDelete}>✕</button>
-    </div>
-  </div>
-);
-}
+  );
+};
+
+EditorCell.Action = {
+  MoveUp: ({ onClick }: { onClick: MouseEventHandler }) => (
+    <button onClick={onClick}>↑</button>
+  ),
+  MoveDown: ({ onClick }: { onClick: MouseEventHandler }) => (
+    <button onClick={onClick}>↓</button>
+  ),
+  Delete: ({ onClick }: { onClick: MouseEventHandler }) => (
+    <button onClick={onClick}>✕</button>
+  ),
+};
