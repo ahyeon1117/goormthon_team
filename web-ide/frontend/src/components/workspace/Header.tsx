@@ -22,10 +22,10 @@ const Header = () => {
   }, [isFileMenuOpen]);
 
   return (
-    <header className="w-full h-14 pr-6 pl-2 border-b border-dashboard-gray/30 flex items-center justify-between">
+    <header className="w-full h-14 px-6 border-b border-dashboard-gray/30 flex items-center justify-between">
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-4">
-          <img src={rocketIcon} alt="Rocket Logo" className="w-12 h-12" />
+          <img src={rocketIcon} alt="Rocket Logo" className="w-6 h-6" />
           <span className="text-base font-semibold text-white">File Name</span>
         </div>
         <nav className="flex items-center gap-6 text-sm text-dashboard-gray relative">

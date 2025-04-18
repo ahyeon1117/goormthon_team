@@ -5,10 +5,7 @@ import { Cell } from '../../types/cell';
 type Props = {
   children: ReactNode;
   cell: Cell;
-  onChange: (id: string, content: string[]) => void;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
-  onDelete: () => void;
+  onChange: (id: string, content: string) => void;
 };
 
 export function EditorCell({ children }: Props) {

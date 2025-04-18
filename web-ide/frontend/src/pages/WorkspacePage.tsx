@@ -2,7 +2,7 @@ import { mockFileTree } from '../mock/mockFileTree';
 
 import Header from '../components/workspace/Header';
 import Sidebar from '../components/workspace/Sidebar';
-import { FileTree } from '../components/workspace/FileTree';
+import FileTree from '../components/workspace/FileTree';
 import EditorWorkspace from '../components/editor/EditorWorkspace';
 import ChatButton from '../components/workspace/ChatButton';
 import { FileProvider } from '../contexts/FileContext';

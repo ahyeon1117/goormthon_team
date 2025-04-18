@@ -1,15 +1,32 @@
-from fastapi import APIRouter, Request
+from pydantic import BaseModel
+import httpx
+import os
+from fastapi import APIRouter, HTTPException
 from services.kernel_manager import get_or_create_kernel
 
+class UserRequest(BaseModel):
+    user_id: str
 router = APIRouter()
 
-@router.post("/api/v1/kernel")
-async def create_or_get_kernel(request: Request):
-    data = await request.json()
-    user_id = data.get("user_id")
+# 배포할 떄 변경=> KERNEL_GATEWAY_URL = "http://host.docker.internal:8888"  # 도커 환경에서 사용
+KERNEL_GATEWAY_URL = "http://localhost:8888"
 
-    if not user_id:
-        return {"error": "user_id is required"}
+KG_AUTH_TOKEN = "rocket"
 
-    kernel_id = await get_or_create_kernel(user_id)
-    return {"kernel_id": kernel_id}
+@router.post("/api/kernels")
+async def create_kernel(user_id: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            f"{KERNEL_GATEWAY_URL}/api/kernels",  # 엔드포인트
+            headers={
+                "Authorization": f"token {KG_AUTH_TOKEN}",
+                "Content-Type": "application/json"
+            },
+            json={"user_id": user_id}  # 요청 본문에 JSON 데이터 포함
+        )
+        response.raise_for_status()  # 예외 처리
+
+        if response.status_code in (200, 201):
+            return response.json()
+        else:
+            raise HTTPException(status_code=response.status_code, detail="Kernel creation failed")

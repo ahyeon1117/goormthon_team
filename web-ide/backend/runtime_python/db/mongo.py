@@ -29,3 +29,6 @@ db = async_client[MONGO_DB]
 code_cells = db["code_cells"]
 # file_collection도 여기서 추가해두는 게 좋음
 file_collection = db["files"]
+
+def get_mongo_client():
+    return db
