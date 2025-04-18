@@ -22,28 +22,22 @@ const Header = () => {
   }, [isFileMenuOpen]);
 
   return (
-    <header className="w-full h-14 px-6 border-b border-dashboard-gray/30 flex items-center justify-between">
+    <header className="w-full h-14 pr-6 pl-2 border-b border-dashboard-gray/30 flex items-center justify-between">
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-4">
-          <img src={rocketIcon} alt="Rocket Logo" className="w-6 h-6" />
+          <img src={rocketIcon} alt="Rocket Logo" className="w-12 h-12" />
           <span className="text-base font-semibold text-white">File Name</span>
         </div>
         <nav className="flex items-center gap-6 text-sm text-dashboard-gray relative">
           <div className="relative" ref={fileMenuRef}>
-            <button className="hover:text-white" onClick={() => setIsFileMenuOpen((prev) => !prev)}>
+            <button className="hover:text-white" onClick={() => setIsFileMenuOpen(prev => !prev)}>
               File
               {isFileMenuOpen && (
                 <div className="absolute top-full left-0 mt-2 w-40 bg-dashboard-background border border-dashboard-gray/30 rounded-lg z-50">
                   <ul className="flex flex-col text-sm text-dashboard-gray">
-                    <li className="hover:bg-dashboard-btn-hover px-4 py-2 cursor-pointer">
-                      새 파일
-                    </li>
-                    <li className="hover:bg-dashboard-btn-hover px-4 py-2 cursor-pointer">
-                      폴더 열기
-                    </li>
-                    <li className="hover:bg-dashboard-btn-hover px-4 py-2 cursor-pointer">
-                      파일 열기
-                    </li>
+                    <li className="hover:bg-dashboard-btn-hover px-4 py-2 cursor-pointer">새 파일</li>
+                    <li className="hover:bg-dashboard-btn-hover px-4 py-2 cursor-pointer">폴더 열기</li>
+                    <li className="hover:bg-dashboard-btn-hover px-4 py-2 cursor-pointer">파일 열기</li>
                   </ul>
                 </div>
               )}
@@ -57,12 +51,8 @@ const Header = () => {
       </div>
 
       <div className="flex items-center gap-6 text-sm text-dashboard-gray">
-        <button onClick={handleAddCode} className="hover:text-white">
-          + Code
-        </button>
-        <button onClick={handleAddMarkdown} className="hover:text-white">
-          + Text
-        </button>
+        <button onClick={handleAddCode} className="hover:text-white">+ Code</button>
+        <button onClick={handleAddMarkdown} className="hover:text-white">+ Text</button>
         <FiUser className="text-xl hover:text-white" />
       </div>
     </header>
