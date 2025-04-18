@@ -9,8 +9,10 @@ import java.util.Optional;
 
 public interface FileRepository extends JpaRepository<File, Long> {
     Optional<File> findByNameAndFolder(String fileName, Folder folder);
+    Optional<File> findByNameAndProjectAndFolderIsNull(String fileName, Project project);
 
     void deleteByFolder(Folder folder);
+    void deleteAllByFolder(Folder folder);
 
-    void deleteAllByFolder(Object folder);
+
 }

@@ -1,10 +1,7 @@
 package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,12 +13,15 @@ import java.util.Optional;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Folder {
-    Optional<Folder> findByNameAndProject(String name, Project project);
+    Optional<Folder> findByNameAndProject(String name, Project project) {
+        return null;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Column(nullable = false, length = 255)
     private String name;
 
@@ -46,4 +46,5 @@ public class Folder {
         this.parentId = parentId;
         this.project = project;
     }
+
 }
