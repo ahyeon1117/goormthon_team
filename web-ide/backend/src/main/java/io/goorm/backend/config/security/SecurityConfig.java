@@ -1,7 +1,8 @@
 package io.goorm.backend.config.security;
 
-import io.goorm.backend.service.JwtService;
 import io.goorm.backend.global.filter.JwtAuthFilter;
+import io.goorm.backend.service.auth.CustomUserDetailsService;
+import io.goorm.backend.service.auth.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +11,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,9 +24,9 @@ import org.springframework.security.web.util.matcher.OrRequestMatcher;
 public class SecurityConfig {
 
     private final JwtService jwtService; // 토큰 생성 및 검증 서비스
-    private final UserDetailsService userDetailsService; // 사용자 정보를 DB에서 조회하는 서비스
-    //  private final AuthenticationConfiguration authenticationConfiguration; // 인증 관리자 설정
+    private final CustomUserDetailsService customUserDetailsService; // 사용자 정보를 DB에서 조회하는 서비스
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // 인증 예외 처리
+    //  private final AuthenticationConfiguration authenticationConfiguration; // 인증 관리자 설정
 
     // 인증 관리자 빈 등록
     @Bean
@@ -36,7 +36,7 @@ public class SecurityConfig {
 
     /*
     // 커스텀 로그인 필터 (로그인 요청을 가로채 AuthenticationManager에게 인증 처리를 위임)
-    // 현재 프로젝트에서는 로인 필터가 아닌 컨트롤러에서 로그인 처리를 하고 있어 사용하지 않음
+    // ! 현재 프로젝트에서는 로인 필터가 아닌 컨트롤러에서 로그인 처리를 하고 있어 사용하지 않음
     // @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
         JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtService);
@@ -44,7 +44,6 @@ public class SecurityConfig {
         return filter;
     }
     */
-    
 
     // 기본 SecurityFilterChain 설정
     @Bean
@@ -73,7 +72,7 @@ public class SecurityConfig {
                 // .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(
                         new JwtAuthFilter(
-                                userDetailsService,
+                                customUserDetailsService,
                                 jwtService,
                                 publicUrlMatcher
                         ),

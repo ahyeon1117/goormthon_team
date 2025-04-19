@@ -1,7 +1,8 @@
-package io.goorm.backend.service;
+package io.goorm.backend.service.auth;
 
 import io.goorm.backend.dto.auth.JwtUserInfoDto;
 import io.goorm.backend.global.exception.NotFoundUserException;
+import io.goorm.backend.security.CustomUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -10,11 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
@@ -50,25 +49,27 @@ public class JwtService {
         refreshTokenExpireTime = ONE_MINUTE * (accessTokenExpiresTime * 2); // 60 min
     }
 
-    // 토큰 생성
+    /**
+     * Access + Refresh 토큰 생성 및 Redis에 저장
+     * -> AuthService에서 토큰 생성 시 사용됨
+     */
     public String createToken(JwtUserInfoDto user) {
-        String accessToken = generateAccessToken(user); // 액세스 토큰 생성
-        String refreshToken = generateRefreshToken(user); // 리프레시 토큰 생성
-        saveToRedis(accessToken, refreshToken); // 리프레시 토큰을 Redis에 저장
-        return accessToken; // 액세스 토큰만 반환
+        // JwtUserInfoDto에 담긴 userId를 기반으로 Access + Refresh 토큰 생성
+        String accessToken = generateAccessToken(user);
+        String refreshToken = generateRefreshToken(user);
+
+        // Redis에 key=accessToken, value=refreshToken 형태로 저장
+        saveToRedis(accessToken, refreshToken);
+
+        // 프론트엔드에 보낼 accessToken 반환
+        return accessToken;
     }
 
-    // 토큰 생성 (만료 시간 지정)
-    public String createToken(JwtUserInfoDto user, Instant expiredTime) {
-        Claims claims = Jwts.claims();
-        claims.put(USERNAME_KEY, user.getId()); // 사용자 식별자
-        claims.put(ROLE_KEY, "ROLE_USER"); // 모든 사용자에게 기본 권한 부여
-        Date expires = Date.from(expiredTime);
-
-        return makeToken(key, claims, expires);
-    }
-
-    // Access Token 생성
+    /**
+     * AccessToken 생성 - 기본 (RefreshToken 기반 재발급 시 사용됨)
+     * 
+     * Claim란? JWT 안에 들어 있는 정보 중 "페이로드"에 담긴 정보 (즉, 사용자 정보나 기타 데이터)
+     */
     private String generateAccessToken(Claims claims) {
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime expires = now.plusSeconds(accessTokenExpireTime); // CurrentTime + ExpireTime
@@ -76,18 +77,25 @@ public class JwtService {
         return makeToken(key, claims, Date.from(now.toInstant()), Date.from(expires.toInstant()));
     }
 
+    /**
+     * AccessToken 생성 - 리프레시 토큰 기반
+     */
     private String generateAccessToken(JwtUserInfoDto user) {
-        Claims claims = Jwts.claims();
-        claims.put(USERNAME_KEY, user.getId());
-        claims.put(ROLE_KEY, "ROLE_USER");
+        Claims claims = Jwts.claims(); // JWT 토큰에 넣을 데이터 객체 생성
+        claims.put(USERNAME_KEY, user.getId()); // user_id 키에 사용자 식별자 저장
+        // claims.put(ROLE_KEY, "ROLE_USER"); // 현재는 권한 없으므로 주석 처리
 
+        // 현재 시간 기준으로 accessToken 만료 시간 계산
         long now = (new Date()).getTime();
         Date expires = new Date(now + accessTokenExpireTime);
 
+        // JWT 토큰 문자열 생성 후 반환
         return makeToken(key, claims, expires);
     }
 
-    // Refresh Token 생성
+    /**
+     * RefreshToken 생성
+     */
     private String generateRefreshToken(JwtUserInfoDto user) {
         Claims claims = Jwts.claims();
         claims.put(USERNAME_KEY, user.getId());
@@ -100,10 +108,10 @@ public class JwtService {
     // 실제 JWT 문자열 생성
     private String makeToken(Key secretKey, Claims claims, Date expires) {
         return Jwts.builder()
-                .setClaims(claims)
-                .setExpiration(expires)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
-                .compact();
+                .setClaims(claims) // 토큰에 넣을 데이터 객체 설정
+                .setExpiration(expires) // 토큰 만료 시간 설정
+                .signWith(secretKey, SignatureAlgorithm.HS256) // HS256 알고리즘 + 비밀키로 서명
+                .compact(); // 최종적으로 토큰 문자열 생성
     }
 
     private String makeToken(Key secretKey, Claims claims, Date start, Date expires) {
@@ -116,33 +124,51 @@ public class JwtService {
                 .compact();
     }
 
-    public String getUserId() {
-        return getUserInfo(USERNAME_KEY);
-    }
+    // 해당 메서드는 아래 getLoginUserId 메서드로 대체됨
+    // public String getUserId() {
+    //     return getUserInfo(USERNAME_KEY);
+    // }
 
-    public String getUserId(String accessToken) {
-        return parseClaims(accessToken)
-                .get(USERNAME_KEY, String.class);
-    }
-
-    // 사용자 정보 추출
-    private String getUserInfo(String needKey) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
-            userDetails = (UserDetails) authentication.getPrincipal();
-            return switch (needKey) {
-                case USERNAME_KEY -> userDetails.getUsername();
-                case ROLE_KEY -> userDetails.getAuthorities().toString();
-                default -> throw new NotFoundUserException();
-            };
+    /**
+     * 현재 로그인한 사용자의 userId (PK) 반환
+     */
+    public Long getUserId() {
+        // 로그인한 사용자의 인증 정보 조회
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    
+        if (auth != null && auth.getPrincipal() instanceof CustomUserDetails customUserDetails) {
+            return customUserDetails.getUser().getId(); // userId 반환 (권한은 필요 없으므로 userId만 반환)
         }
-        return null;
+    
+        throw new NotFoundUserException();
     }
 
-    public String getUserAuthority() {
-        return getUserInfo(ROLE_KEY);
+    /**
+     * 토큰에서 userId 추출
+     * -> JwtAuthFilter에서 사용자 식별자 추출 시 사용됨
+     */
+    public Long getUserId(String accessToken) {
+        return parseClaims(accessToken)
+                .get(USERNAME_KEY, Long.class);
     }
 
+    // 해당 메서드 또한 getLoginUserId 메서드로 대체됨
+    // private String getUserInfo(String needKey) {
+    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    //     if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
+    //         userDetails = (UserDetails) authentication.getPrincipal();
+    //         return switch (needKey) {
+    //             case USERNAME_KEY -> userDetails.getUsername(); // 로그인 아이디(이메일)을 반환하는 메서드
+    //             case ROLE_KEY -> userDetails.getAuthorities().toString();
+    //             default -> throw new NotFoundUserException();
+    //         };
+    //     }
+    //     return null;
+    // }
+
+    /**
+     * 만료 시간 추출
+     */
     public Date getExpiredTime(String token) {
         return parseClaims(token).getExpiration();
     }
@@ -182,29 +208,47 @@ public class JwtService {
         throw new ExpiredJwtException(null, null, null, null);
     }
 
-    // Access Token 유효성 검사
+    /**
+     * 클라이언트가 보낸 Access Token의 유효성 검사
+     * 
+     * @param token 클라이언트가 보낸 Access Token
+     * @param response Access Token이 만료된 경우 재발급한 토큰을 헤더에 실어서 보내기 위해 사용
+     * @return 유효한 토큰인 경우 true, 유효하지 않은 경우 false
+     */
     public boolean validateAccessToken(String token, HttpServletResponse response) {
         try {
+            // token을 디코딩하면서, 서명이 맞는지(= 위조되지 않았는지) 검증
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+
+            // 예외가 발생하지 않으면 유효한 토큰이므로 true 반환되어, 요청 처리가 진행됨
             return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) { // 토큰 서명 오류 및 형식 오류
             log.info(INVALID_TOKEN_MESSAGE, e);
             throw new MalformedJwtException(INVALID_TOKEN_MESSAGE);
-        } catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException e) { // 만료된 토큰인 경우
             log.info("Expired JWT Token", e);
+
+            // 새 토큰 재발급 후 헤더에 담아 클라이언트에게 보내기
             response.addHeader("Authorization", "Bearer " + renewToken(token));
-            return true;
-        } catch (UnsupportedJwtException e) {
+
+            return true; // 유효한 토큰이므로 true 반환, 요청 처리가 진행됨
+        } catch (UnsupportedJwtException e) { // 기타 예외(지원하지 않는 토큰 형식)
             log.info("Unsupported JWT Token", e);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) { // 기타 예외(내용이 비어있는 경우)
             log.info("JWT claims string is empty.", e);
         }
         return false;
     }
 
-    // Refresh Token 유효성 검사
+    /**
+     * Refresh Token 검증 메서드
+     * 
+     * @param token 서버 내부에서 Redis에서 꺼낸 Refresh Token
+     * @return 유효한 토큰인 경우 true, 유효하지 않은 경우 false
+     */
     public boolean validateRefreshToken(String token) {
         try {
+            // 서명을 검증
             Jwts.parserBuilder().setSigningKey(refreshKey).build().parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
