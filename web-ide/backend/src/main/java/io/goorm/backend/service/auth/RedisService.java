@@ -1,4 +1,4 @@
-package io.goorm.backend.service;
+package io.goorm.backend.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;

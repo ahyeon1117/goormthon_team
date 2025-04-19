@@ -1,4 +1,4 @@
-package io.goorm.backend.service;
+package io.goorm.backend.service.auth;
 
 import io.goorm.backend.dto.auth.JwtUserInfoDto;
 import io.goorm.backend.dto.auth.LoginRequest;
@@ -26,7 +26,7 @@ public class AuthService {
     
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final io.goorm.backend.service.auth.JwtService jwtService;
     
     /**
      * 회원가입 비즈니스 로직

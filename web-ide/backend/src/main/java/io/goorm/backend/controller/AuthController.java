@@ -6,7 +6,7 @@ import io.goorm.backend.dto.auth.LoginResponse;
 import io.goorm.backend.dto.auth.SignUpRequest;
 import io.goorm.backend.entity.User;
 import io.goorm.backend.global.response.ApiResponse;
-import io.goorm.backend.service.AuthService;
+import io.goorm.backend.service.auth.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
