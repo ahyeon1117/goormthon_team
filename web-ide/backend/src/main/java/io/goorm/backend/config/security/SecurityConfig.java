@@ -1,8 +1,7 @@
 package io.goorm.backend.config.security;
 
-import io.goorm.backend.global.filter.JwtAuthFilter;
-import io.goorm.backend.global.filter.JwtAuthenticationFilter;
 import io.goorm.backend.service.JwtService;
+import io.goorm.backend.global.filter.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
