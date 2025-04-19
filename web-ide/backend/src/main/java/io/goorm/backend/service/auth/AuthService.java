@@ -6,6 +6,7 @@ import io.goorm.backend.dto.auth.SignUpServiceDto;
 import io.goorm.backend.entity.User;
 import io.goorm.backend.global.exception.DuplicateEmailException;
 import io.goorm.backend.repository.UserRepository;
+import io.goorm.backend.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,7 +27,7 @@ public class AuthService {
     
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final io.goorm.backend.service.auth.JwtService jwtService;
+    private final JwtService jwtService;
     
     /**
      * 회원가입 비즈니스 로직
