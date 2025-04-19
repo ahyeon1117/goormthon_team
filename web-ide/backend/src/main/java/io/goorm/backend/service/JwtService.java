@@ -1,8 +1,9 @@
-package io.goorm.backend.service.auth;
+package io.goorm.backend.service;
 
 import io.goorm.backend.dto.auth.JwtUserInfoDto;
 import io.goorm.backend.global.exception.NotFoundUserException;
 import io.goorm.backend.security.CustomUserDetails;
+import io.goorm.backend.service.auth.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
