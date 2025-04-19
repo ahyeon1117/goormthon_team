@@ -26,7 +26,7 @@ public class SecurityConfig {
 
     private final JwtService jwtService; // 토큰 생성 및 검증 서비스
     private final UserDetailsService userDetailsService; // 사용자 정보를 DB에서 조회하는 서비스
-    private final AuthenticationConfiguration authenticationConfiguration; // 인증 관리자 설정
+    //  private final AuthenticationConfiguration authenticationConfiguration; // 인증 관리자 설정
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // 인증 예외 처리
 
     // 인증 관리자 빈 등록
@@ -35,13 +35,17 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
+    /*
     // 커스텀 로그인 필터 (로그인 요청을 가로채 AuthenticationManager에게 인증 처리를 위임)
-    @Bean
+    // 현재 프로젝트에서는 로인 필터가 아닌 컨트롤러에서 로그인 처리를 하고 있어 사용하지 않음
+    // @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
         JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtService);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return filter;
     }
+    */
+    
 
     // 기본 SecurityFilterChain 설정
     @Bean
@@ -67,7 +71,7 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**").permitAll() // Swagger UI 접근 허용
                         .anyRequest().authenticated() // 그 외 모든 요청 인증 처리
                 )
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                // .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(
                         new JwtAuthFilter(
                                 userDetailsService,
