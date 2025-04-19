@@ -1,17 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
 import { FiUser } from 'react-icons/fi';
 import rocketIcon from '../../assets/rocket-icon.svg';
+import { useFile } from '../../contexts/useFile';
 
-type Props = {
-  onAddCell: (type: 'code' | 'markdown') => void;
-};
-
-const Header = ({ onAddCell }: Props) => {
+const Header = () => {
   const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);
   const fileMenuRef = useRef<HTMLDivElement>(null);
-  const handleAddCode = () => onAddCell('code');
-const handleAddMarkdown = () => onAddCell('markdown');
+  const { addCell } = useFile();
 
+  const handleAddCode = () => addCell('code');
+  const handleAddMarkdown = () => addCell('markdown');
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
