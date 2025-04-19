@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 인증 관련 컨트롤러b
+ * 인증 관련 컨트롤러
  * 회원가입과 로그인을 처리한다.
  */
 @RestController

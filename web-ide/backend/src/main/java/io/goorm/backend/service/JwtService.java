@@ -52,10 +52,10 @@ public class JwtService {
 
     // 토큰 생성
     public String createToken(JwtUserInfoDto user) {
-        String accessToken = generateAccessToken(user);
-        String refreshToken = generateRefreshToken(user);
-        saveToRedis(accessToken, refreshToken);
-        return accessToken;
+        String accessToken = generateAccessToken(user); // 액세스 토큰 생성
+        String refreshToken = generateRefreshToken(user); // 리프레시 토큰 생성
+        saveToRedis(accessToken, refreshToken); // 리프레시 토큰을 Redis에 저장
+        return accessToken; // 액세스 토큰만 반환
     }
 
     // 토큰 생성 (만료 시간 지정)
