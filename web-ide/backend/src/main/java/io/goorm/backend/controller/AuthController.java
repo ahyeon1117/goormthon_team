@@ -58,4 +58,16 @@ public class AuthController {
         LoginResponse response = new LoginResponse(token);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
+
+    @DeleteMapping("/logout")
+    @Operation(summary = "로그아웃", description = "로그아웃 요청을 받아 사용자의 토큰을 무효화합니다.")
+    public ResponseEntity<ApiResponse<Void>> logout(@RequestHeader("Authorization") String bearerToken) {
+        // Bearer 접두사 제거
+        String accessToken = bearerToken.substring("Bearer ".length());
+
+        // 비즈니스 로직 호출
+        authService.logout(accessToken);
+
+        return ResponseEntity.ok(ApiResponse.success(null, "로그아웃이 완료되었습니다."));
+    }
 }

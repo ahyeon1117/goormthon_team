@@ -1,7 +1,6 @@
 package io.goorm.backend.init;
 
 import io.goorm.backend.entity.User;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +38,7 @@ public class UserInit {
 
             // 사용자 저장
             userRepository.save(user);
-            log.info("[DEV][USER][INIT] 개발용 초기 사용자 생성 완료 - 이메일: {}", user.getEmail());
+            log.info("[USER_INIT] 개발용 초기 사용자 생성 완료 - 이메일: {}", user.getEmail());
         }
     }
 }
