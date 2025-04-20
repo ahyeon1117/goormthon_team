@@ -1,5 +1,6 @@
 package io.goorm.backend.global.filter;
 
+import io.goorm.backend.service.auth.CustomUserDetailsService;
 import io.goorm.backend.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,7 +13,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -26,8 +26,7 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
-
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
     private final JwtService jwtService;
     private final OrRequestMatcher publicUrlMatcher; // 인증이 필요 없는 경로
 
@@ -44,20 +43,26 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         try {
-            // Authorization 헤더 추출
+            // 1. Authorization 헤더 추출
             String authorizationHeader = request.getHeader("Authorization");
 
-            // 토큰이 있는지 확인하고 Bearer로 시작하는지 검사
+            // 2. 토큰이 있는지 확인하고 Bearer로 시작하는지 검사
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                // JWT 토큰 추출
+                // 3. JWT 토큰 추출
                 String token = authorizationHeader.substring(7); // Bearer 잘라내기
 
-                // JWT 토큰 유효성 검사
+                // 4. JWT 토큰 유효성 검사
                 if (jwtService.validateAccessToken(token, response)) {
-                    String userId = jwtService.getUserId(token); // 토큰에서 사용자 식별자(PK) 추출 (String 타입으로 반환됨)
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(userId); // DB에서 사용자 ID(PK)로 사용자 정보 조회
+                    // 4-1. 토큰에서 사용자 식별자(PK) 추출
+                    Long userId = jwtService.getUserId(token);
+                    log.debug("[JWT_AUTH_FILTER] 토큰에서 추출한 userId: {}", userId);
 
-                    // 사용자 정보가 있으면 SecurityContext에 등록
+                    // 4-2. 사용자 식별자로 UserDetails 조회
+                    UserDetails userDetails = customUserDetailsService.loadUserByUserId(userId);
+
+                    // UserDetails userDetails = userDetailsService.loadUserByUsername(userId.toString()); // DB에서 사용자 ID(PK)로 사용자 정보 조회
+
+                    // 4-3. 사용자 정보가 있으면, 인증 객체 생성 후 SecurityContext에 등록
                     if (userDetails != null) {
                         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());

@@ -21,6 +21,15 @@ public class CustomUserDetails implements UserDetails {
 
     private final User user;
 
+    // ========== 커스텀 메서드 ==========
+    // 사용자 식별자(PK) 반환
+    public Long getId() {
+        return user.getId();
+    }
+
+    // ========== UserDetails 오버라이딩 필수 메서드 ==========
+
+    // UserDetails 구현 시 필수 메서드
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // 권한 컬럼이 없으므로 기본 ROLE_USER 부여

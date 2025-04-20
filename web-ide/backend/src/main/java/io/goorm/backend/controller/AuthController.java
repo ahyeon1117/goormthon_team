@@ -6,7 +6,9 @@ import io.goorm.backend.dto.auth.LoginResponse;
 import io.goorm.backend.dto.auth.SignUpRequest;
 import io.goorm.backend.entity.User;
 import io.goorm.backend.global.response.ApiResponse;
-import io.goorm.backend.service.AuthService;
+import io.goorm.backend.service.auth.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/auth")
+@Tag(name = "Auth", description = "인증 관련 API (회원가입, 로그인)")
 public class AuthController {
     private final AuthService authService;
 
@@ -31,6 +34,7 @@ public class AuthController {
      * @return 회원가입 응답 DTO
      */
     @PostMapping("/signup") // api는 소문자로 작성
+    @Operation(summary = "회원가입", description = "회원가입 요청을 받아 사용자를 등록합니다.")
     public ResponseEntity<ApiResponse<User>> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
         // 회원가입 서비스 호출 결과
         User user = authService.signUp(signUpRequest.toServiceDto());
@@ -45,6 +49,7 @@ public class AuthController {
      * @return 로그인 응답 DTO
      */
     @PostMapping("/login")
+    @Operation(summary = "로그인", description = "이메일과 비밀번호를 이용해 로그인하고, JWT 토큰을 발급하여 반환합니다.")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
         // 로그인 서비스 호출 결과 (JWT 토큰)
         String token = authService.login(loginRequest);

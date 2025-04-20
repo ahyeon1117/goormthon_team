@@ -1,4 +1,4 @@
-package io.goorm.backend.service;
+package io.goorm.backend.service.auth;
 
 import io.goorm.backend.dto.auth.JwtUserInfoDto;
 import io.goorm.backend.dto.auth.LoginRequest;
@@ -6,6 +6,7 @@ import io.goorm.backend.dto.auth.SignUpServiceDto;
 import io.goorm.backend.entity.User;
 import io.goorm.backend.global.exception.DuplicateEmailException;
 import io.goorm.backend.repository.UserRepository;
+import io.goorm.backend.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
