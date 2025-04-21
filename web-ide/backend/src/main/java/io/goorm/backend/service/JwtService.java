@@ -21,7 +21,7 @@ import java.util.Date;
 /**
  * JWT 서비스
  *
- * JWT 토큰 생성, 검증, 갱신 등의 기능을 제공
+ * JWT 토큰 생성, 검증, 갱신
  * Access/Refresh 토큰을 생성, 유효성 검증과 사용자 정보 추출, Redis에 Refresh 토큰 저장 및 재발급
  */
 @Service
@@ -29,9 +29,9 @@ import java.util.Date;
 public class JwtService {
     private final Key key; // Access Token 서명용 비밀 키
     private final Key refreshKey; // Refresh Token 서명용 비밀 키
-    private final RedisService redisService; // Redis 서비스 (Redis에 refresh token 저장/조회하기 위한 의존성)
-    private final long accessTokenExpireTime; // Access Token 유효 시간
-    private final long refreshTokenExpireTime; // Refresh Token 유효 시간
+    private final RedisService redisService; // Redis 서비스 (Redis에 refresh token 저장/조회 용도)
+    private final long accessTokenExpireTime; // Access Token 만료시간
+    private final long refreshTokenExpireTime; // Refresh Token 만료시간
 
     private static final long ONE_SECOND = 1000;
     private static final long ONE_MINUTE = ONE_SECOND * 60;
@@ -106,7 +106,7 @@ public class JwtService {
         return makeToken(refreshKey, claims, Date.from(now.toInstant()), Date.from(expires.toInstant()));
     }
 
-    // 실제 JWT 문자열 생성
+    // 실제 JWT 문자열 생성 (만료 시간 설정)
     private String makeToken(Key secretKey, Claims claims, Date expires) {
         return Jwts.builder()
                 .setClaims(claims) // 토큰에 넣을 데이터 객체 설정
@@ -115,6 +115,7 @@ public class JwtService {
                 .compact(); // 최종적으로 토큰 문자열 생성
     }
 
+    // 실제 JWT 문자열 생성 (시작 시간 + 만료 시간 설정)
     private String makeToken(Key secretKey, Claims claims, Date start, Date expires) {
         return Jwts.builder()
                 .setClaims(claims)
@@ -174,7 +175,6 @@ public class JwtService {
         return parseClaims(token).getExpiration();
     }
 
-
     /**
      * JWT Claims 추출
      *
@@ -203,7 +203,7 @@ public class JwtService {
 
     // Redis에서 refreshToken를 가져와 유효한지 검사 후 accessToken 갱신
     private String renewToken(String accessToken) {
-        String refreshToken = redisService.getValue(accessToken);
+        String refreshToken = redisService.getAndRemove(accessToken);
         boolean isValid = validateRefreshToken(refreshToken);
         if (isValid) return generateAccessToken(parseClaimsForRefresh(refreshToken));
         throw new ExpiredJwtException(null, null, null, null);
@@ -223,7 +223,7 @@ public class JwtService {
 
             // 예외가 발생하지 않으면 유효한 토큰이므로 true 반환되어, 요청 처리가 진행됨
             return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) { // 토큰 서명 오류 및 형식 오류
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) { // 토큰 서명 오류 및 형식 오류 발생 시
             log.info(INVALID_TOKEN_MESSAGE, e);
             throw new MalformedJwtException(INVALID_TOKEN_MESSAGE);
         } catch (ExpiredJwtException e) { // 만료된 토큰인 경우
@@ -232,7 +232,8 @@ public class JwtService {
             // 새 토큰 재발급 후 헤더에 담아 클라이언트에게 보내기
             response.addHeader("Authorization", "Bearer " + renewToken(token));
 
-            return true; // 유효한 토큰이므로 true 반환, 요청 처리가 진행됨
+            // 만료된 토큰이어도 요청은 처리해 줌 (새 토큰을 제공했으니)
+            return true;
         } catch (UnsupportedJwtException e) { // 기타 예외(지원하지 않는 토큰 형식)
             log.info("Unsupported JWT Token", e);
         } catch (IllegalArgumentException e) { // 기타 예외(내용이 비어있는 경우)
@@ -249,20 +250,25 @@ public class JwtService {
      */
     public boolean validateRefreshToken(String token) {
         try {
-            // 서명을 검증
+            // 서명을 검증(Refresh 토큰 전용 키로 검증)
+            // 서명이 일치하지 않거나 토큰이 만료된 경우 예외 발생
             Jwts.parserBuilder().setSigningKey(refreshKey).build().parseClaimsJws(token);
+
+            // 검증 성공시 true 반환 -> 새 Access 토큰 발급 가능
             return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) { // 조되거나 훼손된 Refresh 토큰인 경우
             log.info(INVALID_TOKEN_MESSAGE + " ::: Refresh", e);
+            // 예외를 던지고, 클라이언트는 재로그인 해야 함
             throw new MalformedJwtException(INVALID_TOKEN_MESSAGE + " ::: Refresh");
-        } catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException e) { // Refresh 토큰도 만료된 경우 -> 사용자는 반드시 재로그인 필요
             log.info("Expired JWT Token", e);
             throw new MalformedJwtException("Expired Refresh Token.\n Please login again.\n");
-        } catch (UnsupportedJwtException e) {
+        } catch (UnsupportedJwtException e) { // 지원하지 않는 형식의 토큰인 경우
             log.info("Unsupported JWT Token", e);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) { // 토큰 내용이 비어있는 경우
             log.info("JWT claims string is empty.", e);
         }
+        // 검증 실패 -> 재로그인 필요
         return false;
     }
 }

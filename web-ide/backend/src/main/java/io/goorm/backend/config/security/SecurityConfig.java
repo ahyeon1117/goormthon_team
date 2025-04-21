@@ -3,6 +3,7 @@ package io.goorm.backend.config.security;
 import io.goorm.backend.global.filter.JwtAuthFilter;
 import io.goorm.backend.service.JwtService;
 import io.goorm.backend.service.auth.CustomUserDetailsService;
+import io.goorm.backend.service.auth.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ public class SecurityConfig {
     private final JwtService jwtService; // 토큰 생성 및 검증 서비스
     private final CustomUserDetailsService customUserDetailsService; // 사용자 정보를 DB에서 조회하는 서비스
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // 인증 예외 처리
+    private final RedisService redisService; // Redis 서비스
     //  private final AuthenticationConfiguration authenticationConfiguration; // 인증 관리자 설정
 
     // 인증 관리자 빈 등록
@@ -51,10 +53,11 @@ public class SecurityConfig {
         // 인증이 필요 없는 URL 패턴
         // ignoring()을 사용하면 필터 자체를 무시하기 때문에, permitAll()로 설정해야 보안 필터는 통과하면서 인증만 우회함
         OrRequestMatcher publicUrlMatcher = new OrRequestMatcher(
-            new AntPathRequestMatcher("/api/v1/auth/**"),
+            new AntPathRequestMatcher("/api/v1/auth/signup"),
+            new AntPathRequestMatcher("/api/v1/auth/login"),
             new AntPathRequestMatcher("/v3/api-docs/**"),
             new AntPathRequestMatcher("/swagger-ui/**"),
-            
+
             // swagger-ui/** 만으로는 아래 경로들은 필터 매칭 안되므로 명시 필요
             new AntPathRequestMatcher("/swagger-ui.html"),
             new AntPathRequestMatcher("/swagger-resources/**"),
@@ -65,7 +68,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/auth/signup", "/api/v1/auth/login").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**").permitAll() // Swagger UI 접근 허용
                         .anyRequest().authenticated() // 그 외 모든 요청 인증 처리
                 )
@@ -74,7 +77,8 @@ public class SecurityConfig {
                         new JwtAuthFilter(
                                 customUserDetailsService,
                                 jwtService,
-                                publicUrlMatcher
+                                publicUrlMatcher,
+                                redisService
                         ),
                         UsernamePasswordAuthenticationFilter.class
                 )

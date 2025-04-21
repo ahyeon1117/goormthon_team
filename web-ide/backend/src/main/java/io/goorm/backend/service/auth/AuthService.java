@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.NoSuchElementException;
 
 /**
@@ -28,6 +29,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final RedisService redisService;
     
     /**
      * 회원가입 비즈니스 로직
@@ -71,5 +73,22 @@ public class AuthService {
         // JWT 토큰 생성
         JwtUserInfoDto info = new JwtUserInfoDto(user.getId()); // 인증된 사용자 정보(식별자)를 담은 DTO 생성
         return jwtService.createToken(info); // 사용자 정보를 전달받아 JWT 토큰 생성
+    }
+
+    @Transactional
+    public void logout(String accessToken) {
+        // 기존 Refresh Token 제거
+        redisService.delete(accessToken);
+
+        // Access Token의 남은 TTL 계산 (TTL: Time To Live, 남은 유효시간)
+        Date expiration = jwtService.getExpiredTime(accessToken); // 만료 시간
+        long ttl = expiration.getTime() - System.currentTimeMillis(); // 남은 유효시간 계산
+
+        // Access Token이 만료되지 않았다면 블랙리스트에 등록
+        if(ttl > 0) {
+            redisService.addToBlacklist(accessToken, ttl);
+        }
+
+        log.info("[LOGOUT_SUCCESS] 로그아웃 완료 - blacklisted accessToken: {}", accessToken);
     }
 }
