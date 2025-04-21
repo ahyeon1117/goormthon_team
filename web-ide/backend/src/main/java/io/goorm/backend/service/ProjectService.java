@@ -26,7 +26,7 @@ public class ProjectService {
 
     @Transactional
     public Project addProject(String projectName) {
-        String userId = jwtService.getUserId();
+        Long userId = jwtService.getUserId();
         User user = userService.findById(userId);
 
         // 중복 프로젝트 이름 확인
@@ -46,7 +46,7 @@ public class ProjectService {
 
     @Transactional
     public boolean deleteProject(Long projectId) {
-        String userId = jwtService.getUserId();
+        Long userId = jwtService.getUserId();
         User user = userService.findById(userId);
 
         Project project = projectRepository.findById(projectId)
