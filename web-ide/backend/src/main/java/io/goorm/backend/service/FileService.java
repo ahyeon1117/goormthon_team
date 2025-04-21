@@ -24,7 +24,7 @@ public class FileService {
 
     @Transactional
     public File createFile(String fileName, String content, Long projectId, Long folderId) {
-        String userId = jwtService.getUserId();
+        Long userId = jwtService.getUserId();
         User user = userService.findById(userId);
 
         // 프로젝트 조회 및 소유자 검증
@@ -69,7 +69,7 @@ public class FileService {
 
     @Transactional
     public boolean deleteFile(Long fileId) {
-        String userId = jwtService.getUserId();
+        Long userId = jwtService.getUserId();
         User user = userService.findById(userId);
 
         File file = fileRepository.findById(fileId)
@@ -83,7 +83,7 @@ public class FileService {
 
     @Transactional
     public File renameFile(Long fileId, String newName) {
-        String userId = jwtService.getUserId();
+        Long userId = jwtService.getUserId();
         User user = userService.findById(userId);
 
         // 파일 조회

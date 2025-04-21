@@ -15,9 +15,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     //JWT에서 받아온 id로 User 조회
-    public User findById(String id) {
-        Long userId = Long.parseLong(id);
-        return userRepository.findById(userId) //id로 사용자 조회
+    public User findById(Long id) {
+        return userRepository.findById(id) //id로 사용자 조회
                 .orElseThrow(() -> new RuntimeException("User not found."));
     }
 

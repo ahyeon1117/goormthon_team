@@ -23,7 +23,7 @@ public class FolderService {
 
     @Transactional
     public Folder createFolder(Long projectId, String folderName, Long parentId) {
-        String userId = jwtService.getUserId();
+        Long userId = jwtService.getUserId();
         User user = userService.findById(userId);
 
         // 프로젝트 존재 여부 및 소유자 확인
@@ -52,7 +52,7 @@ public class FolderService {
 
     @Transactional
     public boolean deleteFolder(Long folderId) {
-        String userId = jwtService.getUserId();
+        Long userId = jwtService.getUserId();
         User user = userService.findById(userId);
 
         // 폴더 조회
