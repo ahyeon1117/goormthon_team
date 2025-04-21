@@ -1,7 +1,7 @@
 spring:
   # DB 연결
   datasource:
-    url: jdbc:postgresql://localhost:5432/user_db
+    url: jdbc:postgresql://postgres_container:5432/user_db
     username: rocket
     password: qwer123!
     driver-class-name: org.postgresql.Driver
@@ -25,7 +25,7 @@ spring:
   # Redis 설정
   data:
     redis:
-      host: localhost
+      host: webide-redis-1
       port: 6379
 
 # Swagger 설정
