@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/auth")
-@Tag(name = "Auth", description = "인증 관련 API (회원가입, 로그인)")
+@Tag(name = "Auth", description = "인증 API")
 public class AuthController {
     private final AuthService authService;
 
@@ -40,7 +40,7 @@ public class AuthController {
         User user = authService.signUp(signUpRequest.toServiceDto());
 
         // 응답 반환
-        return ResponseEntity.ok(ApiResponse.success(user));
+        return ResponseEntity.ok(ApiResponse.success(user, "회원가입이 완료되었습니다."));
     }
 
     /**
@@ -56,9 +56,13 @@ public class AuthController {
 
         // 응답 반환
         LoginResponse response = new LoginResponse(token);
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseEntity.ok(ApiResponse.success(response, "로그인이 완료되었습니다."));
     }
 
+    /**
+     * 로그아웃 API
+     * @param bearerToken 요청 헤더에 포함된 Bearer 토큰
+     */
     @DeleteMapping("/logout")
     @Operation(summary = "로그아웃", description = "로그아웃 요청을 받아 사용자의 토큰을 무효화합니다.")
     public ResponseEntity<ApiResponse<Void>> logout(@RequestHeader("Authorization") String bearerToken) {
