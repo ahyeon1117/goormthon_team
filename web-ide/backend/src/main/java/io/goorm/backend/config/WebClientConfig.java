@@ -13,8 +13,9 @@ public class WebClientConfig {
     @Bean
     public WebClient webClient() {
         return WebClient.builder()
-                .baseUrl("http://localhost:8000") // FastAPI 서버 주소 수정
+                .baseUrl("http://fastapi:8000") // FastAPI 서버 주소 수정
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(HttpHeaders.HOST, "fastapi:8000")  // Host 헤더 명시적 설정
                 .build();
     }
 

@@ -26,6 +26,7 @@ public class KernelService {
         return webClient.post()
                 .uri(API_PATH)
                 .header("Authorization", createAuthorizationHeader(jwtToken))
+                .header("Host", "fastapi:8000")  // Host 헤더 추가
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, this::handleError)
                 .bodyToMono(String.class)
