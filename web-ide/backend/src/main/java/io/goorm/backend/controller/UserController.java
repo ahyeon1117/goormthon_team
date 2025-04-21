@@ -39,4 +39,26 @@ public class UserController {
         // 응답 반환
         return ResponseEntity.ok(ApiResponse.success(response));
     }
+
+    /**
+     * 타인 회원 정보 조회
+     */
+
+
+    /**
+     * 회원 정보 수정
+     */
+    @PatchMapping("/me")
+    @Operation(summary = "회원 정보 수정", description = "현재 로그인한 사용자의 정보를 수정합니다.")
+    public ResponseEntity<ApiResponse<UserProfileResponse>> updateMyProfile(@Valid @RequestBody UserUpdateRequest request) {
+        
+        // 현재 로그인한 사용자의 userId 조회
+        Long userId = jwtService.getUserId();
+
+        // 회원 정보 수정
+        UserProfileResponse response = userService.updateUserProfile(userId, request);
+
+        // 응답 반환
+        return ResponseEntity.ok(ApiResponse.success(response, "회원 정보가 수정되었습니다."));
+    }
 }
