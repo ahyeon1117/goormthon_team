@@ -24,21 +24,11 @@ from routers.file_router import router as file_router  # 파일 라우터 임포
 app = FastAPI()
 
 
-# 요청 모델 정의 (user_id를 요청으로 받음)
-class UserRequest(BaseModel):
-    user_id: str
-
 
 # CORS 설정 (Spring Boot와 Jupyter Kernel Gateway에서 호출 가능하도록)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8000",
-        "http://localhost:8001",      # 로컬 개발 환경
-        "http://localhost:8888",      # Jupyter Kernel Gateway
-        # "http://host.docker.internal:8001",  # 도커에서 로컬 접근
-        # "http://host.docker.internal:8888"   # 도커에서 Jupyter Kernel Gateway 접근
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
