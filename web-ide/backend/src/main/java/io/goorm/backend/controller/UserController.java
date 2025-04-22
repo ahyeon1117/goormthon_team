@@ -43,7 +43,14 @@ public class UserController {
     /**
      * 타인 회원 정보 조회
      */
+    @GetMapping("/{userId}")
+    @Operation(summary = "타인 회원 정보 조회", description = "특정 사용자의 정보를 조회합니다.")
+    public ResponseEntity<ApiResponse<UserProfileResponse>> getUserProfile(@PathVariable Long userId) {
+        
+        UserProfileResponse response = userService.getUserProfile(userId);
 
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
 
     /**
      * 회원 정보 수정
