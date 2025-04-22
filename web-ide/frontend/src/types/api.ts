@@ -13,6 +13,15 @@ export interface LoginResponse {
   accessToken: string;
 }
 
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  password: string;
+  // createdAt: string;
+  // updatedAt: string;
+}
+
 export interface ApiResponse<T> {
   code: number;
   message: string;
