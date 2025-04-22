@@ -19,6 +19,7 @@ from db.mongo import MONGO_USER, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, MONGO_D
 from routers.code_router import router as code_router
 from routers import kernel_router
 from routers.file_router import router as file_router  # 파일 라우터 임포트
+from routers import execute_router
 
 # FastAPI 앱 생성
 app = FastAPI()
@@ -91,6 +92,9 @@ app.include_router(code_router)
 app.include_router(kernel_router.router)
 
 app.include_router(file_router, prefix="/api/v1")
+
+# 라우터 등록
+app.include_router(execute_router.router, tags=["Code Execution"])
 
 
 
