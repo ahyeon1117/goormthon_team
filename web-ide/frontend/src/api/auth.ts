@@ -25,7 +25,7 @@ export const signup = async (body: SignupRequest): Promise<ApiResponse<User>> =>
     body: JSON.stringify(body),
   });
 
-  if (!res.ok) throw new Error('회원가입 실패');
+  if (!res.ok) throw res;
 
   return res.json();
 };
