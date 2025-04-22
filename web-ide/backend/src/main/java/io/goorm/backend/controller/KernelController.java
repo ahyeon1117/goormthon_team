@@ -19,15 +19,27 @@ public class KernelController {
 
     @PostMapping
     public Mono<ResponseEntity<KernelResponseDTO>> createKernel(@RequestHeader("Authorization") String authorization) {
-        String jwtToken = authorization.split(" ")[1];  // "Bearer <token>"
-        log.info("Received kernel creation request for token: {}", jwtToken);
-
-        return kernelService.createKernel(jwtToken)
+                return kernelService.createKernel(authorization)
                 .map(ResponseEntity::ok)
                 .onErrorResume(KernelException.class, error -> {
                     log.error("Kernel creation failed", error);
                     return Mono.just(ResponseEntity.internalServerError().build());
                 });
-    }
+
+    };
+
+//    @PostMapping
+//    public Mono<ResponseEntity<KernelResponseDTO>> createKernel(Authentication authentication) {
+//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+//        Long userId = userDetails.getUser().getId();
+//
+//        return kernelService.createKernel(userId)
+//                .map(ResponseEntity::ok)
+//                .onErrorResume(KernelException.class, error -> {
+//                    log.error("Kernel creation failed", error);
+//                    return Mono.just(ResponseEntity.internalServerError().build());
+//                });
+//    }
+
 }
 
