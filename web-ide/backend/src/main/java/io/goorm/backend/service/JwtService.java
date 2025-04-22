@@ -1,7 +1,7 @@
 package io.goorm.backend.service;
 
 import io.goorm.backend.dto.auth.JwtUserInfoDto;
-import io.goorm.backend.global.exception.NotFoundUserException;
+import io.goorm.backend.global.exception.UserNotFoundException;
 import io.goorm.backend.security.CustomUserDetails;
 import io.goorm.backend.service.auth.RedisService;
 import io.jsonwebtoken.*;
@@ -142,7 +142,7 @@ public class JwtService {
             return customUserDetails.getUser().getId(); // userId 반환 (권한은 필요 없으므로 userId만 반환)
         }
     
-        throw new NotFoundUserException();
+        throw new UserNotFoundException();
     }
 
     /**
