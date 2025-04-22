@@ -5,6 +5,7 @@ import io.goorm.backend.dto.user.UserUpdateRequest;
 import io.goorm.backend.entity.User;
 import io.goorm.backend.global.exception.InvalidCurrentPasswordException;
 import io.goorm.backend.global.exception.PasswordNotMatchedException;
+import io.goorm.backend.global.exception.UserNotFoundException;
 import io.goorm.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +24,16 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     //JWT에서 받아온 id로 User 조회
     public User findById(Long id) {
         return userRepository.findById(id) //id로 사용자 조회
                 .orElseThrow(() -> new RuntimeException("User not found."));
+    }
+
+    // 이메일로 사용자 조회
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException());
     }
 
     //사용자 생성
