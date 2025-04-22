@@ -9,7 +9,7 @@ spring:
   # JPA 설정
   jpa:
     hibernate:
-      ddl-auto: create # 개발 초기 실행
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -19,7 +19,7 @@ spring:
   # 스키마 초기화 설정
   sql:
     init:
-      mode: never # 개발 초기 미실행
+      mode: always
       schema-locations: classpath:db/schema.sql
 
   # Redis 설정
