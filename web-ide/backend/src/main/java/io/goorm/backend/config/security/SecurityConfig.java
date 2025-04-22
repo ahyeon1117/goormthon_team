@@ -68,7 +68,9 @@ public class SecurityConfig {
       // swagger-ui/** 만으로는 아래 경로들은 필터 매칭 안되므로 명시 필요
       new AntPathRequestMatcher("/swagger-ui.html"),
       new AntPathRequestMatcher("/swagger-resources/**"),
-      new AntPathRequestMatcher("/webjars/**")
+      new AntPathRequestMatcher("/webjars/**"),
+      new AntPathRequestMatcher("/api/v1/kernels/**")
+
     );
 
     http
@@ -77,7 +79,7 @@ public class SecurityConfig {
       .headers(AbstractHttpConfigurer::disable)
       .authorizeHttpRequests(request ->
         request
-          .requestMatchers("/api/v1/auth/signup", "/api/v1/auth/login")
+          .requestMatchers("/api/v1/auth/signup", "/api/v1/auth/login", "/api/v1/kernels/**")
           .permitAll()
           .requestMatchers(
             "/v3/api-docs/**",
