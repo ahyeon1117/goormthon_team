@@ -1,4 +1,10 @@
-import { SignupRequest, LoginRequest, ApiResponse, LoginResponse, User } from '../types/api';
+import {
+  SignupRequest,
+  LoginRequest,
+  ApiResponse,
+  LoginResponse,
+  SingupResponse,
+} from '../types/api';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -16,7 +22,7 @@ export const login = async (body: LoginRequest): Promise<ApiResponse<LoginRespon
   return res.json();
 };
 
-export const signup = async (body: SignupRequest): Promise<ApiResponse<User>> => {
+export const signup = async (body: SignupRequest): Promise<ApiResponse<SingupResponse>> => {
   const res = await fetch(`${BASE_URL}/api/v1/auth/signup`, {
     method: 'POST',
     headers: {

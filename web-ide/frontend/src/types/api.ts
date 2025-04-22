@@ -11,15 +11,13 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   accessToken: string;
+  username: string;
 }
 
-export interface User {
+export interface SingupResponse {
   id: number;
   username: string;
   email: string;
-  password: string;
-  // createdAt: string;
-  // updatedAt: string;
 }
 
 export interface ApiResponse<T> {

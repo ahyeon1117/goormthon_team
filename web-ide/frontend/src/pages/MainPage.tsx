@@ -5,6 +5,9 @@ import { useLogout } from '../hooks/useLogout';
 
 const MainPage = () => {
   const { token, handleLogout } = useLogout();
+  const username = localStorage.getItem('username');
+
+  console.log(username);
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-white overflow-hidden">
@@ -13,9 +16,12 @@ const MainPage = () => {
         <span className="font-mono">Rocket IDE</span>
         <div className="space-x-4">
           {token ? (
-            <button onClick={handleLogout} className="hover:underline font-semibold">
-              Logout
-            </button>
+            <div>
+              <span className="mr-4 text-base">{username}님, 프로젝트를 시작해보세요!</span>
+              <button onClick={handleLogout} className="hover:underline font-semibold">
+                Logout
+              </button>
+            </div>
           ) : (
             <>
               <Link to="/login" className="inline-block hover:underline font-semibold">

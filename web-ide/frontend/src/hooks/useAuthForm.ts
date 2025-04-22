@@ -24,6 +24,7 @@ export function useAuthForm<T>({
     try {
       const res = await submitFn(form);
       localStorage.setItem('token', res.data.accessToken);
+      localStorage.setItem('username', res.data.username);
       navigate('/');
     } catch (err: any) {
       if (err.status === 409) {

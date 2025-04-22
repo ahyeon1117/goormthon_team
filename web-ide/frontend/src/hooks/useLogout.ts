@@ -9,6 +9,7 @@ export function useLogout() {
     try {
       await logout();
       localStorage.removeItem('token');
+      localStorage.removeItem('username');
       navigate('/');
       alert('로그아웃 되었습니다.');
     } catch (err) {
