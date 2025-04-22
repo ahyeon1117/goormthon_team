@@ -1,8 +1,8 @@
 package io.goorm.backend.global.exception;
 
-public class NotFoundUserException extends RuntimeException {
+public class UserNotFoundException extends RuntimeException {
     
-    public NotFoundUserException() {
+    public UserNotFoundException() {
         super("사용자를 찾을 수 없습니다.");
     }
 }
