@@ -51,8 +51,7 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace  # 바인딩 값도 출력
     org.hibernate.query.sqm.function: info  # 함수 등록 로그 숨김
     org.hibernate.orm: info  # Hibernate 내부 설정 로그 줄임
+    root: info
 
-kernel:
-  gateway:
-    url: http://localhost:8888
-    token: rocket
+fastapi:
+  base-url: http://fastapi-server:8000

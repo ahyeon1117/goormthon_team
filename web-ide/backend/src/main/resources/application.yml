@@ -52,6 +52,9 @@ logging:
     org.hibernate.query.sqm.function: info  # 함수 등록 로그 숨김
     org.hibernate.orm: info  # Hibernate 내부 설정 로그 줄임
 
+fastapi:
+  base-url: http://localhost:8000
+
 kernel:
   gateway:
     url: http://localhost:8888
