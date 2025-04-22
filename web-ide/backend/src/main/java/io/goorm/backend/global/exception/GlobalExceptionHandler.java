@@ -63,6 +63,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(ErrorResponse.of(400, e.getMessage(), "INVALID_CURRENT_PASSWORD", request.getRequestURI()));
     }
 
+    // [현재 비밀번호와 동일한 비밀번호 예외] - 현재 비밀번호와 동일한 비밀번호입니다.
+    @ExceptionHandler(SameAsCurrentPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleSameAsCurrentPasswordException(SameAsCurrentPasswordException e, HttpServletRequest request) {
+        log.warn("새 비밀번호와 현재 비밀번호와 동일: {}", request.getRequestURI(), e);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(400, e.getMessage(), "SAME_AS_CURRENT_PASSWORD", request.getRequestURI()));
+    }
+
     // [비밀번호 불일치 예외] - 새 비밀번호와 비밀번호 확인이 일치하지 않는 경우
     @ExceptionHandler(PasswordNotMatchedException.class)
     public ResponseEntity<ErrorResponse> handlePasswordNotMatchedException(PasswordNotMatchedException e, HttpServletRequest request) {

@@ -5,6 +5,7 @@ import io.goorm.backend.dto.user.UserUpdateRequest;
 import io.goorm.backend.entity.User;
 import io.goorm.backend.global.exception.InvalidCurrentPasswordException;
 import io.goorm.backend.global.exception.PasswordNotMatchedException;
+import io.goorm.backend.global.exception.SameAsCurrentPasswordException;
 import io.goorm.backend.global.exception.UserNotFoundException;
 import io.goorm.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +73,7 @@ public class UserService {
             request.getConfirmPassword() != null && !request.getConfirmPassword().isBlank();
 
         if (changePasswordRequested) {
-            // 2-1. 현재 비밀번호 검증
+            // 2-1. 현재 비밀번호 일치 여부 검증
             if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
                 throw new InvalidCurrentPasswordException();
             }
@@ -82,7 +83,12 @@ public class UserService {
                 throw new PasswordNotMatchedException();
             }
 
-            // 2-3. 비밀번호 변경
+            // 2-3. 현재 비밀번호와 새 비밀번호가 동일한지 (동일하면 변경 불가)
+            if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+                throw new SameAsCurrentPasswordException();
+            }
+
+            // 비밀번호 변경
             String encryptedPassword = passwordEncoder.encode(request.getNewPassword());
             user.updatePassword(encryptedPassword);
         }
