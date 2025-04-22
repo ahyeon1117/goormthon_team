@@ -1,6 +1,7 @@
 package io.goorm.backend.controller;
 
-
+import io.goorm.backend.entity.File;
+import io.goorm.backend.entity.Folder;
 import io.goorm.backend.entity.Project;
 import io.goorm.backend.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -36,4 +39,42 @@ public class ProjectController {
             return ResponseEntity.status(404).body("삭제 실패: 프로젝트가 존재하지 않거나 권한이 없습니다.");
         }
     }
+
+
+    //프로젝트 목록
+    @GetMapping
+    @Operation(summary = "내 프로젝트 목록 조회", description = "로그인 유저가 소유한 모든 프로젝트를 반환합니다.")
+    public ResponseEntity<List<Project>> getMyProjects() {
+        List<Project> projects = projectService.getMyProjects();
+        return ResponseEntity.ok(projects);
+    }
+
+    //특정 프로젝트의 폴더 목록
+    @GetMapping("/{projectId}/folders")
+    @Operation(summary = "프로젝트 폴더 조회", description = "해당 프로젝트의 모든 폴더를 반환합니다.")
+    public ResponseEntity<List<Folder>> getFoldersByProject(@PathVariable Long projectId) {
+        List<Folder> folders = projectService.getFoldersByProject(projectId);
+        return ResponseEntity.ok(folders);
+    }
+
+    //특정 프로젝트의 파일 목록
+    @GetMapping("/{projectId}/files")
+    @Operation(summary = "프로젝트 파일 조회", description = "해당 프로젝트의 모든 파일을 반환합니다.")
+    public ResponseEntity<List<File>> getFilesByProject(@PathVariable Long projectId) {
+        List<File> files = projectService.getFilesByProject(projectId);
+        return ResponseEntity.ok(files);
+    }
+
+    @PatchMapping("/{projectId}")
+    @Operation(summary = "프로젝트 이름 변경", description = "해당 ID의 프로젝트 이름을 새 이름으로 변경합니다.")
+    public ResponseEntity<?> renameProject(@PathVariable Long projectId,
+                                           @RequestParam String newName) {
+        try {
+            Project updatedProject = projectService.renameProject(projectId, newName);
+            return ResponseEntity.ok(updatedProject);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
