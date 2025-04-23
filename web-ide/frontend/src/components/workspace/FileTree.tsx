@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FileNode, FileLeaf } from '../../types/file';
 import { FiFolder, FiFile, FiFolderMinus } from 'react-icons/fi';
-import { useFile } from '../../contexts/useFile';
+import { useFile } from '../../hooks/useFile';
 
 export const FileTree = ({ data }: { data: FileNode[] }) => {
   return (
