@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { FiUser } from 'react-icons/fi';
 import rocketIcon from '../../assets/rocket-icon.svg';
-import { useFile } from '../../contexts/useFile';
+import { useFile } from '../../hooks/useFile';
 
 const Header = () => {
   const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);

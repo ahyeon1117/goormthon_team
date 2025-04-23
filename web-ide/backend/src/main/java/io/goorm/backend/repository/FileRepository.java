@@ -5,6 +5,7 @@ import io.goorm.backend.entity.Folder;
 import io.goorm.backend.entity.Project;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface FileRepository extends JpaRepository<File, Long> {
@@ -15,4 +16,5 @@ public interface FileRepository extends JpaRepository<File, Long> {
     void deleteAllByFolder(Folder folder);
 
 
+    List<File> findAllByProject(Project project);
 }

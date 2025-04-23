@@ -1,10 +1,7 @@
 package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -22,6 +19,7 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Column(nullable = false, length = 100)
     private String name;
 
@@ -45,4 +43,5 @@ public class Project {
         this.name = name;
         this.owner = owner;
     }
+
 }

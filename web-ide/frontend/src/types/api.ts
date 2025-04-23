@@ -20,6 +20,12 @@ export interface SingupResponse {
   email: string;
 }
 
+export interface ProjectCreateResponse {
+  projectId: number; // camelCase가 왜 아닐까?
+  name: string;
+  ownerId: number;
+}
+
 export interface ApiResponse<T> {
   code: number;
   message: string;

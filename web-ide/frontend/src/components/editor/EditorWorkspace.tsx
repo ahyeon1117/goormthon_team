@@ -1,5 +1,5 @@
 import { EditorCell } from './EditorCell';
-import { useFile } from '../../contexts/useFile';
+import { useFile } from '../../hooks/useFile';
 
 function EditorWorkspace() {
   const { selectedFile, handleChange, handleMoveUp, handleMoveDown, handleDelete } = useFile();
