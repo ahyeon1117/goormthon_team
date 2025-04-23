@@ -90,4 +90,35 @@ class NotebookService:
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error adding cell: {str(e)}")
 
+    async def add_markdown_cell(self, file_id: str, markdown: str):
+        try:
+            # 문서 찾기
+            doc = await self.db.find_one({"file_id": file_id})
+            if not doc:
+                raise HTTPException(status_code=404, detail="File not found")
+
+            # nbformat 파싱
+            notebook = nbformat.reads(doc["notebook"], as_version=4)
+
+            # 마크다운 셀 생성
+            new_cell = new_markdown_cell(source=markdown)
+
+            # 셀 메타데이터에 ID 추가 (nbformat이 자동 생성한 ID 사용)
+            new_cell["metadata"]["id"] = new_cell["id"]
+
+            # notebook에 추가
+            notebook.cells.append(new_cell)
+
+            # MongoDB에 저장
+            await self.db.update_one(
+                {"file_id": file_id},
+                {"$set": {"notebook": nbformat.writes(notebook)}}
+            )
+
+            return {"cell_id": new_cell["metadata"]["id"]}
+
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error adding markdown cell: {str(e)}")
+
+
 
