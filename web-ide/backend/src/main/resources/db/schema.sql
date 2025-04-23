@@ -39,10 +39,11 @@ CREATE TABLE IF NOT EXISTS "folders" (
   "project_id" BIGINT NOT NULL,
   "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  -- CONSTRAINT "folders_parent_id_fkey" FOREIGN KEY ("parent_id") 
-  --   REFERENCES "folders" ("id") ON DELETE CASCADE,
   CONSTRAINT "folders_project_id_fkey" FOREIGN KEY ("project_id") 
     REFERENCES "projects" ("id") ON DELETE CASCADE
+  -- parent_id는 Folder 엔티티에서 필드로 관리하고, 외래 키 관계는 없도록 설계
+  -- CONSTRAINT "folders_parent_id_fkey" FOREIGN KEY ("parent_id") 
+  --   REFERENCES "folders" ("id") ON DELETE CASCADE,
 );
 
 -- files 테이블
