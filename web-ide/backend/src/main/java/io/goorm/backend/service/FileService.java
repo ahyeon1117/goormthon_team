@@ -7,12 +7,15 @@ import io.goorm.backend.entity.User;
 import io.goorm.backend.repository.FileRepository;
 import io.goorm.backend.repository.FolderRepository;
 import io.goorm.backend.repository.ProjectRepository;
+import io.goorm.backend.service.fastapi.FastApiFileClient;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileService {
@@ -21,6 +24,7 @@ public class FileService {
     private final ProjectRepository projectRepository;
     private final UserService userService;
     private final JwtService jwtService;
+    private final FastApiFileClient fastApiFileClient;  // FastAPI 알림 보내기
 
     @Transactional
     public File createFile(String fileName, String content, Long projectId, Long folderId) {
@@ -64,7 +68,29 @@ public class FileService {
                 .folder(folder) // null 가능
                 .build();
 
-        return fileRepository.save(file);
+//        File savedFile = fileRepository.save(file);  // 저장하면서 file_id 생성 💖
+//        log.info("📄파일 저장 완료: savedFileId={}", savedFile.getId());
+//
+//        log.info("📄FastAPI에 파일 생성 알림 시작: fileId={}", savedFile.getId());
+//        fastApiFileClient.notifyFileCreated(savedFile.getId());  // 👉 FastAPI에 알림
+//
+//        log.info("📄파일 생성 및 알림 완료: savedFileId={}", savedFile.getId());
+//        return savedFile;
+        File savedFile = fileRepository.save(file);  // 저장하면서 file_id 생성 💖
+        log.info("📄파일 저장 완료: savedFileId={}", savedFile.getId());
+
+        log.info("📄FastAPI에 파일 생성 알림 시작: fileId={}", savedFile.getId());
+
+        try {
+            fastApiFileClient.notifyFileCreated(savedFile.getId());  // 👉 FastAPI에 알림
+            log.info("📄FastAPI에 파일 생성 알림 완료: fileId={}", savedFile.getId());
+        } catch (Exception e) {
+            log.error("❌ FastAPI에 파일 생성 알림 실패: fileId={}, error={}", savedFile.getId(), e.getMessage());
+            throw new RuntimeException("FastAPI에 파일 생성 알림 실패");
+        }
+
+        return savedFile;
+
     }
 
     @Transactional
