@@ -31,3 +31,21 @@ def test_add_cell():
 
     assert response.status_code == 200
     assert "cell_id" in response.json()
+
+
+def test_add_markdown_cell():
+    # 테스트용 file_id
+    file_id = "test235"
+
+    # 마크다운 셀 데이터
+    cell_data = {
+        "cell_type": "markdown",
+        "source": "# 제목입니다\n이것은 테스트 마크다운입니다."
+    }
+
+    # 요청 보내기
+    response = client.post(f"/api/v1/files/{file_id}/add_markdown_cell", json=cell_data)
+
+    # 응답 확인
+    assert response.status_code == 200
+    assert "cell_id" in response.json()
