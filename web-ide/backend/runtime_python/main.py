@@ -19,26 +19,17 @@ from db.mongo import MONGO_USER, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, MONGO_D
 from routers.code_router import router as code_router
 from routers import kernel_router
 from routers.file_router import router as file_router  # 파일 라우터 임포트
+from routers import execute_router
 
 # FastAPI 앱 생성
 app = FastAPI()
 
 
-# 요청 모델 정의 (user_id를 요청으로 받음)
-class UserRequest(BaseModel):
-    user_id: str
-
 
 # CORS 설정 (Spring Boot와 Jupyter Kernel Gateway에서 호출 가능하도록)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8000",
-        "http://localhost:8001",      # 로컬 개발 환경
-        "http://localhost:8888",      # Jupyter Kernel Gateway
-        # "http://host.docker.internal:8001",  # 도커에서 로컬 접근
-        # "http://host.docker.internal:8888"   # 도커에서 Jupyter Kernel Gateway 접근
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -102,7 +93,10 @@ app.include_router(kernel_router.router)
 
 app.include_router(file_router, prefix="/api/v1")
 
+# 라우터 등록
+app.include_router(execute_router.router, tags=["Code Execution"])
+
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=True, log_level="debug")
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, log_level="debug")

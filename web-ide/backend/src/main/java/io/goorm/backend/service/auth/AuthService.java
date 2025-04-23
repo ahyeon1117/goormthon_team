@@ -5,17 +5,17 @@ import io.goorm.backend.dto.auth.LoginRequest;
 import io.goorm.backend.dto.auth.SignUpServiceDto;
 import io.goorm.backend.entity.User;
 import io.goorm.backend.global.exception.DuplicateEmailException;
+import io.goorm.backend.global.exception.InvalidCurrentPasswordException;
+import io.goorm.backend.global.exception.UserNotFoundException;
 import io.goorm.backend.repository.UserRepository;
 import io.goorm.backend.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.NoSuchElementException;
 
 /**
  * 인증 관련 서비스
@@ -63,11 +63,11 @@ public class AuthService {
     public String login(LoginRequest loginRequest) {
         // 이메일로 사용자 조회
         User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotFoundException());
         
         // 비밀번호 검증
         if(!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+            throw new InvalidCurrentPasswordException();
         }
 
         // JWT 토큰 생성
@@ -75,6 +75,10 @@ public class AuthService {
         return jwtService.createToken(info); // 사용자 정보를 전달받아 JWT 토큰 생성
     }
 
+    /**
+     * 로그아웃 비즈니스 로직
+     * @param accessToken
+     */
     @Transactional
     public void logout(String accessToken) {
         // 기존 Refresh Token 제거

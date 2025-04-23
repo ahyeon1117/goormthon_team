@@ -37,8 +37,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     // ========================================================
 
     // [사용자 조회 실패 예외] - 사용자를 찾을 수 없는 경우
-    @ExceptionHandler(NotFoundUserException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundUserException(NotFoundUserException e, HttpServletRequest request) {
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundUserException(UserNotFoundException e, HttpServletRequest request) {
         log.warn("사용자를 찾을 수 없음: {}", request.getRequestURI(), e);
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -53,6 +53,34 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ErrorResponse.of(409, e.getMessage(), "DUPLICATE_EMAIL", request.getRequestURI()));
     }
+
+    // [현재 비밀번호 불일치 예외] - 현재 비밀번호가 일치하지 않는 경우
+    @ExceptionHandler(InvalidCurrentPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCurrentPasswordException(InvalidCurrentPasswordException e, HttpServletRequest request) {
+        log.warn("현재 비밀번호 불일치: {}", request.getRequestURI(), e);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(400, e.getMessage(), "INVALID_CURRENT_PASSWORD", request.getRequestURI()));
+    }
+
+    // [현재 비밀번호와 동일한 비밀번호 예외] - 현재 비밀번호와 동일한 비밀번호입니다.
+    @ExceptionHandler(SameAsCurrentPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleSameAsCurrentPasswordException(SameAsCurrentPasswordException e, HttpServletRequest request) {
+        log.warn("새 비밀번호와 현재 비밀번호와 동일: {}", request.getRequestURI(), e);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(400, e.getMessage(), "SAME_AS_CURRENT_PASSWORD", request.getRequestURI()));
+    }
+
+    // [비밀번호 불일치 예외] - 새 비밀번호와 비밀번호 확인이 일치하지 않는 경우
+    @ExceptionHandler(PasswordNotMatchedException.class)
+    public ResponseEntity<ErrorResponse> handlePasswordNotMatchedException(PasswordNotMatchedException e, HttpServletRequest request) {
+        log.warn("새 비밀번호와 비밀번호 확인 불일치: {}", request.getRequestURI(), e);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(400, e.getMessage(), "PASSWORD_NOT_MATCHED", request.getRequestURI()));
+    }
+        
 
     // ========================================================
     // 2. 기본 예외 처리 (JWT, Validation, DB 등)
