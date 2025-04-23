@@ -1,5 +1,6 @@
 package io.goorm.backend.controller;
 
+import io.goorm.backend.dto.project.ProjectResponse;
 import io.goorm.backend.entity.File;
 import io.goorm.backend.entity.Folder;
 import io.goorm.backend.entity.Project;
@@ -26,7 +27,11 @@ public class ProjectController {
         if (project == null) {
             return ResponseEntity.badRequest().body("중복된 프로젝트 이름입니다.");
         }
-        return ResponseEntity.ok(project);
+
+        //응답 DTO 생성
+        ProjectResponse response = new ProjectResponse(project.getId(), project.getName(), project.getOwner().getId());
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{projectId}")
@@ -39,7 +44,6 @@ public class ProjectController {
             return ResponseEntity.status(404).body("삭제 실패: 프로젝트가 존재하지 않거나 권한이 없습니다.");
         }
     }
-
 
     //프로젝트 목록
     @GetMapping
