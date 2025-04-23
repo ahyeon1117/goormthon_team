@@ -53,7 +53,7 @@ def root():
 @app.get("/mongo-test")
 async def mongo_test():
     try:
-        client = AsyncIOMotorClient("mongodb://rocket:qwer123!@localhost:27017/?authSource=admin")
+        client = AsyncIOMotorClient("mongodb://rocket:qwer123!@mongodb_container:27017/?authSource=admin")
         await client.admin.command('ping')  # 단순 연결 확인
 
         return {"result": "MongoDB 연결 성공 ✅"}
@@ -91,7 +91,7 @@ app.include_router(code_router)
 #커널
 app.include_router(kernel_router.router)
 
-app.include_router(file_router, prefix="/api/v1")
+app.include_router(file_router, prefix="/api")
 
 # 라우터 등록
 app.include_router(execute_router.router, tags=["Code Execution"])
