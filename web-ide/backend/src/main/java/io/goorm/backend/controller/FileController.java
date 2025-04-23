@@ -5,12 +5,14 @@ import io.goorm.backend.service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/files")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "File", description = "파일 생성·삭제·이름변경 API")
 
 public class FileController {
@@ -26,7 +28,7 @@ public class FileController {
     ) {
         try {
             File file = fileService.createFile(fileName, content, projectId, folderId);
-            return ResponseEntity.ok(file);
+            return ResponseEntity.ok(file); // file.getId() 포함된 객체 반환 💖
         } catch (RuntimeException e) {
             return ResponseEntity
                     .badRequest()
