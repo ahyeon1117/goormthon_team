@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Project, ProjectContext } from './ProjectContextType';
-import { fetchProjects, createProject as createProjectAPI } from '../api/project';
+import {
+  fetchProjects,
+  createProject as createProjectAPI,
+  deleteProject as deleteProjectAPI,
+} from '../api/project';
 
 export const ProjectProvider = ({ children }: { children: React.ReactNode }) => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -9,8 +13,8 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
     try {
       const data = await fetchProjects();
       setProjects(data);
-    } catch (e) {
-      console.error('프로젝트 불러오기 실패:', e);
+    } catch (err) {
+      console.error('프로젝트 불러오기 실패:', err);
     }
   };
 
@@ -22,13 +26,22 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
     try {
       await createProjectAPI(name);
       await loadProjects();
-    } catch (e) {
-      console.error('프로젝트 생성 실패:', e);
+    } catch (err) {
+      console.error('프로젝트 생성 실패:', err);
+    }
+  };
+
+  const deleteProject = async (projectId: number) => {
+    try {
+      await deleteProjectAPI(projectId);
+      await loadProjects();
+    } catch (err) {
+      console.error('프로젝트 삭제 실패:', err);
     }
   };
 
   return (
-    <ProjectContext.Provider value={{ projects, createProject }}>
+    <ProjectContext.Provider value={{ projects, createProject, deleteProject }}>
       {children}
     </ProjectContext.Provider>
   );
