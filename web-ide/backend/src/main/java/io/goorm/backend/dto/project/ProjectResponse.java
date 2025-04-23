@@ -11,14 +11,14 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ProjectResponse {
 
-    private Long projectid;
+    private Long projectId;
     private String name;
-    private Long ownerid;
+    private Long ownerId;
 
 
     public ProjectResponse(Project project) {
-        this.projectid = project.getId();
+        this.projectId = project.getId();
         this.name = project.getName();
-        this.ownerid = project.getOwner().getId();
+        this.ownerId = project.getOwner().getId();
     }
 }
