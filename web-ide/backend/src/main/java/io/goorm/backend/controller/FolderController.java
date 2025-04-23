@@ -1,5 +1,6 @@
 package io.goorm.backend.controller;
 
+import io.goorm.backend.dto.folder.FolderResponse;
 import io.goorm.backend.entity.Folder;
 import io.goorm.backend.service.FolderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,13 +23,22 @@ public class FolderController {
             @RequestParam String folderName,
             @RequestParam(required = false) Long parentId
     ) {
-        Folder folder = folderService.createFolder(projectId, folderName, parentId);
-        if (folder == null) {
+        try {
+            Folder folder = folderService.createFolder(projectId, folderName, parentId);
+            FolderResponse response = new FolderResponse(
+                    folder.getId(),
+                    folder.getName(),
+                    folder.getProject().getId(),
+                    folder.getParentId()
+            );
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException ex) {
+            // 서비스에서 던진 예외 메시지를 그대로 400 Bad Request 로 반환
             return ResponseEntity
                     .badRequest()
-                    .body("이미 동일한 이름의 폴더가 존재합니다.");
+                    .body(ex.getMessage());
         }
-        return ResponseEntity.ok(folder);
     }
 
     @DeleteMapping("/{folderId}")
