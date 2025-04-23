@@ -13,12 +13,12 @@ public class ProjectResponse {
 
     private Long projectid;
     private String name;
-    private Long ownerId;
+    private Long ownerid;
 
 
     public ProjectResponse(Project project) {
         this.projectid = project.getId();
         this.name = project.getName();
-        this.ownerId = project.getOwner().getId();
+        this.ownerid = project.getOwner().getId();
     }
 }
