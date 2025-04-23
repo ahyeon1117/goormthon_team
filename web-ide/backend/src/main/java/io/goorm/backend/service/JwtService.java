@@ -271,4 +271,19 @@ public class JwtService {
         // 검증 실패 -> 재로그인 필요
         return false;
     }
+
+    /**
+     * WebSocket에서 사용할 Access Token 유효성 검사 메서드
+     * - HttpServletResponse 없이 단순 검증만 수행
+     */
+    public boolean validateAccessToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            log.warn("[JWT] WebSocket 인증 실패 - {}", e.getMessage());
+            return false;
+        }
+    }
+
 }
