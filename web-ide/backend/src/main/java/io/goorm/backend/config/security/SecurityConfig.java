@@ -89,6 +89,8 @@ public class SecurityConfig {
             "/webjars/**"
           )
           .permitAll() // Swagger UI 접근 허용
+          .requestMatchers("/ws-chat/**")
+          .permitAll() // 웹소켓 접근 허용
           .anyRequest()
           .authenticated() // 그 외 모든 요청 인증 처리
       )
