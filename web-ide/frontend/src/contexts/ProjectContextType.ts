@@ -1,15 +1,15 @@
 import { createContext } from 'react';
 
 export type Project = {
-  id: number;
+  projectId: number;
   name: string;
-  isGroup: boolean;
-  updatedAt: string;
+  ownerId: number;
 };
 
 export type ProjectContextType = {
   projects: Project[];
   createProject: (name: string) => void;
+  deleteProject: (projectId: number) => void;
 };
 
 export const ProjectContext = createContext<ProjectContextType | null>(null);

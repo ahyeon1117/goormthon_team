@@ -1,7 +1,18 @@
-import { FiEdit, FiX, FiUser, FiUsers, FiPlay } from 'react-icons/fi';
+import { FiEdit, FiX, FiPlay } from 'react-icons/fi';
 import { Project } from '../../contexts/ProjectContextType';
+import { useContext } from 'react';
+import { ProjectContext } from '../../contexts/ProjectContextType';
 
 const ContainerCard = ({ project }: { project: Project }) => {
+  const context = useContext(ProjectContext);
+  if (!context) return null;
+
+  const handleDelete = () => {
+    if (confirm(`${project.name} 프로젝트를 삭제하시겠습니까?`)) {
+      context.deleteProject(project.projectId);
+    }
+  };
+
   return (
     <div className="bg-dashboard-background p-4 border border-dashboard-gray rounded-lg flex flex-col h-72">
       <div className="flex justify-between items-center">
@@ -10,7 +21,7 @@ const ContainerCard = ({ project }: { project: Project }) => {
           <button>
             <FiEdit />
           </button>
-          <button>
+          <button onClick={handleDelete}>
             <FiX />
           </button>
         </div>
@@ -18,11 +29,12 @@ const ContainerCard = ({ project }: { project: Project }) => {
 
       <div className="flex flex-col justify-between flex-grow">
         <p className="text-sm text-dashboard-gray mt-2">
-          Ownerusername / {project.isGroup ? '그룹' : '개인'}
+          {/* Ownerusername / {project.isGroup ? '그룹' : '개인'} */}
+          {project.name}
         </p>
         <div className="flex justify-between items-center text-sm text-dashboard-gray">
-          <span>{project.updatedAt}</span>
-          <span className="text-lg text-white">{project.isGroup ? <FiUsers /> : <FiUser />}</span>
+          {/* <span>{project.updatedAt}</span> */}
+          {/* <span className="text-lg text-white">{project.isGroup ? <FiUsers /> : <FiUser />}</span> */}
         </div>
       </div>
 
