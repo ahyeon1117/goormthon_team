@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { FiUser } from 'react-icons/fi';
 import rocketIcon from '../../assets/rocket-icon.svg';
 import { useFile } from '../../hooks/useFile';
+import KernelCreateButton from '../kernel/KernelCreateButton';
 
 const Header = () => {
   const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);
@@ -58,7 +59,7 @@ const Header = () => {
 
       <div className="flex items-center gap-6 text-sm text-dashboard-gray">
         <button className="hover:text-white">멤버 추가</button>
-        <button className="hover:text-white">연결</button>
+        <KernelCreateButton />
         <button onClick={handleAddCode} className="hover:text-white">
           + Code
         </button>
