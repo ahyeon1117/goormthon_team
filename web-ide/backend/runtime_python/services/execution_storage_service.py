@@ -1,5 +1,5 @@
 from datetime import datetime
-from db.mongo import file_collection # 파일 컬렉션
+from db.mongo import file_collection
 import nbformat
 from nbformat.v4 import new_output
 from nbformat import from_dict
