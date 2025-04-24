@@ -3,7 +3,7 @@ import json
 from typing import Optional
 from collections import defaultdict
 from aiohttp import ClientSession, WSMsgType
-from services import execution_storage_service
+
 
 WS_GATEWAY_URL = "http://localhost:8888"  # Jupyter Kernel Gateway 주소
 GATEWAY_TOKEN = "rocket"
