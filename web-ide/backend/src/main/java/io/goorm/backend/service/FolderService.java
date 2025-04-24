@@ -23,29 +23,28 @@ public class FolderService {
     private final JwtService jwtService;
 
     /**
-     * 새 프로젝트 생성 직후 호출해서
-     * parent_id = null 인 루트 폴더("root")를 만들어 줍니다.
+     * 프로젝트당 하나만 존재하는 "메인(root)" 폴더를 보장합니다.
+     * 이미 있으면 반환, 없으면 새로 생성합니다.
      */
     @Transactional
     public Folder createRootFolder(Long projectId) {
-        // 1) 로그인 사용자 검증
+        //로그인 사용자·프로젝트 검증
         Long userId = jwtService.getUserId();
         User user   = userService.findById(userId);
 
-        // 2) 프로젝트 존재 및 소유자 확인
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("프로젝트가 존재하지 않습니다."));
         if (!project.getOwner().getId().equals(user.getId())) {
             throw new RuntimeException("본인의 프로젝트가 아닙니다.");
         }
 
-        // 3) 이미 루트 폴더가 있으면 그대로 반환
+        //이미 루트 폴더가 있으면 그것을 반환
         Optional<Folder> existing = folderRepository.findByProjectAndParentIdIsNull(project);
         if (existing.isPresent()) {
             return existing.get();
         }
 
-        // 4) 없으면 새로 생성
+        //없으면 신규 생성
         Folder root = Folder.builder()
                 .name("root")
                 .project(project)
@@ -55,10 +54,13 @@ public class FolderService {
     }
 
     /**
-     * 사용자가 명시적으로 폴더를 생성할 때 호출합니다.
+     * 모든 하위 폴더는 메인(root) 폴더 아래에만 생성 가능합니다.
+     * parentId 파라미터 없이 호출하세요.
+     * 메인 폴더가 없으면 자동으로 생성해 준 뒤, 그 아래에 새 폴더를 만듭니다.
      */
     @Transactional
-    public Folder createFolder(Long projectId, String folderName, Long parentId) {
+    public Folder createFolder(Long projectId, String folderName) {
+        //로그인 사용자·프로젝트 검증
         Long userId = jwtService.getUserId();
         User user   = userService.findById(userId);
 
@@ -68,28 +70,24 @@ public class FolderService {
             throw new RuntimeException("본인의 프로젝트가 아닙니다.");
         }
 
-        Optional<Folder> duplicate =
-                folderRepository.findByNameAndProject(folderName, project);
+        //메인 폴더 보장 (없으면 새로 만듦)
+        Folder root = createRootFolder(projectId);
+        Long parentId = root.getId();
+
+        //같은 루트 폴더 바로 아래에 중복 이름 검사
+        Optional<Folder> duplicate = folderRepository
+                .findByNameAndProjectAndParentId(folderName, project, parentId);
         if (duplicate.isPresent()) {
             throw new RuntimeException("같은 이름의 폴더가 이미 존재합니다.");
         }
 
+        //새 폴더 생성
         Folder folder = Folder.builder()
                 .name(folderName)
                 .project(project)
                 .parentId(parentId)
                 .build();
         return folderRepository.save(folder);
-    }
-
-    /**
-     * 파일 생성 시 folderId가 null이면
-     * 이 메서드를 통해 main(root) 폴더를 가져오거나 새로 만듭니다.
-     */
-    @Transactional(readOnly = true)
-    public Folder getOrInitRootFolder(Long projectId) {
-        // 루트 폴더가 없다면 createRootFolder가 생성해 줍니다.
-        return createRootFolder(projectId);
     }
 
     /**
@@ -141,7 +139,6 @@ public class FolderService {
         // 폴더 조회
         Folder folder = folderRepository.findById(folderId)
                 .orElseThrow(() -> new RuntimeException("폴더가 존재하지 않습니다."));
-
 
         // 동일 프로젝트 내 중복 이름 확인
         Optional<Folder> duplicate = folderRepository.findByNameAndProject(newName, folder.getProject());

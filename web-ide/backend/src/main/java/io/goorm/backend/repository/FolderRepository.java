@@ -14,8 +14,10 @@ import java.util.Optional;
 public interface FolderRepository extends JpaRepository<Folder, Long> {
     Optional<Folder> findByNameAndProject(String folderName, Project project);
     Optional<Folder> findByProjectAndParentIdIsNull(Project project);
+    Optional<Folder> findByNameAndProjectAndParentId(String name, Project project, Long parentId);
 
     List<Folder> findAllByProject(Project project);
     List<Folder> findAllByProjectAndParentIdIsNull(Project project);
     List<Folder> findAllByProjectAndParentId(Project project, Long parentId);
+
 }

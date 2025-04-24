@@ -1,5 +1,6 @@
 package io.goorm.backend.service;
 
+import io.goorm.backend.dto.project.ProjectResponse;
 import io.goorm.backend.entity.*;
 import io.goorm.backend.repository.FileRepository;
 import io.goorm.backend.repository.FolderRepository;
@@ -55,46 +56,58 @@ public class ProjectService {
 
     //내가 소유하거나 멤버로 속한 모든 프로젝트 조회
     @Transactional(readOnly = true)
-    public List<Project> getMyProjects() {
+    public List<ProjectResponse> getMyProjects() {
         Long userId = jwtService.getUserId();
-        User me = userService.findById(userId);
+        User me     = userService.findById(userId);
 
         //내가 소유한 프로젝트
-        List<Project> owned = projectRepository.findAllByOwner(me);
+        List<Project> ownedProjects = projectRepository.findAllByOwner(me);
 
-        //내가 속한 프로젝트
-        List<Project> joined = memberRepository.findAllByUser(me).stream()
+        //내가 참여한 프로젝트 (ProjectMember 통해 조회)
+        List<Project> joinedProjects = memberRepository.findAllByUser(me).stream()
                 .map(ProjectMember::getProject)
-                .collect(Collectors.toList());
+                .toList();
 
-        //합치되 중복 제거
-        Set<Project> result = new LinkedHashSet<>();
-        result.addAll(owned);
-        result.addAll(joined);
-        return new ArrayList<>(result);
+        //중복 제거 및 병합
+        Set<Project> allProjects = new LinkedHashSet<>();
+        allProjects.addAll(ownedProjects);
+        allProjects.addAll(joinedProjects);
+
+        //DTO 변환 후 반환
+        return allProjects.stream()
+                .map(ProjectResponse::new)
+                .toList();
     }
-
 
     @Transactional
     public Project addProject(String projectName) {
         Long userId = jwtService.getUserId();
         User user = userService.findById(userId);
 
-
-        // 중복 프로젝트 이름 확인
-        Optional<Project> existingProject = projectRepository.findByNameAndOwner(projectName, user);
-        if (existingProject.isPresent()) {
-            return null; // 이미 존재하는 경우 생성하지 않음
+        // 중복 체크
+        if (projectRepository.findByNameAndOwner(projectName, user).isPresent()) {
+            return null;
         }
 
-        // 새 프로젝트 생성
+        // 1) 프로젝트 저장 (영속화)
         Project project = Project.builder()
                 .name(projectName)
                 .owner(user)
                 .build();
+        project = projectRepository.save(project);
 
-        return projectRepository.save(project);
+        // 2) 루트 폴더 생성
+        Folder rootFolder = Folder.builder()
+                .name("main")       // 루트 폴더 이름
+                .project(project)   // 방금 저장된 프로젝트 참조
+                .parentId(null)     // 최상위 폴더이므로 parentId = null
+                .build();
+        folderRepository.save(rootFolder);
+
+        return project;
     }
+
+
 
     @Transactional
     public boolean deleteProject(Long projectId) {
@@ -119,36 +132,6 @@ public class ProjectService {
         projectRepository.delete(project);
 
         return true;
-    }
-
-    //특정 프로젝트 폴더 반환
-    @Transactional
-    public List<Folder> getFoldersByProject(Long projectId) {
-        Long userId = jwtService.getUserId();
-        User user = userService.findById(userId);
-
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("프로젝트가 존재하지 않습니다."));
-        if (!project.getOwner().getId().equals(user.getId())) {
-            throw new RuntimeException("본인의 프로젝트가 아닙니다.");
-        }
-
-        return folderRepository.findAllByProject(project);
-    }
-
-    //특정 프로젝트 파일 반환
-    @Transactional
-    public List<File> getFilesByProject(Long projectId) {
-        Long userId = jwtService.getUserId();
-        User user = userService.findById(userId);
-
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("프로젝트가 존재하지 않습니다."));
-        if (!project.getOwner().getId().equals(user.getId())) {
-            throw new RuntimeException("본인의 프로젝트가 아닙니다.");
-        }
-
-        return fileRepository.findAllByProject(project);
     }
 
     @Transactional
