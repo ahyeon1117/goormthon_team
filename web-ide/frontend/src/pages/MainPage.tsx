@@ -7,8 +7,6 @@ const MainPage = () => {
   const { token, handleLogout } = useLogout();
   const username = localStorage.getItem('username');
 
-  console.log(username);
-
   return (
     <div className="min-h-screen flex flex-col bg-background text-white overflow-hidden">
       {/* Header */}

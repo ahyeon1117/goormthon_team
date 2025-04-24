@@ -3,7 +3,6 @@ import { ProjectCreateResponse } from '../types/api';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const token = localStorage.getItem('token');
-console.log('토큰값:', token);
 
 export const fetchProjects = async (): Promise<Project[]> => {
   const res = await fetch(`${BASE_URL}/api/projects`, {
