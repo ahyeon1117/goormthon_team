@@ -71,7 +71,6 @@ public class SecurityConfig {
       new AntPathRequestMatcher("/webjars/**"),
       new AntPathRequestMatcher("/api/v1/kernels/**"),
       new AntPathRequestMatcher("/ws-chat/**")
-
     );
 
     http
@@ -80,7 +79,7 @@ public class SecurityConfig {
       .headers(AbstractHttpConfigurer::disable)
       .authorizeHttpRequests(request ->
         request
-          .requestMatchers("/api/v1/auth/signup", "/api/v1/auth/login", "/api/v1/kernels/**")
+          .requestMatchers("/api/v1/auth/signup", "/api/v1/auth/login", "/api/v1/kernels/**", "/ws-chat/**")
           .permitAll()
           .requestMatchers(
             "/v3/api-docs/**",
@@ -90,8 +89,6 @@ public class SecurityConfig {
             "/webjars/**"
           )
           .permitAll() // Swagger UI 접근 허용
-          .requestMatchers("/ws-chat/**")
-          .permitAll() // 웹소켓 접근 허용
           .anyRequest()
           .authenticated() // 그 외 모든 요청 인증 처리
       )

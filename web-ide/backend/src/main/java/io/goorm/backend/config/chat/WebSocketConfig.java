@@ -21,9 +21,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws-chat") // 웹소켓 엔드포인트 설정
-        .setAllowedOrigins("http://localhost:5173") // 프론트엔드 주소 (배포 시 실제 프론트엔드 도메인으로 변경해야 함)
-        .withSockJS(); // SockJS 사용
+        registry.addEndpoint("/ws-chat")            // 웹소켓 엔드포인트 설정
+                .setAllowedOrigins("http://localhost:5173") // 프론트엔드 주소 (배포 시 실제 프론트엔드 도메인으로 변경해야 함)
+                .withSockJS();                              // SockJS 사용
     }
 
     // 메시지 브로커 설정: 메시지 발행/구독 경로 설정
