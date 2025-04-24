@@ -1,17 +1,17 @@
 package io.goorm.backend.dto.folder;
 
+import io.goorm.backend.entity.File;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Setter
+import java.util.List;
+
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class FolderRequest {
+public class FolderTreeResponse {
     private Long folderId;
     private String folderName;
     private Long parentId;
-    private Long projectId;
+    private List<File> files;
+    private List<FolderTreeResponse> children;
 }

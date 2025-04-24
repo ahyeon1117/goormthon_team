@@ -6,8 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class FolderResponse {
-    private final Long   folderId;
-    private final String folderName;
-    private final Long   projectId;
-    private final Long   parentId;
+    private Long folderId;
+    private String folderName;
+    private Long projectId;
+    private Long parentId; // 루트는 항상 null
 }

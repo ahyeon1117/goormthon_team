@@ -8,5 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FolderRenameRequest {
+    private Long folderId;
+    private Long projectId;
     private String newName;
 }

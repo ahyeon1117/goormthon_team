@@ -3,6 +3,7 @@ package io.goorm.backend.controller;
 import io.goorm.backend.dto.folder.FolderRenameRequest;
 import io.goorm.backend.dto.folder.FolderRequest;
 import io.goorm.backend.dto.folder.FolderResponse;
+import io.goorm.backend.dto.folder.FolderTreeResponse;
 import io.goorm.backend.entity.Folder;
 import io.goorm.backend.service.FolderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,73 +19,89 @@ import org.springframework.web.bind.annotation.*;
 public class FolderController {
     private final FolderService folderService;
 
-    /**
-     * 프로젝트당 하나만 존재하는 메인(root) 폴더를 생성하거나,
-     * 이미 있으면 조회합니다.
-     */
-    @PostMapping("/root")
-    @Operation(summary = "루트 폴더 생성/조회",
-            description = "프로젝트 생성 시 자동으로 만들어지는 메인(root) 폴더를 보장합니다.")
-    public ResponseEntity<FolderResponse> createOrGetRoot(
-            @PathVariable Long projectId
-    ) {
+    //main폴더 조회 및 생성
+    @GetMapping("/{projectId}/root")
+    @Operation(
+            summary = "루트 폴더 조회",
+            description = "루트 폴더를 반환합니다. 없으면 자동으로 생성됩니다. "
+    )
+    public ResponseEntity<FolderResponse> getOrCreateRootFolder(@PathVariable Long projectId) {
         Folder root = folderService.createRootFolder(projectId);
-        FolderResponse resp = new FolderResponse(
+
+        FolderResponse response = new FolderResponse(
                 root.getId(),
-                root.getName(),
+                root.getName(),                // 항상 "main"
                 root.getProject().getId(),
-                root.getParentId()
+                null                           // 루트 폴더는 parentId가 null
         );
-        return ResponseEntity.ok(resp);
+        return ResponseEntity.ok(response);
     }
 
-    /**
-     * 메인(root) 폴더 바로 아래에만 새 하위 폴더를 생성합니다.
-     * (parentId 파라미터 없이 호출하세요)
-     */
+    //하위 폴더 생성
     @PostMapping
-    @Operation(summary = "새 하위 폴더 생성",
-            description = "메인(root) 폴더 아래에 새 폴더를 생성합니다.")
-    public ResponseEntity<FolderResponse> createFolder(
-            @PathVariable Long projectId,
-            @RequestBody FolderRequest request
-    ) {
+    @Operation(summary = "폴더 생성", description = "parentId가 없으면 루트 폴더 아래, 있으면 그 폴더 아래에 생성됩니다.")
+    public ResponseEntity<FolderResponse> createFolder(@RequestBody FolderRequest request) {
         Folder folder = folderService.createFolder(
-                projectId,
-                request.getFolderName()
+                request.getProjectId(),
+                request.getFolderName(),
+                request.getParentId()  // null 가능
         );
-        FolderResponse resp = new FolderResponse(
+
+        FolderResponse response = new FolderResponse(
                 folder.getId(),
                 folder.getName(),
                 folder.getProject().getId(),
                 folder.getParentId()
         );
-        return ResponseEntity.ok(resp);
+        return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{folderId}")
-    @Operation(summary = "폴더 삭제", description = "해당 폴더와 그 안의 모든 파일을 삭제합니다.")
-    public ResponseEntity<Void> deleteFolder(
+    @GetMapping("/{folderId}")
+    @Operation(summary = "특정 폴더 조회", description = "folderId로 특정 폴더를 조회합니다.")
+    public ResponseEntity<FolderResponse> getFolderById(
+            @RequestParam Long projectId,
             @PathVariable Long folderId
     ) {
-        folderService.deleteFolder(folderId);
+        Folder folder = folderService.getFolderById(projectId, folderId);
+        return ResponseEntity.ok(new FolderResponse(
+                folder.getId(),
+                folder.getName(),
+                folder.getProject().getId(),
+                folder.getParentId()
+        ));
+    }
+
+    @GetMapping("/tree/{projectId}")
+    @Operation(summary = "폴더 트리 조회", description = "폴더 전체 하위 구조를 조회합니다.")
+    public ResponseEntity<FolderTreeResponse> getProjectFolderTree(@PathVariable Long projectId) {
+        FolderTreeResponse tree = folderService.getRootFolderTree(projectId);
+        return ResponseEntity.ok(tree);
+    }
+
+    @DeleteMapping
+    @Operation(summary = "폴더 삭제", description = "폴더 ID만으로 해당 폴더 및 하위 폴더/파일 삭제")
+    public ResponseEntity<Void> deleteFolder(@RequestBody FolderRequest request) {
+        folderService.deleteFolder(request.getProjectId(), request.getFolderId());
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{folderId}")
-    @Operation(summary = "폴더 이름 변경", description = "해당 폴더의 이름을 새 이름을 변경합니다.")
+    @PatchMapping
+    @Operation(summary = "폴더 이름 변경", description = "폴더의 이름을 변경합니다.")
     public ResponseEntity<FolderResponse> renameFolder(
-            @PathVariable Long folderId,
             @RequestBody FolderRenameRequest request
     ) {
-        Folder updated = folderService.renameFolder(folderId, request.getNewName());
-
-        FolderResponse response = new FolderResponse(
-                updated.getId(),
-                updated.getName(),
-                updated.getProject().getId(),
-                updated.getParentId()
+        Folder folder = folderService.renameFolder(
+                request.getProjectId(),
+                request.getFolderId(),
+                request.getNewName()  // 또는 getNewName() → 일치하도록 DTO 조정 필요
         );
-        return ResponseEntity.ok(response);
+
+        return ResponseEntity.ok(new FolderResponse(
+                folder.getId(),
+                folder.getName(),
+                folder.getProject().getId(),
+                folder.getParentId()
+        ));
     }
+
 }

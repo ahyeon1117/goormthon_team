@@ -107,8 +107,6 @@ public class ProjectService {
         return project;
     }
 
-
-
     @Transactional
     public boolean deleteProject(Long projectId) {
         Long userId = jwtService.getUserId();
