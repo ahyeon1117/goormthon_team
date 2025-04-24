@@ -20,8 +20,15 @@ export interface SingupResponse {
   email: string;
 }
 
+export interface UpdateUserRequest {
+  username?: string;
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
 export interface ProjectCreateResponse {
-  projectId: number; // camelCase가 왜 아닐까?
+  projectId: number;
   name: string;
   ownerId: number;
 }

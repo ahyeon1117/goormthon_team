@@ -2,8 +2,15 @@ import { FiEdit, FiX, FiPlay } from 'react-icons/fi';
 import { Project } from '../../contexts/ProjectContextType';
 import { useContext } from 'react';
 import { ProjectContext } from '../../contexts/ProjectContextType';
+import { useNavigate } from 'react-router-dom';
 
 const ContainerCard = ({ project }: { project: Project }) => {
+  const navigate = useNavigate();
+
+  const handleRunClick = () => {
+    navigate('/workspace');
+  };
+
   const context = useContext(ProjectContext);
   if (!context) return null;
 
@@ -13,12 +20,19 @@ const ContainerCard = ({ project }: { project: Project }) => {
     }
   };
 
+  const handleRename = () => {
+    const newName = prompt('새로운 프로젝트 이름을 입력하세요:', project.name);
+    if (newName && newName.trim() !== '') {
+      context.updateProjectName(project.projectId, newName);
+    }
+  };
+
   return (
     <div className="bg-dashboard-background p-4 border border-dashboard-gray rounded-lg flex flex-col h-72">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold text-white">{project.name}</h3>
         <div className="flex gap-3 text-lg text-white">
-          <button>
+          <button onClick={handleRename}>
             <FiEdit />
           </button>
           <button onClick={handleDelete}>
@@ -39,7 +53,10 @@ const ContainerCard = ({ project }: { project: Project }) => {
       </div>
 
       <div className="mt-4">
-        <button className="w-full bg-btn-primary hover:bg-primary-hover text-white py-2 rounded-lg flex justify-center items-center text-sm gap-3 border border-white/20">
+        <button
+          onClick={handleRunClick}
+          className="w-full bg-btn-primary hover:bg-primary-hover text-white py-2 rounded-lg flex justify-center items-center text-sm gap-3 border border-white/20"
+        >
           <FiPlay />
           실행
         </button>

@@ -4,6 +4,7 @@ import {
   fetchProjects,
   createProject as createProjectAPI,
   deleteProject as deleteProjectAPI,
+  updateProjectName as updateProjectNameAPI,
 } from '../api/project';
 
 export const ProjectProvider = ({ children }: { children: React.ReactNode }) => {
@@ -40,8 +41,17 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
     }
   };
 
+  const updateProjectName = async (projectId: number, name: string) => {
+    try {
+      await updateProjectNameAPI(projectId, name);
+      await loadProjects();
+    } catch (err) {
+      console.error('프로젝트 이름 변경 실패:', err);
+    }
+  };
+
   return (
-    <ProjectContext.Provider value={{ projects, createProject, deleteProject }}>
+    <ProjectContext.Provider value={{ projects, createProject, deleteProject, updateProjectName }}>
       {children}
     </ProjectContext.Provider>
   );

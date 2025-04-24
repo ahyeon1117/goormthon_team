@@ -69,8 +69,8 @@ public class SecurityConfig {
       new AntPathRequestMatcher("/swagger-ui.html"),
       new AntPathRequestMatcher("/swagger-resources/**"),
       new AntPathRequestMatcher("/webjars/**"),
-      new AntPathRequestMatcher("/api/v1/kernels/**")
-
+      new AntPathRequestMatcher("/api/v1/kernels/**"),
+      new AntPathRequestMatcher("/ws-chat/**")
     );
 
     http
@@ -79,7 +79,7 @@ public class SecurityConfig {
       .headers(AbstractHttpConfigurer::disable)
       .authorizeHttpRequests(request ->
         request
-          .requestMatchers("/api/v1/auth/signup", "/api/v1/auth/login", "/api/v1/kernels/**")
+          .requestMatchers("/api/v1/auth/signup", "/api/v1/auth/login", "/api/v1/kernels/**", "/ws-chat/**")
           .permitAll()
           .requestMatchers(
             "/v3/api-docs/**",
@@ -119,7 +119,7 @@ public class SecurityConfig {
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowedOrigins(List.of("*")); // 모든 요청 허용
     config.setAllowedMethods(
-      List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
+      List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
     );
     config.setAllowedHeaders(List.of("*"));
     config.setAllowCredentials(false);
@@ -128,4 +128,5 @@ public class SecurityConfig {
     source.registerCorsConfiguration("/**", config);
     return source;
   }
+
 }

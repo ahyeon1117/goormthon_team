@@ -57,6 +57,7 @@ const Header = () => {
       </div>
 
       <div className="flex items-center gap-6 text-sm text-dashboard-gray">
+        <button className="hover:text-white">멤버 추가</button>
         <button className="hover:text-white">연결</button>
         <button onClick={handleAddCode} className="hover:text-white">
           + Code

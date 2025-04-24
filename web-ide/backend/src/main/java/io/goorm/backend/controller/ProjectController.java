@@ -24,23 +24,31 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @PostMapping
-    @Operation(summary = "프로젝트 생성", description = "사용자의 새 프로젝트를 생성합니다.")
+    @Operation(
+            summary = "프로젝트 생성",
+            description = "RequestBody 에 name 필드로 새 프로젝트명을 전달합니다. 서비스에서 프로젝트와 루트 폴더를 함께 생성합니다."
+    )
     public ResponseEntity<ProjectResponse> createProject(
             @RequestBody ProjectRequest request
     ) {
-        var project = projectService.addProject(request.getName());
+        // 프로젝트 + 루트 폴더 생성
+        Project project = projectService.addProject(request.getName());
         if (project == null) {
-            return ResponseEntity.badRequest().build();
+            // 중복 이름 등으로 생성이 거부된 경우 400 리턴
+            return ResponseEntity
+                    .badRequest()
+                    .body(null);
         }
-        return ResponseEntity.ok(new ProjectResponse(project));
+
+        // 생성된 프로젝트를 DTO로 감싸서 반환
+        return ResponseEntity
+                .ok(new ProjectResponse(project));
     }
 
     @GetMapping
-    @Operation(summary = "내 프로젝트 전체 조회", description = "소유 및 멤버로 포함된 모든 프로젝트를 반환합니다.")
+    @Operation(summary = "내 프로젝트 전체 조회", description = "소유·속해 있는 프로젝트를 모두 반환합니다.")
     public ResponseEntity<List<ProjectResponse>> getMyProjects() {
-        var dtos = projectService.getMyProjects().stream()
-                .map(ProjectResponse::new)
-                .toList();
+        List<ProjectResponse> dtos = projectService.getMyProjects();
         return ResponseEntity.ok(dtos);
     }
 
@@ -83,19 +91,4 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{projectId}/folders")
-    @Operation(summary = "프로젝트 폴더 조회", description = "해당 프로젝트의 모든 폴더를 반환합니다.")
-    public ResponseEntity<List<Folder>> getFoldersByProject(
-            @PathVariable Long projectId
-    ) {
-        return ResponseEntity.ok(projectService.getFoldersByProject(projectId));
-    }
-
-    @GetMapping("/{projectId}/files")
-    @Operation(summary = "프로젝트 파일 조회", description = "해당 프로젝트의 모든 파일을 반환합니다.")
-    public ResponseEntity<List<File>> getFilesByProject(
-            @PathVariable Long projectId
-    ) {
-        return ResponseEntity.ok(projectService.getFilesByProject(projectId));
-    }
 }

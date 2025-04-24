@@ -7,6 +7,7 @@ import {
 } from '../types/api';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const token = localStorage.getItem('token');
 
 export const login = async (body: LoginRequest): Promise<ApiResponse<LoginResponse>> => {
   const res = await fetch(`${BASE_URL}/api/v1/auth/login`, {
@@ -37,13 +38,12 @@ export const signup = async (body: SignupRequest): Promise<ApiResponse<SingupRes
 };
 
 export const logout = async (): Promise<void> => {
-  const token = localStorage.getItem('token');
   if (!token) return;
 
   await fetch(`${BASE_URL}/api/v1/auth/logout`, {
     method: 'DELETE',
     headers: {
-      Authorization: token,
+      Authorization: `Bearer ${token}`,
     },
   });
   localStorage.removeItem('token');
