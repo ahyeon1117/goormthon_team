@@ -2,8 +2,15 @@ import { FiEdit, FiX, FiPlay } from 'react-icons/fi';
 import { Project } from '../../contexts/ProjectContextType';
 import { useContext } from 'react';
 import { ProjectContext } from '../../contexts/ProjectContextType';
+import { useNavigate } from 'react-router-dom';
 
 const ContainerCard = ({ project }: { project: Project }) => {
+  const navigate = useNavigate();
+
+  const handleRunClick = () => {
+    navigate('/workspace');
+  };
+
   const context = useContext(ProjectContext);
   if (!context) return null;
 
@@ -46,7 +53,10 @@ const ContainerCard = ({ project }: { project: Project }) => {
       </div>
 
       <div className="mt-4">
-        <button className="w-full bg-btn-primary hover:bg-primary-hover text-white py-2 rounded-lg flex justify-center items-center text-sm gap-3 border border-white/20">
+        <button
+          onClick={handleRunClick}
+          className="w-full bg-btn-primary hover:bg-primary-hover text-white py-2 rounded-lg flex justify-center items-center text-sm gap-3 border border-white/20"
+        >
           <FiPlay />
           실행
         </button>

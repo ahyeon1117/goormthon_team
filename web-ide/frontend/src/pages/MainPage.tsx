@@ -44,7 +44,7 @@ const MainPage = () => {
               <br /> “그리고 이 작은 시작은 앞으로의 더 큰 확장 가능성을 품고 있습니다.”
             </p>
             <Link
-              to="/workspace"
+              to="/dashboard"
               className="bg-btn-primary hover:bg-primary-hover text-white px-6 py-3 rounded flex items-center gap-2 w-fit mx-auto md:mx-0"
             >
               <FaCode />
