@@ -3,6 +3,7 @@ import json
 from typing import Optional
 from collections import defaultdict
 from aiohttp import ClientSession, WSMsgType
+from services import execution_storage_service
 
 WS_GATEWAY_URL = "http://localhost:8888"  # Jupyter Kernel Gateway 주소
 GATEWAY_TOKEN = "rocket"
@@ -57,10 +58,12 @@ async def execute_code_via_ws(kernel_id: str, code: str, cell_id: Optional[str] 
                         msg_type = data.get("msg_type") or data.get("header", {}).get("msg_type")
 
                         if msg_type == "stream":
-                            if data["content"]["name"] == "stdout":
-                                result_data["stdout"] += data["content"]["text"]
-                            elif data["content"]["name"] == "stderr":
-                                result_data["stderr"] += data["content"]["text"]
+                            content_name = data["content"]["name"]
+                            content_text = data["content"]["text"]
+                            if content_name == "stdout":
+                                result_data["stdout"] += content_text
+                            elif content_name == "stderr":
+                                result_data["stderr"] += content_text
 
                         elif msg_type == "execute_result":
                             result_data["result"] = data["content"]["data"]["text/plain"]
@@ -70,6 +73,9 @@ async def execute_code_via_ws(kernel_id: str, code: str, cell_id: Optional[str] 
 
                         elif msg_type == "execute_reply":
                             break
+
+                # # WebSocket 실행 후 DB에 결과 저장 (kernel_id 제외)
+                # await execution_storage_service(cell_id, code, result_data)
 
                 return result_data
 

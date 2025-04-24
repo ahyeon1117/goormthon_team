@@ -69,7 +69,8 @@ public class SecurityConfig {
       new AntPathRequestMatcher("/swagger-ui.html"),
       new AntPathRequestMatcher("/swagger-resources/**"),
       new AntPathRequestMatcher("/webjars/**"),
-      new AntPathRequestMatcher("/api/v1/kernels/**")
+      new AntPathRequestMatcher("/api/v1/kernels/**"),
+      new AntPathRequestMatcher("/ws-chat/**")
 
     );
 
@@ -89,6 +90,8 @@ public class SecurityConfig {
             "/webjars/**"
           )
           .permitAll() // Swagger UI 접근 허용
+          .requestMatchers("/ws-chat/**")
+          .permitAll() // 웹소켓 접근 허용
           .anyRequest()
           .authenticated() // 그 외 모든 요청 인증 처리
       )
@@ -114,6 +117,20 @@ public class SecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
+  // @Bean
+  // public CorsConfigurationSource corsConfigurationSource() {
+  //     CorsConfiguration config = new CorsConfiguration();
+  //     config.setAllowedOrigins(List.of("http://127.0.0.1:5500"));
+  //     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+  //     config.setAllowedHeaders(List.of("*"));
+  //     config.setAllowCredentials(true); // ✅ 바로 이 줄 추가! 핵심!
+  
+  //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+  //     source.registerCorsConfiguration("/**", config);
+  //     return source;
+  // }
+  
+  
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
@@ -128,4 +145,5 @@ public class SecurityConfig {
     source.registerCorsConfiguration("/**", config);
     return source;
   }
+
 }

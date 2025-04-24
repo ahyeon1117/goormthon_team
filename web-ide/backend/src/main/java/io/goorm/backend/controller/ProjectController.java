@@ -1,5 +1,6 @@
 package io.goorm.backend.controller;
 
+import io.goorm.backend.dto.member.MemberRequest;
 import io.goorm.backend.dto.project.ProjectRequest;
 import io.goorm.backend.dto.project.ProjectResponse;
 import io.goorm.backend.entity.File;
@@ -35,7 +36,7 @@ public class ProjectController {
     }
 
     @GetMapping
-    @Operation(summary = "내 프로젝트 목록 조회", description = "로그인 유저가 소유한 모든 프로젝트를 반환합니다.")
+    @Operation(summary = "내 프로젝트 전체 조회", description = "소유 및 멤버로 포함된 모든 프로젝트를 반환합니다.")
     public ResponseEntity<List<ProjectResponse>> getMyProjects() {
         var dtos = projectService.getMyProjects().stream()
                 .map(ProjectResponse::new)
@@ -60,13 +61,25 @@ public class ProjectController {
         }
     }
 
-
     @DeleteMapping("/{projectId}")
     @Operation(summary = "프로젝트 삭제", description = "해당 프로젝트와 관련된 모든 폴더·파일을 삭제합니다.")
     public ResponseEntity<Void> deleteProject(
             @PathVariable Long projectId
     ) {
         projectService.deleteProject(projectId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{projectId}/members")
+    @Operation(
+            summary = "프로젝트 멤버 추가",
+            description = "새 멤버를 추가합니다."
+    )
+    public ResponseEntity<Void> addMember(
+            @PathVariable Long projectId,
+            @RequestBody MemberRequest request
+    ) {
+        projectService.addMember(projectId, request.getUserId());
         return ResponseEntity.noContent().build();
     }
 

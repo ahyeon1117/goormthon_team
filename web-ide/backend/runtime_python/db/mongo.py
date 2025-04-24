@@ -4,7 +4,7 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 
 # Docker로 실행 중이면 host는 "mongodb", 로컬에서 실행 중이면 "localhost" (접속 설정)
-MONGO_HOST = "localhost"
+MONGO_HOST = "mongodb_container"
 MONGO_PORT = 27017
 MONGO_USER = "rocket"
 MONGO_PASSWORD = "qwer123!"
