@@ -1,7 +1,7 @@
 import nbformat
 from nbformat.v4 import new_notebook, new_code_cell, new_markdown_cell
 from fastapi import HTTPException
-from models.cell import CellCreate, CellType
+from models.cell import CellCreate
 import uuid
 
 #커널
