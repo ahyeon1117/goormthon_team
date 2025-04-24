@@ -4,6 +4,7 @@ export type Project = {
   projectId: number;
   name: string;
   ownerId: number;
+  userName: string;
 };
 
 export type ProjectContextType = {
