@@ -117,26 +117,12 @@ public class SecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-  // @Bean
-  // public CorsConfigurationSource corsConfigurationSource() {
-  //     CorsConfiguration config = new CorsConfiguration();
-  //     config.setAllowedOrigins(List.of("http://127.0.0.1:5500"));
-  //     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-  //     config.setAllowedHeaders(List.of("*"));
-  //     config.setAllowCredentials(true); // ✅ 바로 이 줄 추가! 핵심!
-  
-  //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-  //     source.registerCorsConfiguration("/**", config);
-  //     return source;
-  // }
-  
-  
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowedOrigins(List.of("*")); // 모든 요청 허용
     config.setAllowedMethods(
-      List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
+      List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
     );
     config.setAllowedHeaders(List.of("*"));
     config.setAllowCredentials(false);
