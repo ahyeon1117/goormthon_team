@@ -10,6 +10,7 @@ export type ProjectContextType = {
   projects: Project[];
   createProject: (name: string) => void;
   deleteProject: (projectId: number) => void;
+  updateProjectName: (projectId: number, name: string) => void;
 };
 
 export const ProjectContext = createContext<ProjectContextType | null>(null);

@@ -28,14 +28,11 @@ export const createProject = async (name: string): Promise<ProjectCreateResponse
   if (!res.ok) throw new Error('프로젝트 생성 실패');
 
   const response: ProjectCreateResponse = await res.json();
-  console.log('📦 response.projectId:', response.projectId); // ✅ 여기!
 
   return response;
 };
 
 export const deleteProject = async (projectId: number): Promise<void> => {
-  const token = localStorage.getItem('token');
-
   const res = await fetch(`${BASE_URL}/api/projects/${projectId}`, {
     method: 'DELETE',
     headers: {
@@ -45,4 +42,17 @@ export const deleteProject = async (projectId: number): Promise<void> => {
     // body: JSON.stringify({ projectId }),
   });
   if (!res.ok) throw new Error('프로젝트 삭제 실패');
+};
+
+export const updateProjectName = async (projectId: number, newName: string): Promise<void> => {
+  const res = await fetch(`${BASE_URL}/api/projects/${projectId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ name: newName }),
+  });
+
+  if (!res.ok) throw new Error('프로젝트 이름 변경 실패');
 };

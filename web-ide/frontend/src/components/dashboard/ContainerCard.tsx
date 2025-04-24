@@ -13,12 +13,19 @@ const ContainerCard = ({ project }: { project: Project }) => {
     }
   };
 
+  const handleRename = () => {
+    const newName = prompt('새로운 프로젝트 이름을 입력하세요:', project.name);
+    if (newName && newName.trim() !== '') {
+      context.updateProjectName(project.projectId, newName);
+    }
+  };
+
   return (
     <div className="bg-dashboard-background p-4 border border-dashboard-gray rounded-lg flex flex-col h-72">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold text-white">{project.name}</h3>
         <div className="flex gap-3 text-lg text-white">
-          <button>
+          <button onClick={handleRename}>
             <FiEdit />
           </button>
           <button onClick={handleDelete}>
