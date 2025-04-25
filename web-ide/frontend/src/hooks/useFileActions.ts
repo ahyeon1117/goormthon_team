@@ -6,8 +6,13 @@ export const useFileActions = (
   closeDropdown: () => void,
 ) => {
   const handleCreateFile = async (folderId: number) => {
-    const fileName = prompt('새 파일 이름을 입력해주세요');
+    let fileName = prompt('새 파일 이름을 입력해주세요')?.trim();
     if (!fileName || !projectId) return;
+
+    // 확장자 강제 .ipynb가 없는경우 붙이기
+    if (!fileName.endsWith('.ipynb')) {
+      fileName += '.ipynb';
+    }
 
     try {
       await createFile({ fileName, projectId: Number(projectId), folderId });
