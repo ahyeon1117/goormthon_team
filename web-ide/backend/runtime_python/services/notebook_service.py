@@ -1,7 +1,7 @@
 import nbformat
 from nbformat.v4 import new_notebook, new_code_cell, new_markdown_cell
 from fastapi import HTTPException
-from models.cell import CellCreate
+from models.cell import CellCreate, MarkdownUpdate
 import uuid
 
 #커널
@@ -119,6 +119,40 @@ class NotebookService:
 
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error adding markdown cell: {str(e)}")
+
+    async def update_markdown_cell(self, file_id: str, cell_data: MarkdownUpdate):
+        try:
+            # 문서 찾기
+            doc = await self.db.find_one({"file_id": file_id})
+            if not doc:
+                raise HTTPException(status_code=404, detail="File not found")
+
+            # 2. nbformat 파싱
+            notebook = nbformat.reads(doc["notebook"], as_version=4)
+
+            # 3. 해당 셀 찾아서 업데이트
+            cell_found = False
+            for cell in notebook.cells:
+                if cell.get("metadata", {}).get("id") == cell_data.cell_id:
+                    if cell.cell_type != "markdown":
+                        raise HTTPException(status_code=400, detail="Cell is not a markdown type")
+                    cell.source = "\n".join(cell_data.source)
+                    cell_found = True
+                    break
+
+            if not cell_found:
+                raise HTTPException(status_code=404, detail="Cell not found")
+
+            # 4. notebook 저장
+            await self.db.update_one(
+                {"file_id": file_id},
+                {"$set": {"notebook": nbformat.writes(notebook)}}
+            )
+
+            return {"message": "Markdown cell updated successfully", "cell_id": cell_data.cell_id}
+
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error updating markdown cell: {str(e)}")
 
 
 

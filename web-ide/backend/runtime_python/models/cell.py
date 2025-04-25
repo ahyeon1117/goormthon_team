@@ -1,6 +1,7 @@
 # models/cell.py
 from pydantic import BaseModel
 from enum import Enum
+from typing import List
 
 class CellType(Enum):
     CODE = "code"
@@ -12,4 +13,8 @@ class CellCreate(BaseModel):
 
 class CellResponse(BaseModel):
     cell_id: str
+
+class MarkdownUpdate(BaseModel):
+    cell_id: str
+    source: List[str]
 
