@@ -1,5 +1,7 @@
 package io.goorm.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,10 +28,12 @@ public class File {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "folder_id", nullable = false)
+    @JsonBackReference
     private Folder folder;
 
     @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
+    @JsonIgnore
     private Project project;
 
     @CreationTimestamp
