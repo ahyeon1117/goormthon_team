@@ -8,7 +8,7 @@ const ContainerCard = ({ project }: { project: Project }) => {
   const navigate = useNavigate();
 
   const handleRunClick = () => {
-    navigate('/workspace');
+    navigate(`/workspace?projectId=${project.projectId}`);
   };
 
   const context = useContext(ProjectContext);
