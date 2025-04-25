@@ -23,7 +23,7 @@ public class FileController {
 
     @PostMapping
     @Operation(summary = "파일 생성", description = "프로젝트 또는 폴더 내에 새 파일을 생성합니다.")
-    public ResponseEntity<?> createFile(
+    public ResponseEntity<FileResponse> createFile(
             @RequestBody FileRequest request
     ) {
         try {
@@ -32,11 +32,18 @@ public class FileController {
                     request.getProjectId(),
                     request.getFolderId()
             );
-            return ResponseEntity.ok(file); // file.getId() 포함된 객체 반환 💖
+
+            FileResponse response = new FileResponse(
+                    file.getId(),
+                    file.getName(),
+                    file.getFolder() != null ? file.getFolder().getId() : null,
+                    file.getProject().getId()
+            );
+
+            return ResponseEntity.ok(response); // file.getId() 포함된 객체 반환 💖
         } catch (RuntimeException e) {
             return ResponseEntity
-                    .badRequest()
-                    .body(e.getMessage());
+                    .badRequest().build();
         }
     }
 
