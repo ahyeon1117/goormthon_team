@@ -1,11 +1,13 @@
 package io.goorm.backend.service;
 
+import io.goorm.backend.dto.file.FileResponse;
 import io.goorm.backend.entity.File;
 import io.goorm.backend.entity.Folder;
 import io.goorm.backend.entity.Project;
 import io.goorm.backend.entity.User;
 import io.goorm.backend.repository.FileRepository;
 import io.goorm.backend.repository.FolderRepository;
+import io.goorm.backend.repository.ProjectMemberRepository;
 import io.goorm.backend.repository.ProjectRepository;
 import io.goorm.backend.service.fastapi.FastApiFileClient;
 import lombok.RequiredArgsConstructor;
@@ -22,50 +24,56 @@ public class FileService {
     private final FileRepository fileRepository;
     private final FolderRepository folderRepository;
     private final ProjectRepository projectRepository;
+    private final ProjectMemberRepository projectMemberRepository;
     private final UserService userService;
     private final JwtService jwtService;
     private final FastApiFileClient fastApiFileClient;  // FastAPI 알림 보내기
 
     @Transactional
-    public File createFile(String fileName, String content, Long projectId, Long folderId) {
+    public File createFile(String fileName, Long projectId, Long folderId) {
         Long userId = jwtService.getUserId();
         User user = userService.findById(userId);
 
-        // 프로젝트 조회 및 소유자 검증
+        //프로젝트 존재 여부 확인
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("프로젝트가 존재하지 않습니다."));
 
-        if (!project.getOwner().getId().equals(user.getId())) {
-            throw new RuntimeException("본인의 프로젝트가 아닙니다.");
+        //프로젝트 소유자 또는 멤버 여부 확인
+        boolean isOwner = project.getOwner().getId().equals(user.getId());
+        boolean isMember = projectMemberRepository.existsByProjectAndUser(project, user);
+        if (!isOwner && !isMember) {
+            throw new RuntimeException("해당 프로젝트에 대한 권한이 없습니다.");
         }
 
-        // 폴더 여부 확인
+        //폴더 지정 여부 확인 및 검증
         Folder folder = null;
-
         if (folderId != null) {
-            // 폴더가 지정된 경우: 폴더 존재 여부 확인
             folder = folderRepository.findById(folderId)
                     .orElseThrow(() -> new RuntimeException("폴더가 존재하지 않습니다."));
 
-            // 폴더 내부 중복 파일 이름 중복 검사
+            // 폴더가 해당 프로젝트에 속해 있는지 확인
+            if (!folder.getProject().getId().equals(projectId)) {
+                throw new RuntimeException("해당 폴더는 지정한 프로젝트에 속하지 않습니다.");
+            }
+
+            // 폴더 내 중복 파일 이름 검사
             Optional<File> existingFile = fileRepository.findByNameAndFolder(fileName, folder);
             if (existingFile.isPresent()) {
                 throw new RuntimeException("해당 폴더에 같은 이름의 파일이 이미 존재합니다.");
             }
         } else {
-            // 폴더가 없는 경우: 프로젝트 루트에서 중복 이름 검사
+            // 프로젝트 루트 디렉토리 내에서 중복 검사
             Optional<File> existingFile = fileRepository.findByNameAndProjectAndFolderIsNull(fileName, project);
             if (existingFile.isPresent()) {
                 throw new RuntimeException("프로젝트 루트에 같은 이름의 파일이 이미 존재합니다.");
             }
         }
 
-        // 파일 생성 및 저장
+        //파일 생성 및 저장
         File file = File.builder()
                 .name(fileName)
-                .content(content)
                 .project(project)
-                .folder(folder) // null 가능
+                .folder(folder)
                 .build();
 
 //        File savedFile = fileRepository.save(file);  // 저장하면서 file_id 생성 💖
@@ -93,16 +101,40 @@ public class FileService {
 
     }
 
+    @Transactional(readOnly = true)
+    public FileResponse getFileDetail(Long fileId) {
+        File file = fileRepository.findById(fileId)
+                .orElseThrow(() -> new RuntimeException("파일이 존재하지 않습니다."));
+
+        return new FileResponse(
+                file.getId(),
+                file.getName(),
+                file.getFolder() != null ? file.getFolder().getId() : null,
+                file.getProject().getId()
+        );
+    }
+
+
     @Transactional
     public boolean deleteFile(Long fileId) {
         Long userId = jwtService.getUserId();
         User user = userService.findById(userId);
 
+        //파일 조회 및 존재 여부 확인
         File file = fileRepository.findById(fileId)
                 .orElseThrow(() -> new RuntimeException("파일이 존재하지 않습니다."));
 
+        //파일이 속한 프로젝트 조회
         Project project = file.getProject();
 
+        //프로젝트 소유자 또는 멤버 여부 확인
+        boolean isOwner = project.getOwner().getId().equals(userId);
+        boolean isMember = projectMemberRepository.existsByProjectAndUser(project, user);
+        if (!isOwner && !isMember) {
+            throw new RuntimeException("해당 파일을 삭제할 권한이 없습니다.");
+        }
+
+        //삭제
         fileRepository.delete(file);
         return true;
     }
@@ -112,19 +144,28 @@ public class FileService {
         Long userId = jwtService.getUserId();
         User user = userService.findById(userId);
 
-        // 파일 조회
+        //파일 조회
         File file = fileRepository.findById(fileId)
                 .orElseThrow(() -> new RuntimeException("파일이 존재하지 않습니다."));
 
-        // 같은 폴더 내 중복 이름 검사
+        //소유자 또는 멤버 검증
+        Project project = file.getProject();
+        boolean isOwner = project.getOwner().getId().equals(userId);
+        boolean isMember = projectMemberRepository.existsByProjectAndUser(project, user);
+        if (!isOwner && !isMember) {
+            throw new RuntimeException("파일 이름을 변경할 권한이 없습니다.");
+        }
+
+        //같은 폴더 내 중복 이름 검사
         Folder folder = file.getFolder();
         Optional<File> duplicate = fileRepository.findByNameAndFolder(newName, folder);
         if (duplicate.isPresent() && !duplicate.get().getId().equals(file.getId())) {
             throw new RuntimeException("같은 이름의 파일이 이미 존재합니다.");
         }
 
-        // 이름 수정
+        //이름 변경
         file.setName(newName);
         return file;
     }
+
 }

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from services.notebook_service import NotebookService
 from db.mongo import get_mongo_client  # 여기서 get_mongo_client를 임포트
-from models.cell import CellCreate, CellResponse
+from models.cell import CellCreate, MarkdownUpdate
 
 
 def get_notebook_service(db = Depends(get_mongo_client)):
@@ -48,6 +48,18 @@ async def add_cell_endpoint(
 ):
     try:
         return await service.add_markdown_cell(file_id, markdown=cell_data.source)
+    except Exception as e:
+        print(f"🔥 Error in create_file_endpoint: {e}")  # <- 추가
+        raise HTTPException(status_code=500, detail=f"Failed to add cell: {str(e)}")
+
+@router.put("/files/{file_id}/update_markdown_cell")
+async def update_markdown_cell_endpoint(
+    file_id: str,
+    cell_data: MarkdownUpdate,
+    service: NotebookService = Depends(get_notebook_service)
+):
+    try:
+        return await service.update_markdown_cell(file_id, cell_data)
     except Exception as e:
         print(f"🔥 Error in create_file_endpoint: {e}")  # <- 추가
         raise HTTPException(status_code=500, detail=f"Failed to add cell: {str(e)}")

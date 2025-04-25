@@ -17,4 +17,6 @@ public interface FileRepository extends JpaRepository<File, Long> {
 
 
     List<File> findAllByProject(Project project);
+
+    List<File> findAllByFolder(Folder folder);
 }

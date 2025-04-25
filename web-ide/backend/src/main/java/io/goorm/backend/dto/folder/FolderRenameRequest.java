@@ -2,12 +2,13 @@ package io.goorm.backend.dto.folder;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
-public class FolderResponse {
+public class FolderRenameRequest {
     private Long folderId;
-    private String folderName;
     private Long projectId;
-    private Long parentId; // 루트는 항상 null
+    private String newName;
 }

@@ -3,10 +3,7 @@ package io.goorm.backend.service;
 import io.goorm.backend.dto.user.UserProfileResponse;
 import io.goorm.backend.dto.user.UserUpdateRequest;
 import io.goorm.backend.entity.User;
-import io.goorm.backend.global.exception.InvalidCurrentPasswordException;
-import io.goorm.backend.global.exception.PasswordNotMatchedException;
-import io.goorm.backend.global.exception.SameAsCurrentPasswordException;
-import io.goorm.backend.global.exception.UserNotFoundException;
+import io.goorm.backend.global.exception.*;
 import io.goorm.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,42 +51,66 @@ public class UserService {
         return UserProfileResponse.from(user);
     }
 
-    // 사용자 정보 수정
+    // 사용자 정보 수정 (이름, 비밀번호 중 선택적으로 변경 가능)
     @Transactional
     public UserProfileResponse updateUserProfile(Long userId, UserUpdateRequest request) {
+
         // 사용자 조회
         User user = findById(userId);
 
-        // 1. 이름 변경
-        if (request.getUsername() != null && !request.getUsername().isBlank()) {
-            user.updateUsername(request.getUsername()); // setter 최소화 권장
+        // 입력 필드 정보
+        String username = request.getUsername() != null ? request.getUsername().trim() : "";
+        String currentPassword = request.getCurrentPassword() != null ? request.getCurrentPassword().trim() : "";
+        String newPassword = request.getNewPassword() != null ? request.getNewPassword().trim() : "";
+        String confirmPassword = request.getConfirmPassword() != null ? request.getConfirmPassword().trim() : "";
+
+        // [변경 요청 여부]
+        // 이름 변경 여부
+        boolean changeUsernameRequested = !username.isEmpty();
+        // 비밀번호 변경 여부 (세 input 모두 입력되어야 변경 가능)
+        boolean changePasswordRequested =
+            !currentPassword.isEmpty() &&
+            !newPassword.isEmpty() &&
+            !confirmPassword.isEmpty();
+        // 비밀번호 필드가 일부만 입력된 경우
+        boolean somePasswordsMissing =
+            (!currentPassword.isEmpty() || !newPassword.isEmpty() || !confirmPassword.isEmpty())
+            && !changePasswordRequested;
+
+        // [변경 불가능한 경우]
+        // 비밀번호 필드가 일부만 입력된 경우
+        if (somePasswordsMissing) {
+            throw new InvalidUserUpdateException("비밀번호 변경을 위해 세 필드를 모두 입력해주세요.");
+        }
+        // 이름과 비밀번호가 모두 비어있으면 변경 불가
+        if (!changeUsernameRequested && !changePasswordRequested) {
+            throw new InvalidUserUpdateException("변경할 정보가 없습니다. 이름 또는 비밀번호를 입력해주세요.");
+        }
+        
+        // 1. 이름 변경 처리
+        if (changeUsernameRequested) {
+            user.updateUsername(username); // setter 최소화 권장
         }
 
-        // 2. 비밀번호 변경
-        // 세 input 모두 입력되어야 변경 가능
-        boolean changePasswordRequested =
-            request.getCurrentPassword() != null && !request.getCurrentPassword().isBlank() &&
-            request.getNewPassword() != null && !request.getNewPassword().isBlank() &&
-            request.getConfirmPassword() != null && !request.getConfirmPassword().isBlank();
-
+        // 2. 비밀번호 변경 처리
         if (changePasswordRequested) {
             // 2-1. 현재 비밀번호 일치 여부 검증
-            if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-                throw new InvalidCurrentPasswordException();
+            if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+                throw new InvalidUserUpdateException("현재 비밀번호가 일치하지 않습니다.");
             }
 
             // 2-2. 새 비밀번호와 비밀번호 확인 일치 여부
-            if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-                throw new PasswordNotMatchedException();
+            if (!newPassword.equals(confirmPassword)) {
+                throw new InvalidUserUpdateException("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
             }
 
             // 2-3. 현재 비밀번호와 새 비밀번호가 동일한지 (동일하면 변경 불가)
-            if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
-                throw new SameAsCurrentPasswordException();
+            if (passwordEncoder.matches(newPassword, user.getPassword())) {
+                throw new InvalidUserUpdateException("현재 비밀번호와 새 비밀번호가 동일합니다.");
             }
 
             // 비밀번호 변경
-            String encryptedPassword = passwordEncoder.encode(request.getNewPassword());
+            String encryptedPassword = passwordEncoder.encode(newPassword);
             user.updatePassword(encryptedPassword);
         }
 
