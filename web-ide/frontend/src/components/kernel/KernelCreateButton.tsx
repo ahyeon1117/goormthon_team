@@ -14,7 +14,7 @@ const KernelCreateButton = () => {
   };
 
   return (
-    <button onClick={handleClick} className="btn-primary">
+    <button onClick={handleClick} className="hover:text-white">
       연결
     </button>
   );
