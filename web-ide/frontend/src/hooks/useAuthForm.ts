@@ -23,6 +23,12 @@ export function useAuthForm<T>({
   const handleSubmit = async () => {
     try {
       const res = await submitFn(form);
+      if (submitFn.name === 'signup') {
+        alert('회원가입이 완료되었습니다.');
+        navigate('/login');
+        return;
+      }
+      console.log(res);
       localStorage.setItem('token', res.data.accessToken);
       localStorage.setItem('username', res.data.username);
       navigate('/');

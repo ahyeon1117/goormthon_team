@@ -25,7 +25,7 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
 
   const createProject = async (name: string) => {
     try {
-      await createProjectAPI(name);
+      await createProjectAPI({ name });
       await loadProjects();
     } catch (err) {
       console.error('프로젝트 생성 실패:', err);

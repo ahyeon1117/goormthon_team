@@ -20,7 +20,7 @@ const UserEditForm = () => {
           name="username"
           value={form.username}
           onChange={handleChange}
-          placeholder="이구름"
+          placeholder={localStorage.getItem('username') || undefined}
           className="w-full p-2 bg-dashboard-btn-control-primary rounded mb-3"
         />
         <label className="block text-sm mb-1">이메일</label>
