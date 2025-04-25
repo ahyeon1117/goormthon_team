@@ -6,7 +6,7 @@ function EditorWorkspace() {
 
   if (!selectedFile) return null;
 
-  const cells = selectedFile.content.cells;
+  const cells = selectedFile.content?.cells || [];
 
   return (
     <div className="space-y-6">

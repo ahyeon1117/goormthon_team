@@ -10,7 +10,8 @@ export const FileProvider = ({ children }: { children: React.ReactNode }) => {
   const handleChange: FileContextType['handleChange'] = (id, content) => {
     setSelectedFile((prev) => {
       if (!prev) return prev;
-      const updatedCells = prev.content.cells.map((cell) =>
+      const cells = prev.content?.cells ?? [];
+      const updatedCells = cells.map((cell) =>
         cell.metadata.id === id ? { ...cell, source: content } : cell,
       );
       return { ...prev, content: { ...prev.content, cells: updatedCells } };
@@ -20,6 +21,7 @@ export const FileProvider = ({ children }: { children: React.ReactNode }) => {
   const addCell: FileContextType['addCell'] = (type) => {
     setSelectedFile((prev) => {
       if (!prev) return prev;
+      const cells = prev.content?.cells ?? [];
       const newCell = {
         cell_type: type,
         source: [''],
@@ -29,7 +31,7 @@ export const FileProvider = ({ children }: { children: React.ReactNode }) => {
       };
       return {
         ...prev,
-        content: { ...prev.content, cells: [...prev.content.cells, newCell] },
+        content: { ...prev.content, cells: [...cells, newCell] },
       };
     });
   };
@@ -37,26 +39,31 @@ export const FileProvider = ({ children }: { children: React.ReactNode }) => {
   const handleMoveUp: FileContextType['handleMoveUp'] = (index) => {
     setSelectedFile((prev) => {
       if (!prev || index === 0) return prev;
-      const newCells = [...prev.content.cells];
+      const cells = prev.content?.cells ?? [];
+      if (index === 0) return prev;
+      const newCells = [...cells];
       [newCells[index - 1], newCells[index]] = [newCells[index], newCells[index - 1]];
-      return { ...prev, content: { ...prev.content, cells: newCells } };
+      return { ...prev, content: { cells: newCells } };
     });
   };
 
   const handleMoveDown: FileContextType['handleMoveDown'] = (index) => {
     setSelectedFile((prev) => {
-      if (!prev || index === prev.content.cells.length - 1) return prev;
-      const newCells = [...prev.content.cells];
+      if (!prev) return prev;
+      const cells = prev.content?.cells ?? [];
+      if (index === cells.length - 1) return prev;
+      const newCells = [...cells];
       [newCells[index], newCells[index + 1]] = [newCells[index + 1], newCells[index]];
-      return { ...prev, content: { ...prev.content, cells: newCells } };
+      return { ...prev, content: { cells: newCells } };
     });
   };
 
   const handleDelete: FileContextType['handleDelete'] = (index) => {
     setSelectedFile((prev) => {
       if (!prev) return prev;
-      const newCells = prev.content.cells.filter((_, i) => i !== index);
-      return { ...prev, content: { ...prev.content, cells: newCells } };
+      const cells = prev.content?.cells ?? [];
+      const newCells = cells.filter((_, i) => i !== index);
+      return { ...prev, content: { cells: newCells } };
     });
   };
 
