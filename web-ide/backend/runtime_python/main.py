@@ -21,6 +21,7 @@ from routers import kernel_router
 from routers.file_router import router as file_router  # 파일 라우터 임포트
 from routers import execute_router
 from routers.save_execution_router import router as save_execution_router
+from routers.FileNotebookResponse import router
 
 # FastAPI 앱 생성
 app = FastAPI()
@@ -98,7 +99,8 @@ app.include_router(file_router, prefix="/api")
 app.include_router(execute_router.router, tags=["Code Execution"])
 
 
-app.include_router(save_execution_router)
+app.include_router(router)
+
 
 
 
