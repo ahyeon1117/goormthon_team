@@ -1,15 +1,9 @@
 import { UpdateUserRequest, UpdateUserResponse } from '../types/api';
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const token = localStorage.getItem('token');
+import { fetchWithAuth } from '../utils/fetchWithAuth';
 
 export const updateUser = async (body: UpdateUserRequest): Promise<UpdateUserResponse> => {
-  const res = await fetch(`${BASE_URL}/api/v1/users/me`, {
+  const res = await fetchWithAuth(`/api/v1/users/me`, {
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
     body: JSON.stringify(body),
   });
 

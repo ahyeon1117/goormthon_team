@@ -5,46 +5,37 @@ import {
   LoginResponse,
   SingupResponse,
 } from '../types/api';
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const token = localStorage.getItem('token');
+import { fetchWithAuth } from '../utils/fetchWithAuth';
 
 export const login = async (body: LoginRequest): Promise<ApiResponse<LoginResponse>> => {
-  const res = await fetch(`${BASE_URL}/api/v1/auth/login`, {
+  const res = await fetchWithAuth(`/api/v1/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
+    auth: false,
   });
-
-  if (!res.ok) throw new Error('로그인 실패');
 
   return res.json();
 };
 
 export const signup = async (body: SignupRequest): Promise<ApiResponse<SingupResponse>> => {
-  const res = await fetch(`${BASE_URL}/api/v1/auth/signup`, {
+  const res = await fetchWithAuth(`/api/v1/auth/signup`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
+    auth: false,
   });
-
-  if (!res.ok) throw res;
 
   return res.json();
 };
 
 export const logout = async (): Promise<void> => {
-  if (!token) return;
-
-  await fetch(`${BASE_URL}/api/v1/auth/logout`, {
+  await fetchWithAuth(`/api/v1/auth/logout`, {
     method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
   });
   localStorage.removeItem('token');
 };
