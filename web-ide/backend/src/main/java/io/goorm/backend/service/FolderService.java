@@ -124,15 +124,28 @@ public class FolderService {
 
     //폴더 + 파일 조회
     @Transactional(readOnly = true)
-    public FolderTreeResponse getRootFolderTree(Long projectId) {
-        // 루트 폴더 조회 (없으면 예외)
+    public FolderTreeResponse getFolderTree(Long projectId, Long folderId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("프로젝트가 존재하지 않습니다."));
 
-        Folder root = folderRepository.findByProjectAndParentIdIsNull(project)
-                .orElseThrow(() -> new RuntimeException("루트 폴더가 존재하지 않습니다."));
+        Folder folder;
 
-        return buildTree(root);
+        if (folderId == null) {
+            // 루트 폴더 조회
+            folder = folderRepository.findByProjectAndParentIdIsNull(project)
+                    .orElseThrow(() -> new RuntimeException("루트 폴더가 존재하지 않습니다."));
+        } else {
+            // 특정 폴더 조회
+            folder = folderRepository.findById(folderId)
+                    .orElseThrow(() -> new RuntimeException("해당 폴더가 존재하지 않습니다."));
+
+            // 해당 폴더가 지정한 프로젝트에 속하는지 검증
+            if (!folder.getProject().getId().equals(projectId)) {
+                throw new RuntimeException("해당 폴더는 요청한 프로젝트에 속하지 않습니다.");
+            }
+        }
+
+        return buildTree(folder);
     }
 
     private FolderTreeResponse buildTree(Folder folder) {
@@ -151,6 +164,7 @@ public class FolderService {
                 childTrees
         );
     }
+
 
 
     @Transactional

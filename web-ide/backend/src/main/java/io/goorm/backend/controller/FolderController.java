@@ -72,14 +72,18 @@ public class FolderController {
     }
 
     @GetMapping("/tree/{projectId}")
-    @Operation(summary = "폴더 트리 조회", description = "폴더 전체 하위 구조를 조회합니다.")
-    public ResponseEntity<FolderTreeResponse> getProjectFolderTree(@PathVariable Long projectId) {
-        FolderTreeResponse tree = folderService.getRootFolderTree(projectId);
+    @Operation(summary = "폴더 트리 조회", description = "루트 또는 지정한 폴더의 하위 구조를 조회합니다.")
+    public ResponseEntity<FolderTreeResponse> getProjectFolderTree(
+            @PathVariable Long projectId,
+            @RequestParam(required = false) Long folderId
+    ) {
+        FolderTreeResponse tree = folderService.getFolderTree(projectId, folderId);
         return ResponseEntity.ok(tree);
     }
 
+
     @DeleteMapping
-    @Operation(summary = "폴더 삭제", description = "폴더 ID만으로 해당 폴더 및 하위 폴더/파일 삭제")
+    @Operation(summary = "폴더 삭제", description = "해당 폴더 및 하위 폴더/파일 삭제")
     public ResponseEntity<Void> deleteFolder(@RequestBody FolderRequest request) {
         folderService.deleteFolder(request.getProjectId(), request.getFolderId());
         return ResponseEntity.noContent().build();
