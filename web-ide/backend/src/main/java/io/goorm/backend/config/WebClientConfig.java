@@ -1,6 +1,8 @@
 package io.goorm.backend.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j; // ✅ 로그용 import 추가
@@ -55,8 +57,11 @@ public class WebClientConfig {
         });
     }
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
+//    @Bean
+//    public ObjectMapper objectMapper() {
+//        ObjectMapper mapper = new ObjectMapper(); // JSR-310 모듈 등록
+//        mapper.registerModule(new JavaTimeModule()); // ISO-8601 문자열 출력을 위해 timestamp 비활성화
+//        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//        return new ObjectMapper();
+//    }
 }

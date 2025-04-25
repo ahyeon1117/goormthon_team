@@ -29,7 +29,7 @@ public class FolderService {
    //root폴더 확인 및 생성
     @Transactional
     public Folder createRootFolder(Long projectId) {
-        // 로그인 사용자, 프로젝트 검증
+        //로그인 사용자, 프로젝트 검증
         Long userId = jwtService.getUserId();
         User user = userService.findById(userId);
 

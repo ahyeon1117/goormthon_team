@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/folders")
+@RequestMapping("/api/v1/folders")
 @RequiredArgsConstructor
 @Tag(name = "Folder", description = "폴더 생성·삭제·이름변경 API")
 public class FolderController {
