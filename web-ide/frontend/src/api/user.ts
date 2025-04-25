@@ -1,9 +1,9 @@
-import { UpdateUserRequest } from '../types/api';
+import { UpdateUserRequest, UpdateUserResponse } from '../types/api';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const token = localStorage.getItem('token');
 
-export const updateUser = async (body: UpdateUserRequest) => {
+export const updateUser = async (body: UpdateUserRequest): Promise<UpdateUserResponse> => {
   const res = await fetch(`${BASE_URL}/api/v1/users/me`, {
     method: 'PATCH',
     headers: {

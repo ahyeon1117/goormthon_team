@@ -1,5 +1,5 @@
 import { Project } from '../contexts/ProjectContextType';
-import { ProjectCreateResponse } from '../types/api';
+import { ProjectCreateResponse, CreateProjectRequest } from '../types/api';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const token = localStorage.getItem('token');
@@ -15,14 +15,14 @@ export const fetchProjects = async (): Promise<Project[]> => {
   return res.json();
 };
 
-export const createProject = async (name: string): Promise<ProjectCreateResponse> => {
+export const createProject = async (body: CreateProjectRequest): Promise<ProjectCreateResponse> => {
   const res = await fetch(`${BASE_URL}/api/v1/projects`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ name }),
+    body: JSON.stringify(body),
   });
 
   if (!res.ok) throw new Error('프로젝트 생성 실패');
