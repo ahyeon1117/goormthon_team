@@ -80,6 +80,11 @@ export interface FileResponse {
   projectId: number;
 }
 
+export interface UpdateFileNameRequest {
+  fileId: number;
+  newName: string;
+}
+
 // Kernel
 export interface KernelResponse {
   id: string;

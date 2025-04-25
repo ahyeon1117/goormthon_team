@@ -6,11 +6,12 @@ type Props = {
   y: number;
   onClose: () => void;
   onCreate: () => void;
+  onCreateFile: () => void;
   onRename: () => void;
   onDelete: () => void;
 };
 
-const DropdownMenu = ({ x, y, onClose, onCreate, onRename, onDelete }: Props) => {
+const DropdownMenu = ({ x, y, onClose, onCreate, onCreateFile, onRename, onDelete }: Props) => {
   useEffect(() => {
     const close = () => onClose();
     window.addEventListener('click', close);
@@ -25,8 +26,11 @@ const DropdownMenu = ({ x, y, onClose, onCreate, onRename, onDelete }: Props) =>
       <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer" onClick={onCreate}>
         새 폴더
       </li>
+      <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer" onClick={onCreateFile}>
+        새 파일
+      </li>
       <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer" onClick={onRename}>
-        폴더 이름 변경
+        이름 변경
       </li>
       <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer" onClick={onDelete}>
         삭제
