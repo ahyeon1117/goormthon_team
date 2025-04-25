@@ -1,11 +1,13 @@
-import { mockFileTree } from '../mock/mockFileTree';
-
 import Header from '../components/workspace/Header';
-import Sidebar from '../components/workspace/Sidebar';
 import { FileTree } from '../components/workspace/FileTree';
 import EditorWorkspace from '../components/editor/EditorWorkspace';
 import ChatButton from '../components/workspace/ChatButton';
 import { FileProvider } from '../contexts/FileContext';
+import { useSearchParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { fetchFolderTree } from '../api/folder';
+import { FolderNode } from '../types/file';
+import { DropdownProvider } from '../contexts/DropdownContext';
 
 /**
  * React Context API
@@ -15,27 +17,58 @@ import { FileProvider } from '../contexts/FileContext';
  */
 
 const WorkspacePage = () => {
+  const [searchParams] = useSearchParams();
+  const projectId = searchParams.get('projectId');
+
+  const [folderTree, setFolderTree] = useState<FolderNode | null>(null);
+
+  useEffect(() => {
+    if (projectId) {
+      const load = async () => {
+        try {
+          const data = await fetchFolderTree(Number(projectId));
+          setFolderTree(data);
+        } catch (e) {
+          console.error(e);
+        }
+      };
+      load();
+    }
+  }, [projectId]);
+
   return (
     <FileProvider>
-      <div className="min-h-screen bg-background text-white flex flex-col">
-        {/* 헤더 */}
-        <Header />
+      <DropdownProvider>
+        <div className="min-h-screen bg-background text-white flex flex-col">
+          {/* 헤더 */}
+          <Header />
 
-        {/* 본문 */}
-        <div className="flex flex-1">
-          <Sidebar />
-          <aside className="w-60 bg-dashboard-highlight border-r border-dashboard-gray/30 p-4 text-sm">
-            <p className="text-xs text-dashboard-gray mb-2">Files</p>
-            <FileTree data={mockFileTree} />
-          </aside>
+          {/* 본문 */}
+          <div className="flex flex-1">
+            <aside className="w-60 bg-dashboard-highlight border-r border-dashboard-gray/30 p-4 text-sm">
+              {folderTree ? (
+                <FileTree
+                  data={[folderTree]}
+                  onRefresh={() => {
+                    fetchFolderTree(Number(projectId)).then((data) => {
+                      console.log('폴더 트리 data:', data);
+                      setFolderTree(data);
+                    });
+                  }}
+                />
+              ) : (
+                <p className="text-dashboard-gray text-sm">폴더 정보를 불러오는 중...</p>
+              )}
+            </aside>
 
-          <main className="flex-1 p-6 overflow-y-auto">
-            <EditorWorkspace />
-          </main>
+            <main className="flex-1 p-6 overflow-y-auto">
+              <EditorWorkspace />
+            </main>
+          </div>
+          {/* 우측 하단 채팅 버튼 */}
+          <ChatButton />
         </div>
-        {/* 우측 하단 채팅 버튼 */}
-        <ChatButton />
-      </div>
+      </DropdownProvider>
     </FileProvider>
   );
 };

@@ -5,7 +5,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const token = localStorage.getItem('token');
 
 export const fetchProjects = async (): Promise<Project[]> => {
-  const res = await fetch(`${BASE_URL}/api/projects`, {
+  const res = await fetch(`${BASE_URL}/api/v1/projects`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -16,7 +16,7 @@ export const fetchProjects = async (): Promise<Project[]> => {
 };
 
 export const createProject = async (name: string): Promise<ProjectCreateResponse> => {
-  const res = await fetch(`${BASE_URL}/api/projects`, {
+  const res = await fetch(`${BASE_URL}/api/v1/projects`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -33,19 +33,18 @@ export const createProject = async (name: string): Promise<ProjectCreateResponse
 };
 
 export const deleteProject = async (projectId: number): Promise<void> => {
-  const res = await fetch(`${BASE_URL}/api/projects/${projectId}`, {
+  const res = await fetch(`${BASE_URL}/api/v1/projects/${projectId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    // body: JSON.stringify({ projectId }),
   });
   if (!res.ok) throw new Error('프로젝트 삭제 실패');
 };
 
 export const updateProjectName = async (projectId: number, newName: string): Promise<void> => {
-  const res = await fetch(`${BASE_URL}/api/projects/${projectId}`, {
+  const res = await fetch(`${BASE_URL}/api/v1/projects/${projectId}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',

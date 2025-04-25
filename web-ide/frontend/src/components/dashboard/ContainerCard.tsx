@@ -8,7 +8,7 @@ const ContainerCard = ({ project }: { project: Project }) => {
   const navigate = useNavigate();
 
   const handleRunClick = () => {
-    navigate('/workspace');
+    navigate(`/workspace?projectId=${project.projectId}`);
   };
 
   const context = useContext(ProjectContext);
@@ -44,7 +44,7 @@ const ContainerCard = ({ project }: { project: Project }) => {
       <div className="flex flex-col justify-between flex-grow">
         <p className="text-sm text-dashboard-gray mt-2">
           {/* Ownerusername / {project.isGroup ? '그룹' : '개인'} */}
-          {project.name}
+          {project.userName}
         </p>
         <div className="flex justify-between items-center text-sm text-dashboard-gray">
           {/* <span>{project.updatedAt}</span> */}

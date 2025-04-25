@@ -1,24 +1,36 @@
 import { Cell } from './cell';
 
-export type FileNode = FolderNode | FileLeaf;
-
-export interface FolderNode {
-  id: number;
-  name: string;
-  type: 'folder';
-  project_id: number;
-  children: FileNode[]; // 폴더인경우
-}
-
 export interface FileLeaf {
   id: number;
   name: string;
   type: 'file';
   project_id: number;
   folder_id: number;
-  content: Content; // 파일인경우
+  content: Content;
+}
+
+export interface FolderNode {
+  folderId: number;
+  folderName: string;
+  parentId: number | null;
+  projectId: number;
+  files?: FileLeaf[];
+  children?: FolderNode[];
 }
 
 export interface Content {
   cells: Cell[];
 }
+
+// export interface File {
+//   id: number;
+//   name: string;
+//   content: string[];
+// }
+
+// export interface Folder {
+//   folderId: number;
+//   folderName: string;
+//   files: File[];
+//   folders: Folder[];
+// }
