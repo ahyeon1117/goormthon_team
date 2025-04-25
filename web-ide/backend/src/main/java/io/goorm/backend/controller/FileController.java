@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/files")
+@RequestMapping("/api/v1/files")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "File", description = "파일 생성·삭제·이름변경 API")
