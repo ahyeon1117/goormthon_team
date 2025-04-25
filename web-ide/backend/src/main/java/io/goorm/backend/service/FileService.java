@@ -1,6 +1,6 @@
 package io.goorm.backend.service;
 
-import io.goorm.backend.dto.file.FileResponse;
+import io.goorm.backend.dto.file.FileDetailResponse;
 import io.goorm.backend.entity.File;
 import io.goorm.backend.entity.Folder;
 import io.goorm.backend.entity.Project;
@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.Optional;
 
 @Slf4j
@@ -27,7 +28,7 @@ public class FileService {
     private final ProjectMemberRepository projectMemberRepository;
     private final UserService userService;
     private final JwtService jwtService;
-    private final FastApiFileClient fastApiFileClient;  // FastAPI 알림 보내기
+    private final FastApiFileClient fastApiFileClient;
 
     @Transactional
     public File createFile(String fileName, Long projectId, Long folderId) {
@@ -101,18 +102,24 @@ public class FileService {
 
     }
 
-    @Transactional(readOnly = true)
-    public FileResponse getFileDetail(Long fileId) {
+    public FileDetailResponse getFileDetail(Long fileId) {
+        // 파일 조회 (트랜잭션이 필요)
         File file = fileRepository.findById(fileId)
                 .orElseThrow(() -> new RuntimeException("파일이 존재하지 않습니다."));
 
-        return new FileResponse(
+        // FastAPI에서 notebook JSON을 가져옴 (트랜잭션 관리 필요 없음)
+        String notebookJson = fastApiFileClient.getNotebookJson(fileId);
+
+        // FileDetailResponse로 응답 생성
+        return new FileDetailResponse(
                 file.getId(),
                 file.getName(),
                 file.getFolder() != null ? file.getFolder().getId() : null,
-                file.getProject().getId()
+                file.getProject().getId(),
+                notebookJson // notebookJson 포함
         );
     }
+
 
 
     @Transactional
@@ -167,5 +174,6 @@ public class FileService {
         file.setName(newName);
         return file;
     }
+
 
 }

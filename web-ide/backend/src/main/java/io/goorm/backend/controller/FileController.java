@@ -1,5 +1,6 @@
 package io.goorm.backend.controller;
 
+import io.goorm.backend.dto.file.FileDetailResponse;
 import io.goorm.backend.dto.file.FileRenameRequest;
 import io.goorm.backend.dto.file.FileRequest;
 import io.goorm.backend.dto.file.FileResponse;
@@ -9,8 +10,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.FileNotFoundException;
 
 @RestController
 @RequestMapping("/api/v1/files")
@@ -38,6 +42,8 @@ public class FileController {
                     file.getName(),
                     file.getFolder() != null ? file.getFolder().getId() : null,
                     file.getProject().getId()
+
+
             );
 
             return ResponseEntity.ok(response); // file.getId() 포함된 객체 반환 💖
@@ -48,15 +54,18 @@ public class FileController {
     }
 
     @GetMapping("/{fileId}")
-    @Operation(summary = "파일 조회", description = "파일 ID로 파일 정보를 조회합니다.")
-    public ResponseEntity<?> getFile(@PathVariable Long fileId) {
+    @Operation(summary = "파일 조회", description = "몽고DB ipynb 양식 출력.")
+    public ResponseEntity<FileDetailResponse> getFile(@PathVariable Long fileId) {
         try {
-            FileResponse response = fileService.getFileDetail(fileId);
+            FileDetailResponse response = fileService.getFileDetail(fileId);
             return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            log.error("파일 조회 실패 또는 알 수 없는 오류", e);
+            // Swagger에선 body가 String이지만, 여기선 500 응답만 명시되어도 됨
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
     @DeleteMapping("/{fileId}")
     @Operation(summary = "파일 삭제", description = "해당 파일을 삭제합니다.")
