@@ -19,24 +19,30 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final StompHandler stompHandler;
 
+    // 엔드포인트 설정
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws-chat")            // 웹소켓 엔드포인트 설정
-                .setAllowedOrigins("http://localhost:5173") // 프론트엔드 주소 (배포 시 실제 프론트엔드 도메인으로 변경해야 함)
-                .withSockJS();                              // SockJS 사용
+        registry.addEndpoint("/ws-chat")                    // 웹소켓 요청 엔드포인트 설정
+                .setAllowedOrigins("http://localhost:5173");
+
+                // .withSockJS();                                      // SockJS 사용 (웹소켓 통신을 http:// 엔드포인트를 사용할 수 있게 해줌)
+                // .setAllowedOriginPatterns("http://localhost:5173")  // 프론트엔드 주소 (배포 시엔 실제 프론트엔드 도메인으로 변경해야 함)
+//                .setAllowedOrigins("*")
     }
 
     // 메시지 브로커 설정: 메시지 발행/구독 경로 설정
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.setApplicationDestinationPrefixes("/app"); // 메시지 발행 요청 경로
-        registry.enableSimpleBroker("/topic"); // 메시지 구독 요청 경로
+        // /publish/{roomId} 로 메시지를 발행하면, @Controller의 @MessageMapping 메서드로 메시지가 전달됨
+        registry.setApplicationDestinationPrefixes("/publish"); // 메시지 발행 경로 설정 (/publish/{roomId})
+
+        // 클라이언트가 /topic/{roomId}경로로 메시지를 하면, 해당 topic에 메시지를 전달
+        registry.enableSimpleBroker("/topic"); // 메시지 구독 요청 경로 (/topic/{roomId})
     }
 
     // 인터셉터 설정: 웹소켓 요청(connect, disconnect, subscribe 등)을 가로채 JWT 토큰 인증
-    @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(stompHandler);
-    }
-
+     @Override
+     public void configureClientInboundChannel(ChannelRegistration registration) {
+         registration.interceptors(stompHandler);
+     }
 }

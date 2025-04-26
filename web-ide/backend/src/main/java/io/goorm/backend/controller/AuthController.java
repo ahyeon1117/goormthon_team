@@ -65,7 +65,7 @@ public class AuthController {
         User user = userService.findByEmail(loginRequest.getEmail());
 
         // 응답 DTO 생성
-        LoginResponse response = new LoginResponse(token, user.getUsername());
+        LoginResponse response = new LoginResponse(user.getId(), token, user.getUsername());
 
         // 응답 반환
         return ResponseEntity.ok(ApiResponse.success(response, "로그인이 완료되었습니다."));
