@@ -19,7 +19,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   accessToken: string;
   username: string;
-  userId: number; // 🍀2
+  userId: number;
 }
 
 // User
@@ -99,4 +99,18 @@ export interface ApiResponse<T> {
   code: number;
   message: string;
   data: T;
+}
+
+// Chat
+export interface ChatRoomResponse {
+  id: number;
+  name: string;
+  projectId: number;
+}
+
+export interface ChatMessageDTO {
+  senderId: number;
+  senderName: string;
+  message: string;
+  timestamp: string;
 }
