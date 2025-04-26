@@ -19,6 +19,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   accessToken: string;
   username: string;
+  userId: number; // 🍀2
 }
 
 // User
