@@ -30,7 +30,7 @@ public class ChatService {
      * 프로젝트 멤버 검증 (공통 메서드)
      */
     private void validateProjectMember(Long projectId, Long userId) {
-        // - existsByProject_IdAndUser_Id: project_members 테이블에서 특정 project_id와 user_id가 모두 일치하는 레코드가 있는지 확인 ()
+        // - existsByProject_IdAndUser_Id: project_members 테이블에서 특정 project_id와 user_id가 모두 일치하는 레코드가 있는지 확인
         boolean isMember = projectMemberRepository.existsByProject_IdAndUser_Id(projectId, userId);
 
         if (!isMember) {
@@ -78,7 +78,7 @@ public class ChatService {
     }
 
     /**
-     * 채팅방 과거 메시지 조회 (프로젝트 멤버 여부 검증 추가)
+     * 이전 채팅 내역 조회 (프로젝트 멤버 여부 검증 추가)
      */
     @Transactional(readOnly = true)
     public List<ChatMessageDTO> getMessageHistory(Long roomId, Long userId) {
