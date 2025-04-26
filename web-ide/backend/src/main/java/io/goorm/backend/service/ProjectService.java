@@ -2,10 +2,14 @@ package io.goorm.backend.service;
 
 import io.goorm.backend.dto.project.ProjectResponse;
 import io.goorm.backend.entity.*;
+import io.goorm.backend.global.exception.DuplicateProjectMemberException;
+import io.goorm.backend.global.exception.UnauthorizedException;
+import io.goorm.backend.repository.ChatRoomRepository;
 import io.goorm.backend.repository.FileRepository;
 import io.goorm.backend.repository.FolderRepository;
 import io.goorm.backend.repository.ProjectMemberRepository;
 import io.goorm.backend.repository.ProjectRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProjectService {
@@ -21,12 +26,13 @@ public class ProjectService {
     private final FileRepository fileRepository;
     private final FolderRepository folderRepository;
     private final ProjectMemberRepository memberRepository;
+    private final ChatRoomRepository chatRoomRepository;
     private final UserService userService;
     private final JwtService jwtService;
 
     //프로젝트 멤버 추가
     @Transactional
-    public void addMember(Long projectId, Long newUserId) {
+    public void addMember(Long projectId, String newUserEmail) {
         //요청자(토큰) → User 엔티티
         Long ownerId = jwtService.getUserId();
         User owner = userService.findById(ownerId);
@@ -35,15 +41,17 @@ public class ProjectService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("프로젝트가 존재하지 않습니다."));
         if (!project.getOwner().getId().equals(owner.getId())) {
-            throw new RuntimeException("프로젝트 소유자만 멤버를 추가할 수 있습니다.");
+            throw new UnauthorizedException("프로젝트 소유자만 멤버를 추가할 수 있습니다.");
         }
 
         //추가할 사용자 조회
-        User newUser = userService.findById(newUserId);
+        User newUser = userService.findByEmail(newUserEmail);
+        log.info("[ProjectService] 추가할 사용자 조회 완료, 추가할 사용자 ID: {}", newUser.getEmail());
 
         //중복 여부 체크
         if (memberRepository.existsByProjectAndUser(project, newUser)) {
-            throw new RuntimeException("이미 해당 프로젝트의 멤버입니다.");
+            log.info("[ProjectService] 이미 해당 프로젝트의 멤버입니다.");
+            throw new DuplicateProjectMemberException("이미 해당 프로젝트의 멤버입니다.");
         }
 
         //멤버 엔티티 저장
@@ -52,6 +60,8 @@ public class ProjectService {
                 .user(newUser)
                 .build();
         memberRepository.save(pm);
+
+        log.info("[ProjectService] 프로젝트 멤버 추가 완료, 프로젝트 ID: {}, 추가할 사용자 ID: {}", project.getId(), newUser.getId());
     }
 
     //내가 소유하거나 멤버로 속한 모든 프로젝트 조회
@@ -103,6 +113,22 @@ public class ProjectService {
                 .parentId(null)     // 최상위 폴더이므로 parentId = null
                 .build();
         folderRepository.save(rootFolder);
+
+        // 3) 프로젝트 채팅방 생성
+        ChatRoom chatRoom = ChatRoom.builder()
+                .name(projectName + " 채팅방")
+                .project(project)
+                .build();
+        chatRoomRepository.save(chatRoom);
+        log.info("[ProjectService] 프로젝트 채팅방 생성 완료, 채팅방 ID: {}", chatRoom.getId());
+
+        // 4) 자신을 프로젝트 멤버로 추가
+        ProjectMember projectMember = ProjectMember.builder()
+                .project(project)
+                .user(user)
+                .build();
+        memberRepository.save(projectMember);
+        log.info("[ProjectService] 자신을 프로젝트 멤버로 추가 완료, 프로젝트 ID: {}", project.getId());
 
         return project;
     }
