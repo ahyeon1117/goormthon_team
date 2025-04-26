@@ -60,3 +60,13 @@ export const addProjectMember = async (projectId: number, newUserEmail: string):
   
   return res.json();
 };
+
+// 특정 프로젝트 조회
+export const fetchProject = async (projectId: number): Promise<ApiResponse<Project>> => {
+  const res = await fetchWithAuth(`/api/v1/projects/${projectId}`, {
+    method: 'GET',
+  });
+  
+  if (!res.ok) throw new Error('프로젝트 조회 실패');
+  return res.json();
+};

@@ -4,7 +4,7 @@ import rocketIcon from '../../assets/rocket-icon.svg';
 import { useFile } from '../../hooks/useFile';
 import KernelCreateButton from '../kernel/KernelCreateButton';
 import { useSearchParams } from 'react-router-dom';
-import { addProjectMember } from '../../api/project';
+import { addProjectMember, fetchProject } from '../../api/project';
 
 const Header = () => {
   const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);
@@ -12,9 +12,33 @@ const Header = () => {
   const { addCell } = useFile();
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');
+  const [projectName, setProjectName] = useState('');
 
   const handleAddCode = () => addCell('code');
   const handleAddMarkdown = () => addCell('markdown');
+
+  useEffect(() => {
+    fetchProjectData();
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (fileMenuRef.current && !fileMenuRef.current.contains(event.target as Node)) {
+        setIsFileMenuOpen(false);
+      }
+    };
+    if (isFileMenuOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isFileMenuOpen]);
+
+  const fetchProjectData = async () => {
+    try {
+      const project = await fetchProject(Number(projectId));
+      setProjectName(project.data.name);
+      console.log('프로젝트 조회 성공: ', project.data.name);
+
+    } catch (error) {
+      console.error('프로젝트 조회 실패: ', error);
+    }
+  };
 
   const handleAddMember = async () => {
     const email = prompt('프로젝트에 추가할 멤버의 이메일을 입력해주세요.');
@@ -50,23 +74,13 @@ const Header = () => {
       }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (fileMenuRef.current && !fileMenuRef.current.contains(event.target as Node)) {
-        setIsFileMenuOpen(false);
-      }
-    };
-    if (isFileMenuOpen) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isFileMenuOpen]);
-
   return (
     <header className="w-full h-14 pr-6 pl-2 border-b border-dashboard-gray/30 flex items-center justify-between">
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-4">
           <img src={rocketIcon} alt="Rocket Logo" className="w-12 h-12" />
           <span className="text-base font-semibold text-white">
-            Project Name들어가면 좋을거같은데..
+            {projectName}
           </span>
         </div>
       </div>

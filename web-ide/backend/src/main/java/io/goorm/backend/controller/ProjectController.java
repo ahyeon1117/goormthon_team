@@ -90,4 +90,11 @@ public class ProjectController {
         return ResponseEntity.ok(ApiResponse.success(null, "프로젝트 멤버 추가 완료"));
     }
 
+    @GetMapping("/{projectId}")
+    @Operation(summary = "특정 프로젝트 조회", description = "특정 프로젝트 정보를 반환합니다.")
+    public ResponseEntity<ApiResponse<ProjectResponse>> getProjectById(@PathVariable Long projectId) {
+        ProjectResponse projectResponse = projectService.getProjectById(projectId);
+        return ResponseEntity.ok(ApiResponse.success(projectResponse));
+    }
+
 }

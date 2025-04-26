@@ -178,4 +178,10 @@ public class ProjectService {
         return project;
     }
 
+    @Transactional(readOnly = true)
+    public ProjectResponse getProjectById(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("해당 프로젝트가 존재하지 않습니다."));
+        return new ProjectResponse(project);
+    }
 }
