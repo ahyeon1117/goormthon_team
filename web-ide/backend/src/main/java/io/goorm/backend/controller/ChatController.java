@@ -42,7 +42,7 @@ public class ChatController {
      * @return 채팅 내역
      */
     @GetMapping("/rooms/{roomId}/messages")
-    @Operation(summary = "채팅방 메시지 조회", description = "채팅방 메시지 기록을 조회합니다.")
+    @Operation(summary = "채팅 메시지 내역 조회", description = "채팅 메시지 내역을 조회합니다.")
     public ResponseEntity<ApiResponse<List<ChatMessageDTO>>> getChatHistory(@PathVariable Long roomId) {
         Long userId = jwtService.getUserId();
         List<ChatMessageDTO> messages = chatService.getMessageHistory(roomId, userId);
