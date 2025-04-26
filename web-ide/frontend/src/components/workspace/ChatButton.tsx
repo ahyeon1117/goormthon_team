@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { FiMessageCircle, FiX } from 'react-icons/fi';
 import ChatModal from './ChatModal';
 
-const ChatButton = () => {
+type Props = {
+  projectId: string | null;
+};
+
+const ChatButton = ({ projectId }: Props) => {
   const [isOpen, setIsOpen] = useState(false); // 렌더링 여부
   const [isChatVisible, setIsChatVisible] = useState(false); // 애니메이션 표시 여부
 
@@ -26,7 +30,7 @@ const ChatButton = () => {
         {isOpen ? <FiX /> : <FiMessageCircle />}
       </button>
 
-      {isOpen && <ChatModal isVisible={isChatVisible} onClose={closeChat} />}
+      {isOpen && <ChatModal isVisible={isChatVisible} onClose={closeChat} projectId={projectId} />}
     </>
   );
 };
