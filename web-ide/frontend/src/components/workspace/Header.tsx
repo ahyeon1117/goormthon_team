@@ -13,6 +13,7 @@ const Header = () => {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');
   const [projectName, setProjectName] = useState('');
+  const [isOwner, setIsOwner] = useState(false);
 
   const handleAddCode = () => addCell('code');
   const handleAddMarkdown = () => addCell('markdown');
@@ -32,8 +33,10 @@ const Header = () => {
   const fetchProjectData = async () => {
     try {
       const project = await fetchProject(Number(projectId));
-      setProjectName(project.data.name);
       console.log('프로젝트 조회 성공: ', project.data.name);
+
+      setProjectName(project.data.name);
+      setIsOwner(project.data.ownerId === Number(localStorage.getItem('userId')));
 
     } catch (error) {
       console.error('프로젝트 조회 실패: ', error);
@@ -41,6 +44,8 @@ const Header = () => {
   };
 
   const handleAddMember = async () => {
+
+
     const email = prompt('프로젝트에 추가할 멤버의 이메일을 입력해주세요.');
     if (!email) return;
 
@@ -57,21 +62,21 @@ const Header = () => {
       alert("멤버가 추가되었습니다.");
     } catch (err: any) {
       console.error('멤버 추가 오류:', err);
-      
-        const errorData = err instanceof Error && err.message
-          ? JSON.parse(err.message) // 서버 에러를 Error 객체에 감췄으면 message 파싱
-          : err; // 아니면 그냥 쓰기
-      
-        if (errorData.status === 409 && errorData.code === 'DUPLICATE_PROJECT_MEMBER') {
-          alert('이미 추가된 멤버입니다.');
-        } else if (errorData.status === 404 && errorData.code === 'USER_NOT_FOUND') {
-          alert('사용자를 찾을 수 없습니다.');
-        } else if (errorData.status === 403) {
-          alert('프로젝트 멤버 추가 권한이 없습니다.');
-        } else {
-          alert('멤버 추가에 실패했습니다.');
-        }
+
+      const errorData = err instanceof Error && err.message
+        ? JSON.parse(err.message) // 서버 에러를 Error 객체에 감췄으면 message 파싱
+        : err; // 아니면 그냥 쓰기
+
+      if (errorData.status === 409 && errorData.code === 'DUPLICATE_PROJECT_MEMBER') {
+        alert('이미 추가된 멤버입니다.');
+      } else if (errorData.status === 404 && errorData.code === 'USER_NOT_FOUND') {
+        alert('사용자를 찾을 수 없습니다.');
+      } else if (errorData.status === 403) {
+        alert('프로젝트 멤버 추가 권한이 없습니다.');
+      } else {
+        alert('멤버 추가에 실패했습니다.');
       }
+    }
   };
 
   return (
@@ -86,12 +91,14 @@ const Header = () => {
       </div>
 
       <div className="flex items-center gap-6 text-sm text-dashboard-gray">
-        <button
-          className="hover:text-white"
-          onClick={handleAddMember}
-        >
-          멤버 추가
-        </button>
+        {isOwner && (
+          <button
+            className="hover:text-white"
+            onClick={handleAddMember}
+          >
+            멤버 추가
+          </button>
+        )}
         <KernelCreateButton />
         <button onClick={handleAddCode} className="hover:text-white">
           + Code
