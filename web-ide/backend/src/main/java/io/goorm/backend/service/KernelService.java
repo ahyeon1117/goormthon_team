@@ -37,7 +37,7 @@ public class KernelService {
                 .uri(API_PATH)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 //                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                .header(HttpHeaders.AUTHORIZATION,authorizationHeader)
+                .header(HttpHeaders.AUTHORIZATION,"Bearer " + authorizationHeader)
                 .bodyValue(requestDTO) // 요청 본문에 userId 포함
                 .exchangeToMono(this::handleResponse);
     }

@@ -5,13 +5,12 @@ import lombok.Data;
 
 @Data
 public class ExecuteRequestDTO {
-    @JsonProperty("kernel_id")
-    private String kernelId;
-
-    private String code;
-
     @JsonProperty("cell_id")
     private String cellId;
 
+    private String code;
+
+    @JsonProperty("kernel_id")
+    private String kernelId;
 
 }

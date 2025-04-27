@@ -54,7 +54,7 @@ public class FileController {
     }
 
     @GetMapping("/{fileId}")
-    @Operation(summary = "파일 조회", description = "몽고DB ipynb 양식 출력.")
+    @Operation(summary = "파일 조회", description = "몽고DB json ipynb 양식 출력.")
     public ResponseEntity<FileDetailResponse> getFile(@PathVariable Long fileId) {
         try {
             FileDetailResponse response = fileService.getFileDetail(fileId);
