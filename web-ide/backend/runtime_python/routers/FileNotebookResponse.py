@@ -1,8 +1,15 @@
 from fastapi import APIRouter, HTTPException
 from db.mongo import file_collection
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+import nbformat
+from nbformat import validator
 
 router = APIRouter()
+
+# 수정할 notebook 데이터를 받기 위한 Pydantic 모델
+class NotebookUpdateRequest(BaseModel):
+    notebookJson: str  # 수정할 notebook의 새로운 내용
 
 
 @router.get("/api/notebooks/{file_id}")
