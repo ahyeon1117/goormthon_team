@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FiSearch, FiUsers, FiX, FiUser } from "react-icons/fi";
+import { FiSearch, FiUsers, FiX, FiUser, FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { Client } from "@stomp/stompjs";
 import { fetchChatRoom, fetchChatHistory } from '../../api/chat';
 
@@ -27,6 +27,10 @@ interface MessagesByDate {
 
 const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
   const [showUserList, setShowUserList] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchResults, setSearchResults] = useState<{ messageIndex: number, groupIndex: number }[]>([]);
+  const [currentResultIndex, setCurrentResultIndex] = useState(-1);
 
   // 사용자 정보
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
@@ -43,34 +47,34 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
 
   useEffect(() => {
     if (!isVisible) return;
-    
+
     const init = async () => {
       // 이미 연결되어 있다면 다시 연결하지 않음
       if (stompClientRef.current && stompClientRef.current.connected) {
         console.log("[UseEffect] [WebSocket] [연결] 이미 연결되어 있음");
         return;
       }
-      
+
       // 1. 토큰, 유저 정보 가져오기
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
       const username = localStorage.getItem("username");
-      
+
       if (userId) setCurrentUserId(Number(userId));
       if (username) setCurrentUserName(username);
-      
+
       if (!token || !userId) {
         console.log("[UseEffect] [토큰, 유저 정보] 토큰이 없거나 유저 정보가 없습니다");
         return;
       }
-      
+
       // 2. 채팅방 정보 조회 (await로 완료될 때까지 기다림)
       // 3. getChatRoom 함수 호출 후 - 웹소켓 연결 및 구독 시작 (roomId가 설정된 후에 실행)
       await getChatRoom();
     };
-    
+
     init();
-    
+
     // 4. 컴포넌트가 언마운트 될 때 웹소켓 연결 해제
     return () => {
       console.log("[UseEffect] [WebSocket] 연결 해제");
@@ -91,11 +95,11 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
       // 채팅방 정보 조회 API 호출
       const result = await fetchChatRoom(Number(projectId));
       console.log("[채팅방] [조회] 성공:", result);
-      
+
       // 채팅방 정보 설정
       setRoomId(result.id);
       setRoomName(result.name);
-      
+
       // 채팅 내역 조회
       await getChatHistory(result.id);
 
@@ -114,10 +118,10 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
       // 채팅 내역 조회 API 호출
       const messages = await fetchChatHistory(chatRoomId);
       console.log("[채팅] [내역] 조회 성공:", messages);
-      
+
       // 메시지 목록 상태 업데이트
       setMessages(messages);
-      
+
       // 채팅창 맨 아래로 스크롤
       scrollToBottom();
     } catch (error) {
@@ -167,14 +171,14 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
         // 3. 구독 시작
         client.subscribe(`/topic/${roomId}`, (message) => {
           console.log("[메시지] [수신]:", message);
-          
+
           const parsedMessage = JSON.parse(message.body);
           setMessages((prev) => [...prev, parsedMessage]); // 메시지 추가
           scrollToBottom();
         },
-        {
-          Authorization: `Bearer ${token}`, // 구독 요청 시 토큰 포함
-        });
+          {
+            Authorization: `Bearer ${token}`, // 구독 요청 시 토큰 포함
+          });
       },
       onStompError: (frame) => {
         console.error('[STOMP] [에러]:', frame);
@@ -234,26 +238,25 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
 
   // [메시지를 날짜별로 그룹화하는 함수]
   const groupMessagesByDate = (): MessagesByDate[] => {
-    // 메시지 날짜별로 그룹화
     const groupedMessages: { [date: string]: ChatMessageDTO[] } = {};
-    
+
     messages.forEach(msg => {
       // 메시지 타임스탬프에서 날짜 추출 (현지 시간 기준)
       const timestamp = msg.timestamp.includes('Z') ? msg.timestamp : msg.timestamp + 'Z';
       const date = new Date(timestamp);
-      
+
       // 현지 시간 기준으로 YYYY-MM-DD 형식 생성
       const localDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-      
+
       // 해당 날짜 그룹이 없으면 생성
       if (!groupedMessages[localDate]) {
         groupedMessages[localDate] = [];
       }
-      
+
       // 그룹에 메시지 추가
       groupedMessages[localDate].push(msg);
     });
-    
+
     // 날짜별로 정렬된 배열로 변환
     return Object.keys(groupedMessages)
       .sort() // 날짜 오름차순 정렬
@@ -277,6 +280,128 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
   // [날짜별로 그룹화된 메시지 가져오기]
   const messagesByDate = groupMessagesByDate();
 
+  // 검색 실행 함수
+  const performSearch = () => {
+    if (!searchKeyword.trim()) {
+      setSearchResults([]);
+      setCurrentResultIndex(-1);
+      return;
+    }
+
+    const results: { messageIndex: number, groupIndex: number }[] = [];
+
+    // 모든 메시지 그룹을 순회하며 검색어가 포함된 메시지 찾기
+    messagesByDate.forEach((group, groupIndex) => {
+      group.messages.forEach((msg, msgIndex) => {
+        if (msg.message.toLowerCase().includes(searchKeyword.toLowerCase())) {
+          results.push({ groupIndex, messageIndex: msgIndex });
+        }
+      });
+    });
+
+    // 과거 메시지부터 최신 메시지 순으로 정렬 (위에서 아래로)
+    setSearchResults(results);
+    setCurrentResultIndex(results.length > 0 ? 0 : -1);
+
+    // 검색 결과가 있으면 해당 위치로 스크롤
+    if (results.length > 0) {
+      scrollToSearchResult(0);
+    }
+  };
+
+  // 위쪽 화살표 - 과거 메시지(위쪽)로 이동
+  const goToPreviousResult = () => {
+    if (searchResults.length === 0) return;
+
+    const newIndex = currentResultIndex > 0
+      ? currentResultIndex - 1
+      : searchResults.length - 1;
+
+    setCurrentResultIndex(newIndex);
+    scrollToSearchResult(newIndex);
+  };
+
+  // 아래쪽 화살표 - 최신 메시지(아래쪽)로 이동
+  const goToNextResult = () => {
+    if (searchResults.length === 0) return;
+
+    const newIndex = currentResultIndex < searchResults.length - 1
+      ? currentResultIndex + 1
+      : 0;
+
+    setCurrentResultIndex(newIndex);
+    scrollToSearchResult(newIndex);
+  };
+
+  // 검색 결과 위치로 스크롤
+  const scrollToSearchResult = (index: number) => {
+    if (searchResults.length === 0 || !chatBoxRef.current) return;
+
+    const result = searchResults[index];
+    const messageElements = document.querySelectorAll('.message-item');
+
+    // 메시지 요소 찾기
+    let targetElement: HTMLElement | null = null;
+    let count = 0;
+
+    // 그룹별로 탐색
+    messagesByDate.forEach((group, gIdx) => {
+      if (gIdx < result.groupIndex) {
+        count += group.messages.length;
+      } else if (gIdx === result.groupIndex) {
+        // 그룹 내 메시지 인덱스 추가
+        count += result.messageIndex;
+      }
+    });
+
+    if (count < messageElements.length) {
+      targetElement = messageElements[count] as HTMLElement;
+      if (targetElement) {
+        // 검색창 높이를 고려하여 스크롤 위치 조정
+        const searchBarHeight = isSearching ? 50 : 0;
+        const targetRect = targetElement.getBoundingClientRect();
+        const containerRect = chatBoxRef.current.getBoundingClientRect();
+
+        // 스크롤 포지션 계산 (검색창 아래로 충분히 내려오도록 조정)
+        chatBoxRef.current.scrollTop = chatBoxRef.current.scrollTop +
+          (targetRect.top - containerRect.top - searchBarHeight - 80);
+      }
+    }
+  };
+
+  // 검색어 하이라이팅 함수
+  const highlightSearchText = (text: string) => {
+    if (!searchKeyword.trim() || !text.toLowerCase().includes(searchKeyword.toLowerCase())) {
+      return text;
+    }
+
+    const parts = [];
+    let lastIndex = 0;
+    const lowerText = text.toLowerCase();
+    const lowerSearchKeyword = searchKeyword.toLowerCase();
+
+    while (lastIndex < text.length) {
+      const index = lowerText.indexOf(lowerSearchKeyword, lastIndex);
+      if (index === -1) {
+        parts.push(text.slice(lastIndex));
+        break;
+      }
+
+      // 검색어 앞 부분
+      if (index > lastIndex) {
+        parts.push(text.slice(lastIndex, index));
+      }
+
+      // 검색어 부분
+      const matchedText = text.slice(index, index + searchKeyword.length);
+      parts.push(<span key={index} className="bg-yellow-500 text-black font-medium px-0.5 rounded">{matchedText}</span>);
+
+      lastIndex = index + searchKeyword.length;
+    }
+
+    return <>{parts}</>;
+  };
+
   return (
     <div
       className={`fixed bottom-20 right-10 h-[600px] rounded-lg z-50 flex bg-dashboard-background border border-white/20
@@ -292,10 +417,13 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
         <div className="flex items-center justify-between px-4 h-12 border-b border-white/20 text-white text-sm">
           <div>
             <span>{roomName}</span>
-            <span className="text-white/60 ml-2">2</span>
+            <span className="text-white/60 ml-2">3</span>
           </div>
           <div className="flex items-center gap-2">
-            <FiSearch className="cursor-pointer" />
+            <FiSearch
+              className="cursor-pointer"
+              onClick={() => setIsSearching(!isSearching)}
+            />
             <FiUsers
               className={`cursor-pointer ${showUserList ? "text-btn-primary" : ""}`}
               onClick={() => setShowUserList(!showUserList)}
@@ -305,9 +433,64 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
         </div>
 
         {/* Chat Content */}
+        {isSearching && (
+          <div className="sticky top-0 left-0 right-0 z-10 bg-dashboard-background w-full border-b border-white/20">
+            <div className="px-3 py-2 flex items-center gap-2">
+              <div className="relative w-5/6">
+                <input
+                  type="text"
+                  className="w-full bg-background text-white px-3 py-2 pr-8 text-sm rounded-lg"
+                  placeholder="검색어를 입력해주세요."
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      performSearch();
+                    }
+                  }}
+                  autoFocus
+                />
+                {searchKeyword && (
+                  <button
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-dashboard-gray hover:text-white"
+                    onClick={() => {
+                      setSearchKeyword('');
+                      setSearchResults([]);
+                      setCurrentResultIndex(-1);
+                    }}
+                  >
+                    <FiX size={16} />
+                  </button>
+                )}
+              </div>
+              <div className="flex items-center gap-0">
+                <button
+                  className="p-1 text-dashboard-gray hover:text-white"
+                  onClick={goToPreviousResult}
+                  disabled={searchResults.length === 0}
+                >
+                  <FiChevronUp size={20} />
+                </button>
+                <button
+                  className="p-1 text-dashboard-gray hover:text-white"
+                  onClick={goToNextResult}
+                  disabled={searchResults.length === 0}
+                >
+                  <FiChevronDown size={20} />
+                </button>
+              </div>
+            </div>
+            {searchResults.length > 0 && (
+              <div className="px-3 pb-1 text-xs text-dashboard-gray">
+                {currentResultIndex + 1}/{searchResults.length} 일치
+              </div>
+            )}
+          </div>
+        )}
+
         <div
-          className="flex-1 p-4 text-white text-sm overflow-y-auto"
           ref={chatBoxRef}
+          className="flex-1 p-4 text-white text-sm overflow-y-auto relative"
           style={{
             scrollbarWidth: 'thin',
             scrollbarColor: '#4B5563 transparent',
@@ -328,10 +511,18 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
                 // 현재 로그인한 사용자와 메시지 발신자 비교
                 const isMyMessage = msg.senderId === currentUserId;
 
+                // 현재 검색 결과인지 확인 (스크롤 포지션 확인용)
+                const isCurrentResult =
+                  searchResults.length > 0 &&
+                  currentResultIndex !== -1 &&
+                  searchResults[currentResultIndex].groupIndex === groupIndex &&
+                  searchResults[currentResultIndex].messageIndex === msgIndex;
+
                 return (
                   <div
                     key={msgIndex}
-                    className={`mb-4 ${isMyMessage ? 'text-right' : ''}`}
+                    className={`mb-4 ${isMyMessage ? 'text-right' : ''} message-item`}
+                    id={isCurrentResult ? 'current-search-result' : undefined}
                   >
                     {/* 상대방 이름 */}
                     {!isMyMessage && (
@@ -342,11 +533,13 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
                     {/* 메시지 및 시간 */}
                     <div className={`flex items-end gap-2 ${isMyMessage ? 'flex-row-reverse' : 'flex-row'}`}>
                       <div
-                        className={`py-2 px-3 rounded-lg mt-3 inline-block ${isMyMessage ? 'text-white' : 'bg-dashboard-gray/40'
-                          }`}
+                        className={`py-2 px-3 rounded-lg mt-3 inline-block ${isMyMessage ? 'text-white' : 'bg-dashboard-gray/40'}`}
                         style={isMyMessage ? { backgroundColor: '#458CFD' } : {}}
                       >
-                        {msg.message}
+                        {isSearching && searchKeyword.trim()
+                          ? highlightSearchText(msg.message)
+                          : msg.message
+                        }
                       </div>
                       {/* 공통 시간 */}
                       <span className="text-xs text-dashboard-gray self-end">
