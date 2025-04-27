@@ -1,6 +1,7 @@
 package io.goorm.backend.config.chat;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -18,17 +19,18 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final StompHandler stompHandler;
+    @Value("${spring.websocket.allowed-origins}")
+    private String allowedOrigins;
 
-    // 엔드포인트 설정
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws-chat")                    // 웹소켓 요청 엔드포인트 설정
-                .setAllowedOrigins("http://localhost:5173");
-
-                // .withSockJS();                                      // SockJS 사용 (웹소켓 통신을 http:// 엔드포인트를 사용할 수 있게 해줌)
-                // .setAllowedOriginPatterns("http://localhost:5173")  // 프론트엔드 주소 (배포 시엔 실제 프론트엔드 도메인으로 변경해야 함)
-//                .setAllowedOrigins("*")
+        registry.addEndpoint("/ws-chat")                     // 웹소켓 요청 엔드포인트 설정
+                .setAllowedOrigins(allowedOrigins); // 프론트엔드 주소 (배포 시엔 실제 프론트엔드 도메인으로 변경해야 함)
     }
+    // public void registerStompEndpoints(StompEndpointRegistry registry) {
+    //     registry.addEndpoint("/ws-chat")                     // 웹소켓 요청 엔드포인트 설정
+    //             .setAllowedOrigins("http://localhost:5173"); // 프론트엔드 주소 (배포 시엔 실제 프론트엔드 도메인으로 변경해야 함)
+    // }
 
     // 메시지 브로커 설정: 메시지 발행/구독 경로 설정
     @Override

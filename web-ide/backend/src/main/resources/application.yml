@@ -1,4 +1,6 @@
 spring:
+  websocket:
+    allowed-origins: http://localhost:5173
   # DB 연결
   datasource:
     url: jdbc:postgresql://localhost:5432/user_db
