@@ -1,4 +1,4 @@
-package io.goorm.backend.dto.member;
+package io.goorm.backend.dto.project;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberRequest {
-    private Long userId;
+public class ProjectMemberRequest {
+    private String email;
 }

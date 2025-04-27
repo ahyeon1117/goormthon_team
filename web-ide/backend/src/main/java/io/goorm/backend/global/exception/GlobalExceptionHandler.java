@@ -72,6 +72,33 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(ErrorResponse.of(400, e.getMessage(), "INVALID_USER_UPDATE", request.getRequestURI()));
     }
 
+    // [채팅 관련 예외]
+    @ExceptionHandler(ChatException.class)
+    public ResponseEntity<ErrorResponse> handleChatException(ChatException e, HttpServletRequest request) {
+        log.warn("채팅 관련 예외: {}", request.getRequestURI(), e);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(400, e.getMessage(), "CHAT_EXCEPTION", request.getRequestURI()));
+    }
+
+    // [프로젝트 멤버 중복 예외]
+    @ExceptionHandler(DuplicateProjectMemberException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateProjectMemberException(DuplicateProjectMemberException e, HttpServletRequest request) {
+        log.warn("프로젝트 멤버 중복: {}", request.getRequestURI(), e);
+
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ErrorResponse.of(409, e.getMessage(), "DUPLICATE_PROJECT_MEMBER", request.getRequestURI()));
+    }
+
+    // [권한 없음 예외]
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedException(UnauthorizedException e, HttpServletRequest request) {
+        log.warn(e.getMessage(), request.getRequestURI(), e);
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ErrorResponse.of(403, e.getMessage(), "UNAUTHORIZED", request.getRequestURI()));
+    }
+
     // ========================================================
     // 2. 기본 예외 처리 (JWT, Validation, DB 등)
     // ======================================================== 

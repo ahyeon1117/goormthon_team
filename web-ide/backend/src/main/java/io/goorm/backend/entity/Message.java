@@ -2,6 +2,7 @@ package io.goorm.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -32,4 +33,11 @@ public class Message {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    @Builder
+    public Message(ChatRoom chatRoom, User user, String content) {
+        this.chatRoom = chatRoom;
+        this.user = user;
+        this.content = content;
+    }
 }

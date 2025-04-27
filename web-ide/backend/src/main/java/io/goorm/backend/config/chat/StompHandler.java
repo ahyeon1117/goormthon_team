@@ -10,7 +10,12 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * 웹소켓 연결 요청 시 JWT 토큰을 검증하는 핸들러
@@ -64,6 +69,16 @@ public class StompHandler implements ChannelInterceptor {
             // 토큰에서 userId 추출
             Long userId = jwtService.getUserId(token);
             log.info("[STOMP_HANDLER] 토큰 검증 완료: {}", userId);
+
+            // 인증 객체 생성 후 SecurityContext에 등록
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userId, // principal
+                            null,   // credentials
+                            List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                    );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
         }
         return message;
     }

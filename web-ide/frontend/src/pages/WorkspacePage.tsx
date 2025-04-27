@@ -66,7 +66,7 @@ const WorkspacePage = () => {
             </main>
           </div>
           {/* 우측 하단 채팅 버튼 */}
-          <ChatButton />
+          <ChatButton projectId={projectId} />
         </div>
       </DropdownProvider>
     </FileProvider>

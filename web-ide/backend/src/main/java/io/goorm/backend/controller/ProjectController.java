@@ -1,11 +1,10 @@
 package io.goorm.backend.controller;
 
-import io.goorm.backend.dto.member.MemberRequest;
+import io.goorm.backend.dto.project.ProjectMemberRequest;
 import io.goorm.backend.dto.project.ProjectRequest;
 import io.goorm.backend.dto.project.ProjectResponse;
-import io.goorm.backend.entity.File;
-import io.goorm.backend.entity.Folder;
 import io.goorm.backend.entity.Project;
+import io.goorm.backend.global.response.ApiResponse;
 import io.goorm.backend.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -83,12 +82,19 @@ public class ProjectController {
             summary = "프로젝트 멤버 추가",
             description = "새 멤버를 추가합니다."
     )
-    public ResponseEntity<Void> addMember(
+    public ResponseEntity<ApiResponse<Void>> addMember(
             @PathVariable Long projectId,
-            @RequestBody MemberRequest request
+            @RequestBody ProjectMemberRequest request
     ) {
-        projectService.addMember(projectId, request.getUserId());
-        return ResponseEntity.noContent().build();
+        projectService.addMember(projectId, request.getEmail());
+        return ResponseEntity.ok(ApiResponse.success(null, "프로젝트 멤버 추가 완료"));
+    }
+
+    @GetMapping("/{projectId}")
+    @Operation(summary = "특정 프로젝트 조회", description = "특정 프로젝트 정보를 반환합니다.")
+    public ResponseEntity<ApiResponse<ProjectResponse>> getProjectById(@PathVariable Long projectId) {
+        ProjectResponse projectResponse = projectService.getProjectById(projectId);
+        return ResponseEntity.ok(ApiResponse.success(projectResponse));
     }
 
 }

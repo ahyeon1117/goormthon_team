@@ -31,6 +31,7 @@ export function useAuthForm<T>({
       console.log(res);
       localStorage.setItem('token', res.data.accessToken);
       localStorage.setItem('username', res.data.username);
+      localStorage.setItem('userId', res.data.userId);
       navigate('/');
     } catch (err: any) {
       if (err.status === 409) {
