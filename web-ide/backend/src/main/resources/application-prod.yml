@@ -44,9 +44,13 @@ springdoc:
 
 # JWT 설정 (보안을 위해 실제 배포 시 변경)
 jwt:
-  secret: {JWT_SECRET}
-  refresh_secret: {JWT_REFRESH_SECRET}
-  expiration_time: 30 # 액세스 토큰 만료 시간(분)
+  secret: d3e11a19fb2da11f7d2b5145934e462fb141f599fe7334739c59791c6fb30b77 # 64바이트 랜덤 문자열 (보안을 위해 실제 배포 시 변경)
+  refresh_secret: a9c8b7d6e5f4g3h2i1j0k9l8m7n6o5p4q3r2s1t0u9v8w7x6y5z4a3b2c1d # 64바이트 랜덤 문자열 (보안을 위해 실제 배포 시 변경)
+  expiration_time: 300 # 개발 시: 300분으로 설정
+# jwt:
+#   secret: {JWT_SECRET}
+#   refresh_secret: {JWT_REFRESH_SECRET}
+#   expiration_time: 30 # 액세스 토큰 만료 시간(분)
 
 # 개발용 로깅 설정
 logging:
