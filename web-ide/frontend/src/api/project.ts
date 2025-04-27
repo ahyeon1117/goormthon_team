@@ -1,5 +1,5 @@
 import { Project } from '../contexts/ProjectContextType';
-import { ProjectCreateResponse, CreateProjectRequest } from '../types/api';
+import { ProjectCreateResponse, CreateProjectRequest, ProjectMemberResponse } from '../types/api';
 import { fetchWithAuth } from '../utils/fetchWithAuth';
 import { ApiResponse } from '../types/api';
 
@@ -66,7 +66,27 @@ export const fetchProject = async (projectId: number): Promise<ApiResponse<Proje
   const res = await fetchWithAuth(`/api/v1/projects/${projectId}`, {
     method: 'GET',
   });
-  
+
   if (!res.ok) throw new Error('프로젝트 조회 실패');
+  return res.json();
+};
+
+// 프로젝트 멤버 조회
+export const fetchProjectMembers = async (projectId: number): Promise<ApiResponse<ProjectMemberResponse[]>> => {
+  const res = await fetchWithAuth(`/api/v1/projects/${projectId}/members`, {
+    method: 'GET',
+  });
+  
+  if (!res.ok) throw new Error('프로젝트 멤버 조회 실패');
+  return res.json();
+};
+
+// 프로젝트 멤버 인원 조회
+export const fetchProjectMemberCount = async (projectId: number): Promise<ApiResponse<number>> => {
+  const res = await fetchWithAuth(`/api/v1/projects/${projectId}/members/count`, {
+    method: 'GET',
+  });
+
+  if (!res.ok) throw new Error('프로젝트 멤버 인원 조회 실패');
   return res.json();
 };

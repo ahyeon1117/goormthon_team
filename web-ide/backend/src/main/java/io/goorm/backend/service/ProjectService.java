@@ -1,5 +1,6 @@
 package io.goorm.backend.service;
 
+import io.goorm.backend.dto.project.ProjectMemberResponse;
 import io.goorm.backend.dto.project.ProjectResponse;
 import io.goorm.backend.entity.*;
 import io.goorm.backend.global.exception.DuplicateProjectMemberException;
@@ -183,5 +184,24 @@ public class ProjectService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("해당 프로젝트가 존재하지 않습니다."));
         return new ProjectResponse(project);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProjectMemberResponse> getProjectMembers(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("해당 프로젝트가 존재하지 않습니다."));
+
+        List<ProjectMember> members = memberRepository.findAllByProject(project);
+        return members.stream()
+                .map(ProjectMemberResponse::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public int getProjectMemberCount(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("해당 프로젝트가 존재하지 않습니다."));
+                
+        return memberRepository.findAllByProject(project).size();
     }
 }

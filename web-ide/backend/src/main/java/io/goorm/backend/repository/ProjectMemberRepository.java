@@ -15,4 +15,6 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Lo
 
     // 채팅 조회 시 프로젝트 멤버 여부 검증
     boolean existsByProject_IdAndUser_Id(Long projectId, Long userId);
+
+    List<ProjectMember> findAllByProject(Project project);
 }

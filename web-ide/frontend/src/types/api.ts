@@ -47,6 +47,12 @@ export interface ProjectCreateResponse {
   ownerId: number;
 }
 
+export interface ProjectMemberResponse {
+  id: number;
+  username: string;
+  email: string;
+}
+
 // Folder
 export interface CreateFolderRequest {
   folderName: string;

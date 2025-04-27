@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { FiSearch, FiUsers, FiX, FiUser, FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { Client } from "@stomp/stompjs";
-import { fetchChatRoom, fetchChatHistory } from '../../api/chat';
+import { fetchChatRoom, fetchChatHistory} from '../../api/chat';
+import { fetchProjectMemberCount, fetchProjectMembers } from '../../api/project';
+import { ProjectMemberResponse } from '../../types/api';
 
 type Props = {
   isVisible: boolean;
   onClose: () => void;
   projectId: string | null;
 };
-
-const users = ["이구름", "김구름", "최구름"]; // ✅✅✅✅✅✅
 
 // 서버에서 받은 메시지 타입
 interface ChatMessageDTO {
@@ -38,6 +38,8 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
   // 채팅방 정보
   const [roomId, setRoomId] = useState<number | null>(null);
   const [roomName, setRoomName] = useState<string | null>(null);
+  const [chatMembers, setChatMembers] = useState<ProjectMemberResponse[]>([]);
+  const [chatMemberCount, setChatMemberCount] = useState<number>(0);
   // 채팅 기능 관련 정보
   const stompClientRef = useRef<Client | null>(null);             // STOMP 클라이언트 인스턴스를 전역 관리
   const [messages, setMessages] = useState<ChatMessageDTO[]>([]); // 채팅 메시지 목록
@@ -55,7 +57,7 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
         return;
       }
 
-      // 1. 토큰, 유저 정보 가져오기
+      // 토큰, 유저 정보 가져오기
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
       const username = localStorage.getItem("username");
@@ -68,9 +70,14 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
         return;
       }
 
-      // 2. 채팅방 정보 조회 (await로 완료될 때까지 기다림)
-      // 3. getChatRoom 함수 호출 후 - 웹소켓 연결 및 구독 시작 (roomId가 설정된 후에 실행)
+      // 채팅방 정보 조회 (await로 완료될 때까지 기다림)
+      // getChatRoom 함수 호출 후 - 웹소켓 연결 및 구독 시작 (roomId가 설정된 후에 실행)
       await getChatRoom();
+
+      // 채팅방 멤버 조회
+      await getChatMemberCount();
+      await getChatMembers();
+
     };
 
     init();
@@ -126,6 +133,31 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
       scrollToBottom();
     } catch (error) {
       console.error("[채팅] [내역] 조회 실패:", error);
+    }
+  };
+
+  // [채팅방 인원 조회 함수]
+  const getChatMemberCount = async () => {
+    try {
+      const count = await fetchProjectMemberCount(Number(projectId));
+      console.log("[채팅방] [인원] 조회 성공:", count);
+
+      setChatMemberCount(count.data);
+    } catch (error) {
+      console.error("[채팅방] [인원] 조회 실패:", error);
+    }
+  };
+
+  // [채팅방 멤버 조회 함수]
+  const getChatMembers = async () => {
+    try {
+      const members = await fetchProjectMembers(Number(projectId));
+      console.log("[채팅방] [멤버] 조회 성공:", members);
+
+      setChatMembers(members.data);
+      console.log("채팅방 멤버 조회 성공:", members.data);
+    } catch (error) {
+      console.error("[채팅방] [멤버] 조회 실패:", error);
     }
   };
 
@@ -417,7 +449,7 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
         <div className="flex items-center justify-between px-4 h-12 border-b border-white/20 text-white text-sm">
           <div>
             <span>{roomName}</span>
-            <span className="text-white/60 ml-2">3</span>
+            <span className="text-white/60 ml-2">{chatMemberCount}</span>
           </div>
           <div className="flex items-center gap-2">
             <FiSearch
@@ -582,11 +614,11 @@ const ChatModal = ({ isVisible, onClose, projectId }: Props) => {
           ${showUserList ? "translate-x-0" : "translate-x-full"}
         `}
       >
-        <p className="my-2 text-xs text-white/60">유저 목록</p>
-        {users.map((user, i) => (
-          <div key={i} className="py-1 flex items-center gap-3">
+        <p className="my-2 text-xs text-white/60">채팅 멤버</p>
+        {chatMembers.map((member, idx) => (
+          <div key={idx} className="py-1 flex items-center gap-3">
             <FiUser />
-            {user}
+            {member.username}
           </div>
         ))}
       </div>

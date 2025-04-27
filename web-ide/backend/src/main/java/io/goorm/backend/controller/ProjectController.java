@@ -1,6 +1,7 @@
 package io.goorm.backend.controller;
 
 import io.goorm.backend.dto.project.ProjectMemberRequest;
+import io.goorm.backend.dto.project.ProjectMemberResponse;
 import io.goorm.backend.dto.project.ProjectRequest;
 import io.goorm.backend.dto.project.ProjectResponse;
 import io.goorm.backend.entity.Project;
@@ -97,4 +98,19 @@ public class ProjectController {
         return ResponseEntity.ok(ApiResponse.success(projectResponse));
     }
 
+    // 프로젝트 멤버 조회 (채팅방 멤버 조회 시 사용)
+    @GetMapping("/{projectId}/members")
+    @Operation(summary = "프로젝트 멤버 조회", description = "프로젝트의 멤버를 모두 조회합니다.")
+    public ResponseEntity<ApiResponse<List<ProjectMemberResponse>>> getProjectMembers(@PathVariable Long projectId) {
+        List<ProjectMemberResponse> members = projectService.getProjectMembers(projectId);
+        return ResponseEntity.ok(ApiResponse.success(members));
+    }
+
+    // 프로젝트 인원 조회 (채팅방 인원 조회 시 사용)
+    @GetMapping("/{projectId}/members/count")
+    @Operation(summary = "프로젝트 멤버 인원 조회", description = "프로젝트의 멤버 인원을 조회합니다.")
+    public ResponseEntity<ApiResponse<Integer>> getProjectMemberCount(@PathVariable Long projectId) {
+        int count = projectService.getProjectMemberCount(projectId);
+        return ResponseEntity.ok(ApiResponse.success(count));
+    }
 }
