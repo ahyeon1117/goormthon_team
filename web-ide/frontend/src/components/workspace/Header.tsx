@@ -100,7 +100,6 @@ const Header = () => {
         <div className="flex items-center gap-4">
           <img src={rocketIcon} alt="Rocket Logo" className="w-12 h-12" />
           <span className="text-base font-semibold text-white">
-            로켓방정식 프로젝트
             {projectName}
           </span>
         </div>
