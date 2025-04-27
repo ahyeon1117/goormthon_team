@@ -11,7 +11,7 @@ const Header = () => {
   const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);
   const fileMenuRef = useRef<HTMLDivElement>(null);
   const { addCell, selectedFile } = useFile();
-  const { addCell } = useFile();
+  // const { addCell } = useFile();
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');
   const [projectName, setProjectName] = useState('');
