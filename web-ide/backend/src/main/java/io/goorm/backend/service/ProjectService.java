@@ -176,6 +176,12 @@ public class ProjectService {
 
         // 이름 변경
         project.setName(newName);
+
+        // 채팅방 이름도 변경 (채팅방 이름: 프로젝트 이름 + " 채팅방")
+        ChatRoom chatRoom = chatRoomRepository.findByProject(project)
+                .orElseThrow(() -> new RuntimeException("프로젝트 채팅방이 존재하지 않습니다."));
+        chatRoom.updateName(newName + " 채팅방");
+
         return project;
     }
 

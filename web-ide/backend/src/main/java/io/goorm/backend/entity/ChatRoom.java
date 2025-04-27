@@ -45,4 +45,8 @@ public class ChatRoom {
         this.name = name;
         this.project = project;
     }
+
+    public void updateName(String newName) {
+        this.name = newName;
+    }
 }
