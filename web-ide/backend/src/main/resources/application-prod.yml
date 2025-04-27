@@ -1,4 +1,7 @@
 spring:
+# spring:
+#   websocket:
+#     allowed-origins: https://your-frontend-domain.com
   # DB 연결
   datasource:
     url: jdbc:postgresql://postgres_container:5432/user_db
@@ -49,8 +52,8 @@ jwt:
 # 개발용 로깅 설정
 logging:
   level:
-    org.hibernate.SQL: debug  # SQL 쿼리 출력
-    org.hibernate.type.descriptor.sql.BasicBinder: trace  # 바인딩 값도 출력
+    org.hibernate.SQL: info  # SQL 쿼리 출력
+    org.hibernate.type.descriptor.sql.BasicBinder: info  # 바인딩 값도 출력
     org.hibernate.query.sqm.function: info  # 함수 등록 로그 숨김
     org.hibernate.orm: info  # Hibernate 내부 설정 로그 줄임
     root: info
