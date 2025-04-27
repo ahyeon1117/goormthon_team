@@ -99,3 +99,32 @@ export interface ApiResponse<T> {
   message: string;
   data: T;
 }
+
+export interface NotebookResponse {
+  fileId: number;
+  fileName: string;
+  folderId: number;
+  projectId: number;
+  notebookJson: string;
+}
+
+export interface NotebookContent {
+  cells: {
+    cell_type: 'code' | 'markdown';
+    id: string;
+    metadata: {
+      id: string;
+      last_run?: string;
+    };
+    source: string[];
+    execution_count?: number;
+    outputs?: {
+      name: string;
+      output_type: 'stream';
+      text: string[];
+    }[];
+  }[];
+  metadata: Record<string, any>;
+  nbformat: number;
+  nbformat_minor: number;
+}

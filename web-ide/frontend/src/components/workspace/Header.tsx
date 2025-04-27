@@ -3,13 +3,27 @@ import { FiUser } from 'react-icons/fi';
 import rocketIcon from '../../assets/rocket-icon.svg';
 import { useFile } from '../../hooks/useFile';
 import KernelCreateButton from '../kernel/KernelCreateButton';
+import { createCell } from '../../api/cell';
 
 const Header = () => {
   const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);
   const fileMenuRef = useRef<HTMLDivElement>(null);
-  const { addCell } = useFile();
+  const { addCell, selectedFile } = useFile();
 
-  const handleAddCode = () => addCell('code');
+  const handleAddCode = async () => {
+    if (!selectedFile) return;
+    try {
+      const newCell = await createCell(selectedFile.id, {
+        cell_type: 'code',
+        source: ''
+      });
+      console.log('New cell created:', newCell);
+      addCell('code');
+    } catch (error) {
+      console.error('Failed to create cell:', error);
+    }
+  };
+
   const handleAddMarkdown = () => addCell('markdown');
 
   useEffect(() => {
@@ -28,7 +42,7 @@ const Header = () => {
         <div className="flex items-center gap-4">
           <img src={rocketIcon} alt="Rocket Logo" className="w-12 h-12" />
           <span className="text-base font-semibold text-white">
-            Project Name들어가면 좋을거같은데..
+            로켓방정식 프로젝트
           </span>
         </div>
       </div>

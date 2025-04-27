@@ -1,11 +1,28 @@
+export type CellOutput = {
+  name: 'stdout' | 'stderr' | 'result';  // 출력 타입
+  text: string[];
+};
+
+export type CellExecutionResult = {
+  code: string;
+  stdout: string;
+  stderr: string;
+  result: string | null;
+  cell_id: string;
+};
+
+
+
 export type Cell = {
   cell_type: "code" | "markdown";
-  source: string[];
+  execution_count: number | null;
+  id: string;
   metadata: {
     id: string;
+    last_run?: string;
   };
-  execution_count: number | null; // 수정 필 return type
-  outputs: any[];
+  outputs: CellOutput[];
+  source: string[];
 };
 
 export interface Content {
